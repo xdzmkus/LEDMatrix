@@ -1,0 +1,33 @@
+#######################################
+# Syntax Coloring Map For LEDMatrix
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+LEDMatrix    KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+save            KEYWORD2
+load            KEYWORD2
+nextMode        KEYWORD2
+isUpdated       KEYWORD2
+turnON          KEYWORD2
+turnOFF         KEYWORD2
+turnBugs        KEYWORD2
+turnGlowworm    KEYWORD2
+turnColors      KEYWORD2
+turnRainbow     KEYWORD2
+turnSparkles    KEYWORD2
+turnFlame       KEYWORD2
+turnFlashes     KEYWORD2
+turnMatrix      KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

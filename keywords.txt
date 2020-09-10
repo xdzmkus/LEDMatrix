@@ -1,0 +1,23 @@
+#######################################
+# Syntax Coloring Map For LEDMatrix
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+IMatrixConverter KEYWORD1
+BottomLeftCorner KEYWORD1
+MatrixLedEffect	 KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+paint            KEYWORD2
+reset            KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
+

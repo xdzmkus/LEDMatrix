@@ -1,13 +1,13 @@
 /*
-* StarfallLedEffect.cpp
+* StarfallMatrixLedEffect.cpp
 *
 */
 
-#include "StarfallLedEffect.h"
+#include "StarfallMatrixLedEffect.h"
 
-const char* const StarfallLedEffect::name = "STARFALL";
+const char* const StarfallMatrixLedEffect::name = "STARFALL";
 
-StarfallLedEffect::StarfallLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
+StarfallMatrixLedEffect::StarfallMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
 	: LedEffect(leds, count, Hz), converter(converter), rgb(color ? color : getRandomColor())
 {
 	fade = CRGB(1 + rgb.r/(converter->getHeight()+1), 1 + rgb.g/(converter->getHeight()+1), 1 + rgb.b/(converter->getHeight()+1));
@@ -15,13 +15,13 @@ StarfallLedEffect::StarfallLedEffect(const IMatrixConverter* converter, CRGB led
 	init();
 }
 
-StarfallLedEffect::~StarfallLedEffect()
+StarfallMatrixLedEffect::~StarfallMatrixLedEffect()
 {
 }
 
-bool StarfallLedEffect::paint()
+bool StarfallMatrixLedEffect::paint()
 {
-	if (!LedEffect::isReady())
+	if (!isReady())
 		return false;
 
 	// shift down all lines

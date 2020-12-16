@@ -1,10 +1,10 @@
 /* 
-* FireLedEffect.h
+* FireMatrixLedEffect.h
 *
 */
 
-#ifndef __FIRELEDEFFECT_H__
-#define __FIRELEDEFFECT_H__
+#ifndef __FIREMATRIXLEDEFFECT_H__
+#define __FIREMATRIXLEDEFFECT_H__
 
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
@@ -18,7 +18,7 @@
 #include <LedEffect.h>
 #include "IMatrixConverter.h"
 
-class FireLedEffect : public LedEffect
+class FireMatrixLedEffect : public LedEffect
 {
 public:
 
@@ -41,8 +41,8 @@ protected:
 
 public:
 
-	FireLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz);
-	~FireLedEffect();
+	FireMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz);
+	~FireMatrixLedEffect();
 
 	bool paint() override;
 
@@ -50,8 +50,8 @@ public:
 
 private:
 
-	FireLedEffect(const FireLedEffect&) = delete;
-	FireLedEffect& operator=(const FireLedEffect&) = delete;
+	FireMatrixLedEffect(const FireMatrixLedEffect&) = delete;
+	FireMatrixLedEffect& operator=(const FireMatrixLedEffect&) = delete;
 };
 
 #endif

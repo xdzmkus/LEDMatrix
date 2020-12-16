@@ -7,16 +7,15 @@
 #include <LedEffect.h>
 #include <SparklesLedEffect.h>
 #include <RainbowLedEffect.h>
-#include <GlowwormLedEffect.h>
-#include <FlashLedEffect.h>
-#include <FlameLedEffect.h>
-#include <FlagLedEffect.h>
 #include <ColorsLedEffect.h>
 #include <BugsLedEffect.h>
+#include <ThreeColorLedEffect.h>
 
 #include "BottomLeftCorner.h"
-#include "StarfallLedEffect.h"
-#include "FireLedEffect.h"
+#include "StarfallMatrixLedEffect.h"
+#include "FireMatrixLedEffect.h"
+#include "GravityMatrixLedEffect.h"
+#include "NoiseMatrixLedEffect.h"
 
 class LEDMatrix
 {
@@ -26,15 +25,12 @@ public:
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
 		BugsLedEffect::name,
-//		GlowwormLedEffect::name,
-		ColorsLedEffect::name,
-		SparklesLedEffect::name,
 		RainbowLedEffect::name,
-//		FlameLedEffect::name,
-//		FlashLedEffect::name,
-//		FlagLedEffect::name,
-		StarfallLedEffect::name,
-		FireLedEffect::name
+		SparklesLedEffect::name,
+		StarfallMatrixLedEffect::name,
+		FireMatrixLedEffect::name,
+//		GravityMatrixLedEffect::name,
+		NoiseMatrixLedEffect::name
 	};
 
 	LEDMatrix(CRGB leds[], uint16_t count) : leds(leds), numLeds(count), isOn(false)
@@ -51,32 +47,29 @@ public:
 		if (strcmp(BugsLedEffect::name, effectName) == 0) {
 			delete effect; effect = new BugsLedEffect(leds, numLeds, 20, 50);
 		}
-		else if (strcmp(GlowwormLedEffect::name, effectName) == 0) {
-			delete effect; effect = new GlowwormLedEffect(leds, numLeds, 30);
-		}
 		else if (strcmp(ColorsLedEffect::name, effectName) == 0) {
 			delete effect; effect = new ColorsLedEffect(leds, numLeds, 10);
-		}
-		else if (strcmp(RainbowLedEffect::name, effectName) == 0) {
-			delete effect; effect = new RainbowLedEffect(leds, numLeds, 10);
 		}
 		else if (strcmp(SparklesLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SparklesLedEffect(leds, numLeds, 10);
 		}
-		else if (strcmp(FlameLedEffect::name, effectName) == 0) {
-			delete effect; effect = new FlameLedEffect(leds, numLeds, 10);
+		else if (strcmp(RainbowLedEffect::name, effectName) == 0) {
+			delete effect; effect = new RainbowLedEffect(leds, numLeds, 10);
 		}
-		else if (strcmp(FlashLedEffect::name, effectName) == 0) {
-			delete effect; effect = new FlashLedEffect(leds, numLeds, 1);
+		else if (strcmp(ThreeColorLedEffect::name, effectName) == 0) {
+			delete effect; effect = new ThreeColorLedEffect(leds, numLeds, 30, { CRGB::White, 4, CRGB::Red, 3, CRGB::White, 4 }, 1, 2);
 		}
-		else if (strcmp(FlagLedEffect::name, effectName) == 0) {
-			delete effect; effect = new FlagLedEffect(leds, numLeds, 30, { CRGB::White, 4, CRGB::Red, 3, CRGB::White, 4 }, 1, 2);
+		if (strcmp(StarfallMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new StarfallMatrixLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10);
 		}
-		else if (strcmp(StarfallLedEffect::name, effectName) == 0) {
-			delete effect; effect = new StarfallLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10);
+		else if (strcmp(FireMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new FireMatrixLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10);
 		}
-		else if (strcmp(FireLedEffect::name, effectName) == 0) {
-			delete effect; effect = new FireLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10);
+		else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new GravityMatrixLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 1000);
+		}
+		else if (strcmp(NoiseMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new NoiseMatrixLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10, PartyColors_p);
 		}
 		else {
 			return false;

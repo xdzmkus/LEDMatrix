@@ -6,20 +6,24 @@
 #include <FastLED.h>
 #include <LedEffect.h>
 #include "BottomLeftCorner.h"
-#include "StarfallLedEffect.h"
-#include "FireLedEffect.h"
-#include "GravityLedEffect.h"
+#include "StarfallMatrixLedEffect.h"
+#include "FireMatrixLedEffect.h"
+#include "GravityMatrixLedEffect.h"
+#include "NoiseMatrixLedEffect.h"
+#include "BouncingBallsMatrixLedEffect.h"
 
 class LEDMatrix
 {
 public:
 
-	static const uint8_t NUM_EFFECTS = 3;
+	static const uint8_t NUM_EFFECTS = 5;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
-		StarfallLedEffect::name,
-		FireLedEffect::name,
-		GravityLedEffect::name
+		StarfallMatrixLedEffect::name,
+		FireMatrixLedEffect::name,
+		GravityMatrixLedEffect::name,
+		NoiseMatrixLedEffect::name,
+		BouncingBallsMatrixLedEffect::name
 	};
 
 	LEDMatrix(CRGB leds[], uint16_t count) : leds(leds), numLeds(count), isOn(false)
@@ -33,14 +37,20 @@ public:
 
 	bool setEffectByName(const char* effectName)
 	{
-		if (strcmp(StarfallLedEffect::name, effectName) == 0) {
-			delete effect; effect = new StarfallLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10);
+		if (strcmp(StarfallMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new StarfallMatrixLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10);
 		}
-		else if (strcmp(FireLedEffect::name, effectName) == 0) {
-			delete effect; effect = new FireLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10);
+		else if (strcmp(FireMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new FireMatrixLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10);
 		}
-		else if (strcmp(GravityLedEffect::name, effectName) == 0) {
-			delete effect; effect = new GravityLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 1000);
+		else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new GravityMatrixLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 1000);
+		}
+		else if (strcmp(NoiseMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new NoiseMatrixLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10, PartyColors_p);
+		}
+		else if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new BouncingBallsMatrixLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10, 3);
 		}
 		else {
 			return false;

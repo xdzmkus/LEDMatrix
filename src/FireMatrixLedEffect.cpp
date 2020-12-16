@@ -1,14 +1,14 @@
 /*
-* FireLedEffect.cpp
+* FireMatrixLedEffect.cpp
 *
 */
 
-#include "FireLedEffect.h"
+#include "FireMatrixLedEffect.h"
 
-const char* const FireLedEffect::name = "FIRE";
+const char* const FireMatrixLedEffect::name = "FIRE";
 
 // these values are subtracted from the generated values to give a shape to the animation
-const uint8_t FireLedEffect::valueMask[MATRIX_HEIGHT][MATRIX_WIDTH] PROGMEM =
+const uint8_t FireMatrixLedEffect::valueMask[MATRIX_HEIGHT][MATRIX_WIDTH] PROGMEM =
 {
 		{32 , 0  , 0  , 0  , 0  , 0  , 0  , 0  , 32  },
 		{64 , 0  , 0  , 0  , 0  , 0  , 0  , 0  , 64  },
@@ -21,7 +21,7 @@ const uint8_t FireLedEffect::valueMask[MATRIX_HEIGHT][MATRIX_WIDTH] PROGMEM =
 };
 
 //these are the hues for the fire, should be between 0 (red) to about 25 (yellow)
-const uint8_t FireLedEffect::hueMask[MATRIX_HEIGHT][MATRIX_WIDTH] PROGMEM =
+const uint8_t FireMatrixLedEffect::hueMask[MATRIX_HEIGHT][MATRIX_WIDTH] PROGMEM =
 {
 		{1 , 13 , 19 , 25 , 25 , 25 , 22 , 13 , 1 },
 		{1 , 11 , 16 , 22 , 25 , 25 , 19 , 11 , 1 },
@@ -33,19 +33,19 @@ const uint8_t FireLedEffect::hueMask[MATRIX_HEIGHT][MATRIX_WIDTH] PROGMEM =
 		{0 , 0  , 0  , 1  , 3  , 1  , 0  , 0  , 0 }
 };
 
-FireLedEffect::FireLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
+FireMatrixLedEffect::FireMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
 	: LedEffect(leds, count, Hz), converter(converter)
 {
 	init();
 }
 
-FireLedEffect::~FireLedEffect()
+FireMatrixLedEffect::~FireMatrixLedEffect()
 {
 }
 
-bool FireLedEffect::paint()
+bool FireMatrixLedEffect::paint()
 {
-	if (!LedEffect::isReady())
+	if (!isReady())
 		return false;
 
 	// update matrix each 4 cycles

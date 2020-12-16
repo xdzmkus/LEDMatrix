@@ -1,13 +1,13 @@
 /*
-* GravityLedEffect.cpp
+* GravityMatrixLedEffect.cpp
 *
 */
 
-#include "GravityLedEffect.h"
+#include "GravityMatrixLedEffect.h"
 
-const char* const GravityLedEffect::name = "GRAVITY";
+const char* const GravityMatrixLedEffect::name = "GRAVITY";
 
-GravityLedEffect::GravityLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, CRGB color, uint16_t interval)
+GravityMatrixLedEffect::GravityMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, CRGB color, uint16_t interval)
 	: LedEffect(leds, count, Hz), converter(converter), rgb(color), newShot(MillisTimer(interval, true))
 {
 	gravities = new GRAVITY[converter->getWidth()];
@@ -15,12 +15,12 @@ GravityLedEffect::GravityLedEffect(const IMatrixConverter* converter, CRGB leds[
 	init();
 }
 
-GravityLedEffect::~GravityLedEffect()
+GravityMatrixLedEffect::~GravityMatrixLedEffect()
 {
 	delete[] gravities;
 }
 
-void GravityLedEffect::init()
+void GravityMatrixLedEffect::init()
 {
 	LedEffect::init();
 
@@ -44,9 +44,9 @@ void GravityLedEffect::init()
 	}
 }
 
-bool GravityLedEffect::paint()
+bool GravityMatrixLedEffect::paint()
 {
-	if (!LedEffect::isReady())
+	if (!isReady())
 		return false;
 
 	bool allGround = true;
@@ -78,7 +78,7 @@ bool GravityLedEffect::paint()
 	return true;
 }
 
-void GravityLedEffect::shiftPixel(uint8_t x, uint8_t y)
+void GravityMatrixLedEffect::shiftPixel(uint8_t x, uint8_t y)
 {
 	if (gravities[x].velocity == 0)
 	{

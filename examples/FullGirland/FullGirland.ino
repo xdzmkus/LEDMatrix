@@ -1,4 +1,4 @@
-#include "my_data_sensitive.h"
+#include "data_sensitive.h"
 
 #define LED_PIN D1    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
 #define BTN_PIN D6    // D6 button pin
@@ -36,9 +36,8 @@ Adafruit_MQTT_Subscribe girlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPI
 Adafruit_MQTT_Subscribe girlandOnOff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 
 /********** Touch button module *************/
-#include <Denel.h>
-using namespace denel;
-Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
+#include <Denel_Button.h>
+Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
@@ -54,20 +53,20 @@ uint16_t brightness = MAX_BRIGHTNESS / 2;
 CRGB leds[NUM_LEDS];
 
 #include "LEDMatrix.h"
-LEDMatrix ledLine(leds, NUM_LEDS);
+LEDMatrix ledMatrix(leds, NUM_LEDS);
 
 #include <Ticker.h>
-#define EFFECT_DURATION_SEC 60
+#define EFFECT_DURATION_SEC 45
 Ticker tickerEffects;
-volatile boolean f_publishState = false;
+volatile boolean f_publishState = true;
 
 void handleTimer()
 {
-    if (ledLine.isRunning()) ledLine.setNextEffect();
+    if (ledMatrix.isRunning()) ledMatrix.setNextEffect();
     f_publishState = true;
 }
 
-void handleButtonEvent(const Button* button, BUTTON_EVENT eventType)
+void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
 {
     switch (eventType)
     {
@@ -75,8 +74,8 @@ void handleButtonEvent(const Button* button, BUTTON_EVENT eventType)
         f_publishState = true;
         break;
     case BUTTON_EVENT::DoubleClicked:
-        ledLine.setNextEffect();
-        Serial.print(F("NEXT: ")); Serial.println(ledLine.getEffectName());
+        ledMatrix.setNextEffect();
+        Serial.print(F("NEXT: ")); Serial.println(ledMatrix.getEffectName());
         break;
     case BUTTON_EVENT::RepeatClicked:
         brightness += MIN_BRIGHTNESS;
@@ -85,7 +84,7 @@ void handleButtonEvent(const Button* button, BUTTON_EVENT eventType)
         Serial.print(F("BRIGHTNESS: ")); Serial.println(brightness);
         break;
     case BUTTON_EVENT::LongPressed:
-        ledLine.pause();
+        ledMatrix.pause();
         FastLED.clear(true);
         Serial.println(F("OFF"));
         break;
@@ -103,13 +102,13 @@ void onoff_callback(uint32_t x)
     {
     case OFF_CODE:
         FastLED.clear(true);
-        ledLine.pause();
+        ledMatrix.pause();
         break;
     case PAUSE_CODE:
-        ledLine.pause();
+        ledMatrix.pause();
         break;
     case ON_CODE:
-        ledLine.resume();
+        ledMatrix.resume();
         break;
     default:
         f_publishState = true;
@@ -122,12 +121,12 @@ void newEffect_callback(char* data, uint16_t len)
     Serial.print(F("new effect requested: "));
     Serial.println(data);
 
-    ledLine.setEffectByName(data);
+    ledMatrix.setEffectByName(data);
 }
 
 void publishState()
 {
-    auto currentEffect = (ledLine.getEffectName() == nullptr || !ledLine.isRunning()) ? "OFF" : ledLine.getEffectName();
+    auto currentEffect = (ledMatrix.getEffectName() == nullptr || !ledMatrix.isRunning()) ? "OFF" : ledMatrix.getEffectName();
 
     Serial.print(F("Publish message: ")); Serial.println(currentEffect);
 
@@ -153,7 +152,7 @@ void setup()
 
     btn.setEventHandler(handleButtonEvent);
 
-    FastLED.clear(true);
+    ledMatrix.setNextEffect();
 }
 
 void setup_WiFi()
@@ -233,7 +232,7 @@ void loop()
         publishState();
     }
 
-    if (ledLine.paint())
+    if (ledMatrix.paint())
     {
         FastLED.show();
     }

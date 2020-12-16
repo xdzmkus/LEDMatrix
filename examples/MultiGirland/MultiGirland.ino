@@ -31,7 +31,7 @@ GButton touch(BTN_PIN, HIGH_PULL, NORM_OPEN);
 #include <FastLED.h>
 
 #include "LEDMatrix.h"
-#include "StartfallLedEffect.h"
+#include "StarfallMatrixLedEffect.h"
 #include "BottomLeftCorner.h"
 
 CRGB leds[NUM_LEDS];
@@ -39,9 +39,9 @@ CRGB leds[NUM_LEDS];
 #define NUM_EFFECTS 3
 LedEffect* effects[NUM_EFFECTS] =
 {
-	new StartfallLedEffect(new BottomLeftCorner<MATRIX_W1, MATRIX_H>, leds, (MATRIX_W1 * MATRIX_H), 10, CRGB::White),
-	new StartfallLedEffect(new BottomLeftCorner<MATRIX_W2, MATRIX_H>, leds+(MATRIX_W1 * MATRIX_H), (MATRIX_W2 * MATRIX_H), 12, 0xFF2400),
-	new StartfallLedEffect(new BottomLeftCorner<MATRIX_W3, MATRIX_H>, leds+(MATRIX_W1 * MATRIX_H)+(MATRIX_W2 * MATRIX_H), (MATRIX_W3 * MATRIX_H), 10)
+	new StarfallMatrixLedEffect(new BottomLeftCorner<MATRIX_W1, MATRIX_H>, leds, (MATRIX_W1 * MATRIX_H), 10, CRGB::White),
+	new StarfallMatrixLedEffect(new BottomLeftCorner<MATRIX_W2, MATRIX_H>, leds+(MATRIX_W1 * MATRIX_H), (MATRIX_W2 * MATRIX_H), 12, 0xFF2400),
+	new StarfallMatrixLedEffect(new BottomLeftCorner<MATRIX_W3, MATRIX_H>, leds+(MATRIX_W1 * MATRIX_H)+(MATRIX_W2 * MATRIX_H), (MATRIX_W3 * MATRIX_H), 10, CRGB::White)
 };
 
 LEDMatrix ledMatrix(effects, NUM_EFFECTS);

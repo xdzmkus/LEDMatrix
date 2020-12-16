@@ -6,9 +6,8 @@
 #define BTN_PIN 10  // button pin
 #endif
 
-#include <Denel.h>
-using namespace denel;
-Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
+#include <Denel_Button.h>
+Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 
 #include <EEPROM.h>
 #define EEPROM_ADDRESS_EFFECT 0
@@ -32,7 +31,7 @@ CRGB leds[NUM_LEDS];
 
 LEDMatrix ledMatrix(leds, NUM_LEDS);
 
-void handleButtonEvent(const Button* button, BUTTON_EVENT eventType)
+void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
 {
 	switch (eventType)
 	{

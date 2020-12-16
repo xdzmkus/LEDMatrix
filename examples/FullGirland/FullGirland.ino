@@ -75,6 +75,7 @@ void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
         break;
     case BUTTON_EVENT::DoubleClicked:
         ledMatrix.setNextEffect();
+        f_publishState = true;
         Serial.print(F("NEXT: ")); Serial.println(ledMatrix.getEffectName());
         break;
     case BUTTON_EVENT::RepeatClicked:
@@ -153,6 +154,7 @@ void setup()
     btn.setEventHandler(handleButtonEvent);
 
     ledMatrix.setNextEffect();
+    ledMatrix.resume();
 }
 
 void setup_WiFi()

@@ -43,21 +43,25 @@ void NoiseMatrixLedEffect::init()
 
 bool NoiseMatrixLedEffect::paint()
 {
-	if (!isReady())
-		return false;
+    if (!isReady())
+        return false;
 
     for (int x = 0; x < converter->getWidth(); x++)
     {
-        int xOffset = scale * x;
         for (int y = 0; y < converter->getHeight(); y++)
         {
-            int yOffset = scale * y;
-
-            uint8_t data = inoise8(nX + xOffset, nY + yOffset, nZ);
+            uint8_t data = inoise8(nX + scale * x, nY + scale * y, nZ);
             data = qsub8(data, 16);
             data = qadd8(data, scale8(data, 39));
 
             noise[x][y] = scale8(noise[x][y], dataSmoothing) + scale8(data, 256 - dataSmoothing);
+
+            uint8_t index = noise[x][y] + ihue;
+
+            // brighten up, as the color palette itself often contains the light/dark dynamic range desired
+            uint8_t bri = (noise[x][y] > 127) ? 255 : dim8_raw(noise[x][y] * 2);
+
+            ledLine[converter->getPixelNumber(x, y)] = ColorFromPalette(currentPalette, index, bri);
         }
     }
 
@@ -65,21 +69,7 @@ bool NoiseMatrixLedEffect::paint()
     nZ += speed;
     nX += speed / 8;
     nY -= speed / 16;
-    
-    for (int x = 0; x < converter->getWidth(); x++)
-    {
-        for (int y = 0; y < converter->getHeight(); y++)
-        {
-            uint8_t index = noise[x][y] + ihue;
-
-            // brighten up, as the color palette itself often contains the light/dark dynamic range desired
-            uint8_t bri = (noise[x][y] > 127) ? 255 : dim8_raw(noise[x][y] * 2);
-           
-            ledLine[converter->getPixelNumber(x, y)] = ColorFromPalette(currentPalette, index, bri);
-        }
-    }
-
     ihue++;
 
-	return true;
+    return true;
 }

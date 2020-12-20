@@ -5,9 +5,6 @@
 
 #include <FastLED.h>
 #include <LedEffect.h>
-#include <BugsLedEffect.h>
-#include <SparklesLedEffect.h>
-#include <ThreeColorLedEffect.h>
 
 #include "BottomLeftCorner.h"
 #include "StarfallMatrixLedEffect.h"
@@ -20,14 +17,12 @@ class LEDMatrix
 {
 public:
 
-	static const uint8_t NUM_EFFECTS = 12;
+	static const uint8_t NUM_EFFECTS = 10;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
-		BugsLedEffect::name,
 		"RAINBOW",
 		BouncingBallsMatrixLedEffect::name,
 		"OCEAN",
-		SparklesLedEffect::name,
 		"LAVA",
 		StarfallMatrixLedEffect::name,
 		"CLOUD",
@@ -51,16 +46,7 @@ public:
 
 	bool setEffectByName(const char* effectName)
 	{
-		if (strcmp(BugsLedEffect::name, effectName) == 0) {
-			delete effect; effect = new BugsLedEffect(leds, numLeds, 20, 50);
-		}
-		else if (strcmp(SparklesLedEffect::name, effectName) == 0) {
-			delete effect; effect = new SparklesLedEffect(leds, numLeds, 10);
-		}
-		else if (strcmp(ThreeColorLedEffect::name, effectName) == 0) {
-			delete effect; effect = new ThreeColorLedEffect(leds, numLeds, 30, { CRGB::White, 4, CRGB::Red, 3, CRGB::White, 4 }, 1, 2);
-		}
-		else if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
+		if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new BouncingBallsMatrixLedEffect(new BottomLeftCorner<MATRIX_W, MATRIX_H>, leds, numLeds, 10, 3);
 		}
 		else if (strcmp(StarfallMatrixLedEffect::name, effectName) == 0) {

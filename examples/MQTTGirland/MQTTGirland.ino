@@ -1,7 +1,6 @@
 #include "my_data_sensitive.h"
 
-#define LED_PIN D1    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
-#define BTN_PIN D6    // D6 button pin
+#define LED_PIN D4    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
 
 /*********** WiFi Access Point **************/
 #include <ESP8266WiFi.h>
@@ -35,20 +34,16 @@ Adafruit_MQTT_Publish girlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB
 Adafruit_MQTT_Subscribe girlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
 Adafruit_MQTT_Subscribe girlandOnOff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 
-/********** Touch button module *************/
-#include <Denel_Button.h>
-Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
-
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
-#define MATRIX_H 11
-#define MATRIX_W 36
+#define MATRIX_H 8
+#define MATRIX_W 32
 #define NUM_LEDS (MATRIX_H * MATRIX_W)
-#define CURRENT_LIMIT 16000
+#define CURRENT_LIMIT 8000
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
-uint16_t brightness = MAX_BRIGHTNESS/3;
+uint16_t brightness = MIN_BRIGHTNESS;
 
 CRGB leds[NUM_LEDS];
 
@@ -64,34 +59,6 @@ void handleTimer()
 {
     if (ledMatrix.isRunning()) ledMatrix.setNextEffect();
     f_publishState = true;
-}
-
-void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
-{
-    switch (eventType)
-    {
-    case BUTTON_EVENT::Clicked:
-        f_publishState = true;
-        break;
-    case BUTTON_EVENT::DoubleClicked:
-        ledMatrix.setNextEffect();
-        f_publishState = true;
-        Serial.print(F("NEXT: ")); Serial.println(ledMatrix.getEffectName());
-        break;
-    case BUTTON_EVENT::RepeatClicked:
-        brightness += MIN_BRIGHTNESS;
-        if (brightness > MAX_BRIGHTNESS + MIN_BRIGHTNESS * 2) brightness = 0;
-        FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
-        Serial.print(F("BRIGHTNESS: ")); Serial.println(brightness);
-        break;
-    case BUTTON_EVENT::LongPressed:
-        ledMatrix.pause();
-        FastLED.clear(true);
-        Serial.println(F("OFF"));
-        break;
-    default:
-        break;
-    }
 }
 
 void onoff_callback(uint32_t x)
@@ -150,8 +117,6 @@ void setup()
     setup_MQTT();
 
     tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
-
-    btn.setEventHandler(handleButtonEvent);
 
     ledMatrix.resume();
 
@@ -226,8 +191,6 @@ void mqtt_loop()
 
 void loop()
 {
-    btn.check();
-
     if (f_publishState)
     {
         f_publishState = false;

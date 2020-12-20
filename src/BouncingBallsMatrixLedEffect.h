@@ -14,8 +14,6 @@ class BouncingBallsMatrixLedEffect : public LedEffect
 private:
 
 	const float Gravity = -9.81;
-	const int StartHeight = 1;
-	const float ImpactVelocityStart = sqrt(-2 * Gravity * StartHeight);
 
 	const IMatrixConverter* converter;
 
@@ -36,6 +34,8 @@ protected:
 			float timeSinceLastBounce;
 			long  clockTimeSinceLastBounce;
 			float dampening;
+			int	  StartHeight;
+			float ImpactVelocityStart;
 		}
 		*balls;
 
@@ -44,7 +44,7 @@ protected:
 	*bouncingColumns;
 
 public:
-	BouncingBallsMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t maxBallsCount = 0);
+	BouncingBallsMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t maxBallsCount = 1);
 	~BouncingBallsMatrixLedEffect();
 	
 	void init() override;

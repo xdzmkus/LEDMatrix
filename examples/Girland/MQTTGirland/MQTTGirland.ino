@@ -1,26 +1,34 @@
-#include "data_sensitive.h"
+#if __has_include("my_data_sensitive.h")
+#include "my_data_sensitive.h"
+#else
+
+#define WLAN_SSID		    "your wifi name"
+#define WLAN_PASS		    "and password"
+#define WLAN_HOSTNAME	    "connect with hostname"
+
+#define MQTT_SERVER		    "127.0.0.1"
+#define MQTT_SERVERPORT	    1883
+#define MQTT_USERNAME	    "your mqtt username"
+#define MQTT_KEY		    "and password"
+
+#define MQTT_TOPIC_PUB      MQTT_USERNAME"/current/state"
+#define MQTT_TOPIC_SUB1     MQTT_USERNAME"/new/effect"
+#define MQTT_TOPIC_SUB2     MQTT_USERNAME"/new/onoff"
+
+#define ON_CODE		        6735
+#define OFF_CODE	        2344
+#define PAUSE_CODE	        2747
+
+#endif
 
 #define LED_PIN D3    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
 
 /*********** WiFi Access Point **************/
 #include <ESP8266WiFi.h>
 
-#define WLAN_SSID       _WLAN_SSID_
-#define WLAN_PASS       _WLAN_PASS_
-#define WLAN_HOSTNAME   _WLAN_HOSTNAME_
-
 /*********** MQTT Server ********************/
 #include <Adafruit_MQTT.h>
 #include <Adafruit_MQTT_Client.h>
-
-#define MQTT_SERVER      _MQTT_SERVER_
-#define MQTT_SERVERPORT  _MQTT_SERVERPORT_
-#define MQTT_USERNAME    _MQTT_USERNAME_
-#define MQTT_KEY         _MQTT_KEY_
-
-#define MQTT_TOPIC_PUB MQTT_USERNAME"/current/state"
-#define MQTT_TOPIC_SUB1 MQTT_USERNAME"/new/effect"
-#define MQTT_TOPIC_SUB2 MQTT_USERNAME"/new/onoff"
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
 WiFiClient client;

@@ -23,7 +23,29 @@
 
 #define LED_PIN D3    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
 
-/*********** WiFi Access Point **************/
+/*********** WS2812B leds *******************/
+#include <FastLED.h>
+#define MATRIX_H 8
+#define MATRIX_W 32
+#define NUM_LEDS (MATRIX_H * MATRIX_W)
+#define CURRENT_LIMIT 8000
+#define MAX_BRIGHTNESS 255
+#define MIN_BRIGHTNESS 20
+
+uint16_t brightness = MIN_BRIGHTNESS;
+
+CRGB leds[NUM_LEDS];
+
+/*********** LED Matrix Effects *************/
+#include "LEDMatrix.h"
+LEDMatrix ledMatrix(leds, NUM_LEDS);
+
+#include <Ticker.h>
+#define EFFECT_DURATION_SEC 45
+Ticker tickerEffects;
+volatile boolean f_publishState = true;
+
+/*********** WiFi Client ********************/
 #include <ESP8266WiFi.h>
 
 /*********** MQTT Server ********************/
@@ -42,26 +64,7 @@ Adafruit_MQTT_Publish girlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB
 Adafruit_MQTT_Subscribe girlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
 Adafruit_MQTT_Subscribe girlandOnOff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 
-/*********** WS2812B leds *******************/
-#include <FastLED.h>
-#define MATRIX_H 8
-#define MATRIX_W 32
-#define NUM_LEDS (MATRIX_H * MATRIX_W)
-#define CURRENT_LIMIT 8000
-#define MAX_BRIGHTNESS 255
-#define MIN_BRIGHTNESS 20
-
-uint16_t brightness = MIN_BRIGHTNESS;
-
-CRGB leds[NUM_LEDS];
-
-#include "LEDMatrix.h"
-LEDMatrix ledMatrix(leds, NUM_LEDS);
-
-#include <Ticker.h>
-#define EFFECT_DURATION_SEC 45
-Ticker tickerEffects;
-volatile boolean f_publishState = true;
+/********************************************/
 
 void handleTimer()
 {

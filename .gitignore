@@ -351,5 +351,5 @@ MigrationBackup/
 .ionide/
 
 
-/examples/FullGirland/my_data_sensitive.h
-/examples/MQTTGirland/my_data_sensitive.h
+**/my_data_sensitive.h
+

@@ -26,7 +26,7 @@ private:
 	// We're using the x/y dimensions to map to the x/y pixels on the matrix.
 	// We'll use the z-axis for "time". Speed determines how fast time moves forward.
 	// Try 1 for a very slow moving effect, or 60 for something that ends up looking like water.
-	const uint8_t speed = 20;
+//	const uint8_t speed = 20;
 
 	// If we're runing at a low "speed", some 8-bit artifacts become visible from frame-to-frame.
 	// In order to reduce this, we can do some fast data-smoothing.

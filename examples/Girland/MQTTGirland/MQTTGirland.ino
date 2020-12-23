@@ -1,4 +1,4 @@
-#if __has_include("my_data_sensitive.h")
+#if true // && __has_include("my_data_sensitive.h")
 #include "my_data_sensitive.h"
 #else
 
@@ -202,6 +202,8 @@ void mqtt_loop()
 
 void loop()
 {
+    mqtt_loop();
+
     if (f_publishState)
     {
         f_publishState = false;
@@ -213,6 +215,4 @@ void loop()
     {
         FastLED.show();
     }
-
-    mqtt_loop();
 }

@@ -39,7 +39,7 @@ void BouncingBallsMatrixLedEffect::init()
 		for (int i = 0; i < bouncingColumns[x].numBalls; i++)
 		{
 			bouncingColumns[x].balls[i].color = getRandomColor();
-			bouncingColumns[x].balls[i].clockTimeSinceLastBounce = getClock();
+			bouncingColumns[x].balls[i].startTime = getClock();
 			bouncingColumns[x].balls[i].height = 0;
 			bouncingColumns[x].balls[i].position = 0;
 			bouncingColumns[x].balls[i].velocity = MaxVelocity;
@@ -58,14 +58,14 @@ bool BouncingBallsMatrixLedEffect::paint()
 	{
 		for (int i = 0; i < bouncingColumns[x].numBalls; i++)
 		{
-			float timeSinceLastBounce = static_cast<float>(getClock() - bouncingColumns[x].balls[i].clockTimeSinceLastBounce) / LedEffect::CLOCKS_IN_SEC;
-			bouncingColumns[x].balls[i].height = bouncingColumns[x].balls[i].velocity * timeSinceLastBounce - 0.5 * Gravity * pow(timeSinceLastBounce, 2.0);
+			float timeOfFlying = static_cast<float>(getClock() - bouncingColumns[x].balls[i].startTime) / LedEffect::CLOCKS_IN_SEC;
+			bouncingColumns[x].balls[i].height = bouncingColumns[x].balls[i].velocity * timeOfFlying - 0.5 * Gravity * pow(timeOfFlying, 2.0);
 
 			if (bouncingColumns[x].balls[i].height < 0)
 			{
 				bouncingColumns[x].balls[i].height = 0;
 				bouncingColumns[x].balls[i].velocity *= bouncingColumns[x].balls[i].dampingPercentage / 100.0;
-				bouncingColumns[x].balls[i].clockTimeSinceLastBounce = getClock();
+				bouncingColumns[x].balls[i].startTime = getClock();
 
 				if (bouncingColumns[x].balls[i].velocity < 0.01)
 				{

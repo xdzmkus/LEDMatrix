@@ -19,21 +19,21 @@ private:
 
 	const IMatrixConverter* converter;
 
-	const CRGB rgb;
+	const float Gravity = 9.8;
 
 	struct GRAVITY
 	{
-		uint8_t limit;
-		bool direction;
-		uint8_t velocity;
+		CRGB  color;
+		int   position;
+		float height;
+		float velocity;
+		long  startTime;
 	}
 	*gravities;
 
-	MillisTimer newShot;
-
 public:
 
-	GravityMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, CRGB color = CRGB::Black, uint16_t interval = 3000);
+	GravityMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz);
 	~GravityMatrixLedEffect();
 
 	void init() override;
@@ -42,8 +42,6 @@ public:
 	operator const char* () const { return name; }
 
 private:
-
-	void shiftPixel(uint8_t x, uint8_t y);
 
 	GravityMatrixLedEffect(const GravityMatrixLedEffect&) = delete;
 	GravityMatrixLedEffect& operator=(const GravityMatrixLedEffect&) = delete;

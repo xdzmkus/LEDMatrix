@@ -33,7 +33,7 @@ protected:
 			float height;
 			float velocity;
 			byte  dampingPercentage;
-			long  clockTimeSinceLastBounce;
+			long  startTime;
 		}
 		*balls;
 

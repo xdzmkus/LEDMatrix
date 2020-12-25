@@ -12,15 +12,16 @@
 #include "BottomLeftCorner.h"
 #include "StarfallMatrixLedEffect.h"
 #include "FireMatrixLedEffect.h"
-#include "SinusMatrixLedEffect.h"
+#include "GravityMatrixLedEffect.h"
 #include "NoiseMatrixLedEffect.h"
 #include "BouncingBallsMatrixLedEffect.h"
+#include "SinusMatrixLedEffect.h"
 
 class LEDMatrix
 {
 public:
 
-	static const uint8_t NUM_EFFECTS = 12;
+	static const uint8_t NUM_EFFECTS = 14;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
 		BugsLedEffect::name,
@@ -34,7 +35,9 @@ public:
 		FireMatrixLedEffect::name,
 		"FOREST",
 		SinusMatrixLedEffect::name,
-		"PARTY"
+		"PARTY",
+		GravityMatrixLedEffect::name,
+		"WRW"
 	};
 
 	LEDMatrix(CRGB leds[], uint16_t count) : leds(leds), numLeds(count), isOn(false), currentEffectIdx(0)
@@ -72,6 +75,9 @@ public:
 		else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SinusMatrixLedEffect(&matrix, leds, numLeds, random(10, 50));
 		}
+		else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, 10);
+		}
 		else if (strcmp("PARTY", effectName) == 0) {
 			delete effect; effect = new NoiseMatrixLedEffect(&matrix, leds, numLeds, random(10, 50), PartyColors_p, random(5, 60));
 		}
@@ -90,12 +96,15 @@ public:
 		else if (strcmp("RAINBOW", effectName) == 0) {
 			delete effect; effect = new NoiseMatrixLedEffect(&matrix, leds, numLeds, random(10, 50), RainbowColors_p, random(5, 80));
 		}
+		else if (strcmp("WRW", effectName) == 0) {
+			delete effect; effect = new NoiseMatrixLedEffect(&matrix, leds, numLeds, random(10, 30), wrwPalette, random(5, 50));
+		}
 		else {
 			return false;
 		}
 
 		// find effect index
-		for (uint8_t idx = 0; idx < NUM_EFFECTS - 1; idx++)
+		for (uint8_t idx = 0; idx < NUM_EFFECTS; idx++)
 		{
 			if (strcmp(availableEffects[idx], effectName) == 0)
 			{
@@ -106,7 +115,6 @@ public:
 
 		isOn = true;
 		return true;
-
 	};
 
 	bool setNextEffect()
@@ -151,6 +159,12 @@ protected:
 	bool isOn;
 
 	uint8_t currentEffectIdx;
+
+	const CRGBPalette16 wrwPalette = CRGBPalette16(
+		CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+		CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+		CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+		CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red);
 };
 
 

@@ -7,8 +7,8 @@
 
 const char* const GravityMatrixLedEffect::name = "GRAVITY";
 
-GravityMatrixLedEffect::GravityMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, CRGB color, uint16_t interval)
-	: LedEffect(leds, count, Hz), converter(converter), rgb(color), newShot(MillisTimer(interval, true))
+GravityMatrixLedEffect::GravityMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
+	: LedEffect(leds, count, Hz), converter(converter)
 {
 	gravities = new GRAVITY[converter->getWidth()];
 
@@ -24,23 +24,16 @@ void GravityMatrixLedEffect::init()
 {
 	LedEffect::init();
 
-//	double angle = 0.0;
-
 	uint8_t max = converter->getHeight() - 1;
 	uint8_t phase = random(0, converter->getHeight());
 
 	for (uint8_t x = 0; x < converter->getWidth(); x++, phase++)
 	{
-		/* sinusoid
-		gravities[x].limit = map(round(100 * sin(angle)), -100, 100, 0, converter->getHeight() - 1);
-		angle += (2 * 3.14) / converter->getWidth();
-		*/
-
-		gravities[x].limit = (phase / max) % 2 == 0 ? (phase % max + 1) : (max - 1 - (phase % max));
-		gravities[x].velocity = (converter->getHeight() - gravities[x].limit) << 1;
-		gravities[x].direction = true;
-
-		ledLine[converter->getPixelNumber(x, 0)] = rgb ? rgb : getRandomColor();
+		gravities[x].color = getRandomColor();
+		gravities[x].startTime = getClock();
+		gravities[x].height = 1;
+		gravities[x].position = 0;
+		gravities[x].velocity = sqrt(2 * Gravity * ((phase / max) % 2 == 0 ? (phase % max + 1) : (max - 1 - (phase % max))));
 	}
 }
 
@@ -53,59 +46,32 @@ bool GravityMatrixLedEffect::paint()
 
 	for (uint8_t x = 0; x < converter->getWidth(); x++)
 	{
-		// dormancy
-		if (gravities[x].limit == 0)
-			continue;
-
-		for (uint8_t y = 0; y < converter->getHeight(); y++)
+		if (gravities[x].height > 0)
 		{
-			// shift up or down
-			if (ledLine[converter->getPixelNumber(x, y)])
-			{
-				shiftPixel(x, y);
-				break;
-			}
-		}
+			float timeOfFlying = static_cast<float>(getClock() - gravities[x].startTime) / LedEffect::CLOCKS_IN_SEC;
+			gravities[x].height = gravities[x].velocity * timeOfFlying - 0.5 * Gravity * timeOfFlying * timeOfFlying;
 
-		allGround &= ledLine[converter->getPixelNumber(x, 0)];
+			if (gravities[x].height <= 0)
+			{
+				gravities[x].height = 0;
+			}
+			else
+			{
+				allGround = false;
+			}
+
+			ledLine[converter->getPixelNumber(x, gravities[x].position)] = CRGB::Black;
+
+			gravities[x].position = round(gravities[x].height);
+
+			ledLine[converter->getPixelNumber(x, gravities[x].position)] = gravities[x].color;
+		}
 	}
 
-	if (allGround && newShot.isReady())
+	if (allGround)
 	{
 		init();
 	}
 
 	return true;
-}
-
-void GravityMatrixLedEffect::shiftPixel(uint8_t x, uint8_t y)
-{
-	if (gravities[x].velocity == 0)
-	{
-		if (gravities[x].direction == true)
-		{
-			ledLine[converter->getPixelNumber(x, y + 1)] = ledLine[converter->getPixelNumber(x, y)];
-			ledLine[converter->getPixelNumber(x, y)] = CRGB::Black;
-			
-			// reached top point - change direction
-			if (gravities[x].limit == y + 1)
-			{
-				gravities[x].direction = false;
-			}
-		}
-		else
-		{
-			ledLine[converter->getPixelNumber(x, y - 1)] = ledLine[converter->getPixelNumber(x, y)];
-			ledLine[converter->getPixelNumber(x, y)] = CRGB::Black;
-
-			// reached ground point - stop
-			if (y == 1)
-			{
-				gravities[x].limit = 0;
-			}
-		}
-		gravities[x].velocity = (converter->getHeight() - gravities[x].limit) + (y) * (y);
-	}
-	else
-		gravities[x].velocity--;
 }

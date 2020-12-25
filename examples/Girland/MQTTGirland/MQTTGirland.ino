@@ -117,7 +117,7 @@ void publishState()
 
 void setup()
 {
-    pinMode(BUILTIN_LED, OUTPUT);       // Initialize the BUILTIN_LED pin as an output
+    pinMode(LED_BUILTIN, OUTPUT);       // Initialize the BUILTIN_LED pin as an output
 
     Serial.begin(115200);
 
@@ -145,10 +145,10 @@ void setup_WiFi()
 
     while (WiFi.status() != WL_CONNECTED)
     {
-        digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level but actually the LED is on; this is because it is active low on the ESP-01)
+        digitalWrite(LED_BUILTIN, LOW);   // Turn the LED on (Note that LOW is the voltage level but actually the LED is on; this is because it is active low on the ESP-01)
         delay(500);
         Serial.print(".");
-        digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
+        digitalWrite(LED_BUILTIN, HIGH);  // Turn the LED off by making the voltage HIGH
         delay(200);
     }
 

@@ -36,7 +36,7 @@ void setup()
 
 	setupLED();
 
-	effect = new BouncingBallsMatrixLedEffect(&matrix, leds, NUM_LEDS, 10, 3);
+	effect = new BouncingBallsMatrixLedEffect(&matrix, leds, NUM_LEDS, 50, 3);
 }
 
 

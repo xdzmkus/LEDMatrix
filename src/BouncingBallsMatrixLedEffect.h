@@ -13,7 +13,8 @@ class BouncingBallsMatrixLedEffect : public LedEffect
 {
 private:
 
-	const float Gravity = -9.81;
+	const float Gravity = 9.8;
+	const float MaxVelocity;
 
 	const IMatrixConverter* converter;
 
@@ -30,12 +31,9 @@ protected:
 			CRGB  color;
 			int   position;
 			float height;
-			float impactVelocity;
-			float timeSinceLastBounce;
+			float velocity;
+			byte  dampingPercentage;
 			long  clockTimeSinceLastBounce;
-			float dampening;
-			int	  StartHeight;
-			float ImpactVelocityStart;
 		}
 		*balls;
 

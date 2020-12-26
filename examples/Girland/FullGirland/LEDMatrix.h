@@ -10,12 +10,13 @@
 #include <ThreeColorLedEffect.h>
 
 #include "BottomLeftCorner.h"
-#include "StarfallMatrixLedEffect.h"
+#include "BouncingBallsMatrixLedEffect.h"
 #include "FireMatrixLedEffect.h"
 #include "GravityMatrixLedEffect.h"
 #include "NoiseMatrixLedEffect.h"
-#include "BouncingBallsMatrixLedEffect.h"
 #include "SinusMatrixLedEffect.h"
+#include "SnowMatrixLedEffect.h"
+#include "StarfallMatrixLedEffect.h"
 
 class LEDMatrix
 {
@@ -28,7 +29,7 @@ public:
 		"LAVA",
 		BouncingBallsMatrixLedEffect::name,
 		"OCEAN",
-		SparklesLedEffect::name,
+		SnowMatrixLedEffect::name,
 		"RAINBOW",
 		StarfallMatrixLedEffect::name,
 		"CLOUD",
@@ -66,17 +67,20 @@ public:
 		else if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new BouncingBallsMatrixLedEffect(&matrix, leds, numLeds, 10, 3);
 		}
-		else if (strcmp(StarfallMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new StarfallMatrixLedEffect(&matrix, leds, numLeds, 10);
-		}
 		else if (strcmp(FireMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FireMatrixLedEffect(&matrix, leds, numLeds, 10);
+		}
+		else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, 10);
 		}
 		else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SinusMatrixLedEffect(&matrix, leds, numLeds, random(10, 50));
 		}
-		else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, 10);
+		else if (strcmp(SnowMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new SnowMatrixLedEffect(&matrix, leds, numLeds, 2);
+		}
+		else if (strcmp(StarfallMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new StarfallMatrixLedEffect(&matrix, leds, numLeds, 10);
 		}
 		else if (strcmp("PARTY", effectName) == 0) {
 			delete effect; effect = new NoiseMatrixLedEffect(&matrix, leds, numLeds, random(10, 50), PartyColors_p, random(5, 60));

@@ -10,12 +10,13 @@
 #include <ThreeColorLedEffect.h>
 
 #include "BottomLeftCorner.h"
-#include "StarfallMatrixLedEffect.h"
+#include "BouncingBallsMatrixLedEffect.h"
 #include "FireMatrixLedEffect.h"
 #include "GravityMatrixLedEffect.h"
 #include "NoiseMatrixLedEffect.h"
-#include "BouncingBallsMatrixLedEffect.h"
 #include "SinusMatrixLedEffect.h"
+#include "SnowMatrixLedEffect.h"
+#include "StarfallMatrixLedEffect.h"
 
 class LEDMatrix
 {
@@ -28,7 +29,7 @@ public:
 		"LAVA",
 		BouncingBallsMatrixLedEffect::name,
 		"OCEAN",
-		SparklesLedEffect::name,
+		SnowMatrixLedEffect::name,
 		"RAINBOW",
 		StarfallMatrixLedEffect::name,
 		"CLOUD",
@@ -61,7 +62,7 @@ public:
 			delete effect; effect = new SparklesLedEffect(leds, numLeds, 10);
 		}
 		else if (strcmp(ThreeColorLedEffect::name, effectName) == 0) {
-			delete effect; effect = new ThreeColorLedEffect(leds, numLeds, 30, { CRGB::White, 4, CRGB::Red, 3, CRGB::White, 4 }, 1, 2);
+			delete effect; effect = new ThreeColorLedEffect(leds, numLeds, 30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 }, 1, 2);
 		}
 		else if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new BouncingBallsMatrixLedEffect(&matrix, leds, numLeds, 10, 3);
@@ -74,6 +75,9 @@ public:
 		}
 		else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SinusMatrixLedEffect(&matrix, leds, numLeds, random(10, 50));
+		}
+		else if (strcmp(SnowMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new SnowMatrixLedEffect(&matrix, leds, numLeds, 2);
 		}
 		else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, 10);

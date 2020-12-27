@@ -28,6 +28,7 @@ public:
 	SnowMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz);
 	~SnowMatrixLedEffect();
 
+	void init() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }

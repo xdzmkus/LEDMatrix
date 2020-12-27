@@ -56,13 +56,13 @@ public:
 	bool setEffectByName(const char* effectName)
 	{
 		if (strcmp(BugsLedEffect::name, effectName) == 0) {
-			delete effect; effect = new BugsLedEffect(leds, numLeds, 20, 50);
+			delete effect; effect = new BugsLedEffect(leds, numLeds, 20, random8(35, 60));
 		}
 		else if (strcmp(SparklesLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SparklesLedEffect(leds, numLeds, 10);
 		}
 		else if (strcmp(ThreeColorLedEffect::name, effectName) == 0) {
-			delete effect; effect = new ThreeColorLedEffect(leds, numLeds, 30, { CRGB::White, 4, CRGB::Red, 3, CRGB::White, 4 }, 1, 2);
+			delete effect; effect = new ThreeColorLedEffect(leds, numLeds, 30, { CRGB::White, 4, CRGB::Red, 3, CRGB::White, 4 });
 		}
 		else if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new BouncingBallsMatrixLedEffect(&matrix, leds, numLeds, 10, 3);

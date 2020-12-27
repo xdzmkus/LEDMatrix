@@ -10,14 +10,14 @@ const char* const NoiseMatrixLedEffect::name = "NOISE";
 NoiseMatrixLedEffect::NoiseMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, const CRGBPalette16& palette, uint8_t zoom)
 	: LedEffect(leds, count, Hz), converter(converter), currentPalette(palette), dataSmoothing((Hz < 50) ? (200 - Hz * 4) : 0), scale(zoom)
 {
-	init();
-
 	noise = new uint8_t*[converter->getWidth()];
 
 	for (uint8_t x = 0; x < converter->getWidth(); x++)
 	{
 		noise[x] = new uint8_t[converter->getHeight()];
 	}
+
+    init();
 }
 
 NoiseMatrixLedEffect::~NoiseMatrixLedEffect()
@@ -38,7 +38,7 @@ void NoiseMatrixLedEffect::init()
     nZ = random16();
     ihue = 0;
 
-    LedEffect::init();
+    clearAllLeds();
 }
 
 bool NoiseMatrixLedEffect::paint()

@@ -28,18 +28,18 @@ protected:
 	{
 		struct BOUNCING_BALL
 		{
-			CRGB  color;
-			int   position;
-			float height;
-			float velocity;
-			byte  dampingPercentage;
-			long  startTime;
+			CRGB	color;
+			uint8_t position;
+			float	height;
+			float	velocity;
+			uint8_t dampingPercentage;
+			unsigned long startTime;
 		}
-		*balls;
+		*balls = nullptr;
 
-		uint8_t	numBalls;
+		uint8_t numBalls;
 	}
-	*bouncingColumns;
+	*bouncingColumns = nullptr;
 
 public:
 	BouncingBallsMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t maxBallsCount = 1);
@@ -53,7 +53,6 @@ public:
 private:
 	BouncingBallsMatrixLedEffect(const BouncingBallsMatrixLedEffect&) = delete;
 	BouncingBallsMatrixLedEffect& operator=(const BouncingBallsMatrixLedEffect&) = delete;
-
 };
 
 #endif

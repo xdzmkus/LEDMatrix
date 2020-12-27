@@ -19,6 +19,11 @@ StarfallMatrixLedEffect::~StarfallMatrixLedEffect()
 {
 }
 
+void StarfallMatrixLedEffect::init()
+{
+	clearAllLeds();
+}
+
 bool StarfallMatrixLedEffect::paint()
 {
 	if (!isReady())

@@ -21,17 +21,16 @@ protected:
 
 public:
 
-	LEDMatrix(LedEffect* effects[], uint8_t numEffects)
-		: effects(effects), numEffects(numEffects)
+	LEDMatrix(LedEffect* effects[], uint8_t numEffects)	: effects(effects), numEffects(numEffects)
 	{
-	};
+	}
 
 	virtual ~LEDMatrix()
 	{
-	};
+	}
 
-	virtual void pause() { isOn = false; };
-	virtual void resume() { isOn = true; };
+	virtual void pause() { isOn = false; }
+	virtual void resume() { isOn = true; }
 
 	virtual bool isChanged()
 	{
@@ -47,7 +46,6 @@ public:
 
 		return isChanged;
 	}
-	;
 };
 
 #endif

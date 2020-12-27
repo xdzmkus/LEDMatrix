@@ -26,6 +26,7 @@ public:
 	SinusMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz);
 	~SinusMatrixLedEffect();
 
+	void init() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }

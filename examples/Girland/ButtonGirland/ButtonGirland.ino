@@ -1,10 +1,11 @@
 #if defined(ESP32) || defined(ESP8266)
 #define LED_PIN D3  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
-#define BTN_PIN D6  // D6 button pin
+#define BTN_PIN D0  // D6 button pin
 #else
 #define LED_PIN 9   // leds pin
 #define BTN_PIN 10  // button pin
 #endif
+#define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 #include <Denel_Button.h>
 Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
@@ -69,6 +70,8 @@ void setupLED()
 
 void setup()
 {
+	randomSeed(analogRead(UNPINNED_ANALOG_PIN));
+
 	Serial.begin(115200);
 
 	Serial.println(F("LEDMatrix EFFECTS:"));
@@ -124,7 +127,8 @@ void load()
 
 	EFFECT_NAME[EEPROM_EFFECT_LENGTH] = '\0';
 
-	ledMatrix.setEffectByName(EFFECT_NAME);
+	Serial.print(F("LOADING: ")); Serial.println(EFFECT_NAME);
 
-	Serial.print(F("LOADED: ")); Serial.println(EFFECT_NAME);
+	if (!ledMatrix.setEffectByName(EFFECT_NAME))
+		ledMatrix.setNextEffect();
 }

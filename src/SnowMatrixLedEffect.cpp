@@ -17,6 +17,11 @@ SnowMatrixLedEffect::~SnowMatrixLedEffect()
 {
 }
 
+void SnowMatrixLedEffect::init()
+{
+	clearAllLeds();
+}
+
 bool SnowMatrixLedEffect::paint()
 {
 	if (!isReady())
@@ -77,3 +82,4 @@ bool SnowMatrixLedEffect::paint()
 
 	return true;
 }
+

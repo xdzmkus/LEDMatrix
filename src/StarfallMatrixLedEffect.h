@@ -27,6 +27,7 @@ public:
 	StarfallMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, CRGB color = CRGB::Black);
 	~StarfallMatrixLedEffect();
 
+	void init() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }

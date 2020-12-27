@@ -17,29 +17,35 @@ GravityMatrixLedEffect::GravityMatrixLedEffect(const IMatrixConverter* converter
 
 GravityMatrixLedEffect::~GravityMatrixLedEffect()
 {
-	delete[] gravities;
+	if (gravities != nullptr)
+	{
+		delete[] gravities;
+	}
 }
 
 void GravityMatrixLedEffect::init()
 {
-	LedEffect::init();
-
-	uint8_t max = converter->getHeight() - 1;
-	uint8_t phase = random(0, converter->getHeight());
-
-	for (uint8_t x = 0; x < converter->getWidth(); x++, phase++)
+	if (gravities != nullptr)
 	{
-		gravities[x].color = getRandomColor();
-		gravities[x].startTime = getClock();
-		gravities[x].height = 1;
-		gravities[x].position = 0;
-		gravities[x].velocity = sqrt(2 * Gravity * ((phase / max) % 2 == 0 ? (phase % max + 1) : (max - 1 - (phase % max))));
+		uint8_t max = converter->getHeight() - 1;
+		uint8_t phase = random8(0, converter->getHeight());
+
+		for (uint8_t x = 0; x < converter->getWidth(); x++, phase++)
+		{
+			gravities[x].color = getRandomColor();
+			gravities[x].startTime = getClock();
+			gravities[x].height = 1;
+			gravities[x].position = 0;
+			gravities[x].velocity = sqrt(2 * Gravity * ((phase / max) % 2 == 0 ? (phase % max + 1) : (max - 1 - (phase % max))));
+		}
 	}
+
+	clearAllLeds();
 }
 
 bool GravityMatrixLedEffect::paint()
 {
-	if (!isReady())
+	if (!isReady() || gravities == nullptr)
 		return false;
 
 	bool allGround = true;

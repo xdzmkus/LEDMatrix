@@ -17,12 +17,17 @@ SinusMatrixLedEffect::~SinusMatrixLedEffect()
 {
 }
 
+void SinusMatrixLedEffect::init()
+{
+    clearAllLeds();
+}
+
 bool SinusMatrixLedEffect::paint()
 {
 	if (!isReady())
 		return false;
 
-    fillAllLeds(CRGB::Black);
+    clearAllLeds();
 
     hue++;
 

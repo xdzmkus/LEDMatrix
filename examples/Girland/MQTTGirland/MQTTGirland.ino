@@ -22,6 +22,7 @@
 #endif
 
 #define LED_PIN D3    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
+#define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
@@ -117,6 +118,8 @@ void publishState()
 
 void setup()
 {
+    randomSeed(analogRead(UNPINNED_ANALOG_PIN));
+
     pinMode(LED_BUILTIN, OUTPUT);       // Initialize the BUILTIN_LED pin as an output
 
     Serial.begin(115200);

@@ -23,13 +23,13 @@ private:
 
 	struct GRAVITY
 	{
-		CRGB  color;
-		int   position;
-		float height;
-		float velocity;
-		long  startTime;
+		CRGB	color;
+		uint8_t	position;
+		float	height;
+		float	velocity;
+		unsigned long startTime;
 	}
-	*gravities;
+	*gravities = nullptr;
 
 public:
 

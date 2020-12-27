@@ -6,6 +6,8 @@
 #define BTN_PIN 10  // button pin
 #endif
 
+#define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+
 #define TOUCH_BUTTON
 #include <GyverButton.h>
 #if defined(TOUCH_BUTTON)
@@ -14,7 +16,7 @@ GButton touch(BTN_PIN, LOW_PULL, NORM_OPEN);
 GButton touch(BTN_PIN, HIGH_PULL, NORM_OPEN);
 #endif
 
-#define CURRENT_LIMIT 16000
+#define CURRENT_LIMIT 8000
 
 #define MATRIX_H 8
 #define MATRIX_W1 10
@@ -50,7 +52,7 @@ uint16_t brightness = MIN_BRIGHTNESS;
 
 void setup()
 {
-	randomSeed(analogRead(0));
+	randomSeed(analogRead(UNPINNED_ANALOG_PIN));
 
 	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);

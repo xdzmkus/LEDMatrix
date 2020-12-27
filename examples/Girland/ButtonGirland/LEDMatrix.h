@@ -6,26 +6,28 @@
 #include <FastLED.h>
 #include <LedEffect.h>
 #include "BottomLeftCorner.h"
-#include "StarfallMatrixLedEffect.h"
+#include "BouncingBallsMatrixLedEffect.h"
 #include "FireMatrixLedEffect.h"
 #include "GravityMatrixLedEffect.h"
 #include "NoiseMatrixLedEffect.h"
-#include "BouncingBallsMatrixLedEffect.h"
 #include "SinusMatrixLedEffect.h"
+#include "SnowMatrixLedEffect.h"
+#include "StarfallMatrixLedEffect.h"
 
 class LEDMatrix
 {
 public:
 
-	static const uint8_t NUM_EFFECTS = 6;
+	static const uint8_t NUM_EFFECTS = 7;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
-		StarfallMatrixLedEffect::name,
+		BouncingBallsMatrixLedEffect::name,
 		FireMatrixLedEffect::name,
 		GravityMatrixLedEffect::name,
 		NoiseMatrixLedEffect::name,
-		BouncingBallsMatrixLedEffect::name,
-		SinusMatrixLedEffect::name
+		SinusMatrixLedEffect::name,
+		SnowMatrixLedEffect::name,
+		StarfallMatrixLedEffect::name
 	};
 
 	LEDMatrix(CRGB leds[], uint16_t count) : leds(leds), numLeds(count), isOn(false)
@@ -39,23 +41,26 @@ public:
 
 	bool setEffectByName(const char* effectName)
 	{
-		if (strcmp(StarfallMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new StarfallMatrixLedEffect(&matrix, leds, numLeds, 10);
+		if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new BouncingBallsMatrixLedEffect(&matrix, leds, numLeds, 10, 3);
 		}
 		else if (strcmp(FireMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FireMatrixLedEffect(&matrix, leds, numLeds, 10);
 		}
 		else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, 1000);
+			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, 10);
 		}
 		else if (strcmp(NoiseMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new NoiseMatrixLedEffect(&matrix, leds, numLeds, 10, PartyColors_p);
-		}
-		else if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new BouncingBallsMatrixLedEffect(&matrix, leds, numLeds, 10, 3);
+			delete effect; effect = new NoiseMatrixLedEffect(&matrix, leds, numLeds, 10, wrwPalette);
 		}
 		else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new SinusMatrixLedEffect(&matrix, leds, numLeds, 30);
+			delete effect; effect = new SinusMatrixLedEffect(&matrix, leds, numLeds, random(10, 50));
+		}
+		else if (strcmp(SnowMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new SnowMatrixLedEffect(&matrix, leds, numLeds, 2);
+		}
+		else if (strcmp(StarfallMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new StarfallMatrixLedEffect(&matrix, leds, numLeds, 10);
 		}
 		else {
 			return false;
@@ -114,7 +119,14 @@ protected:
 	LedEffect* effect = nullptr;
 	BottomLeftCorner<MATRIX_W, MATRIX_H> matrix;
 	bool isOn;
-};
 
+	const CRGBPalette16 wrwPalette =
+		CRGBPalette16(
+			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red);
+
+};
 
 #endif

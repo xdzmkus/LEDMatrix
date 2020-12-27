@@ -19,7 +19,7 @@ private:
 
 	const IMatrixConverter* converter;
 
-	uint8_t** noise;
+	uint8_t** noise = nullptr;
 
 	const CRGBPalette16 currentPalette;
 

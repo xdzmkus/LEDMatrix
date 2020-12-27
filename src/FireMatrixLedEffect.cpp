@@ -39,6 +39,11 @@ FireMatrixLedEffect::FireMatrixLedEffect(const IMatrixConverter* converter, CRGB
 	init();
 }
 
+void FireMatrixLedEffect::init()
+{
+	clearAllLeds();
+}
+
 FireMatrixLedEffect::~FireMatrixLedEffect()
 {
 }

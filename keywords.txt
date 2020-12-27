@@ -12,6 +12,8 @@ BouncingBallsMatrixLedEffect   KEYWORD1
 FireMatrixLedEffect            KEYWORD1
 GravityMatrixLedEffect         KEYWORD1
 NoiseMatrixLedEffect           KEYWORD1
+SinusMatrixLedEffect		   KEYWORD1
+SnowMatrixLedEffect			   KEYWORD1
 StarfallMatrixLedEffect        KEYWORD1
 
 #######################################

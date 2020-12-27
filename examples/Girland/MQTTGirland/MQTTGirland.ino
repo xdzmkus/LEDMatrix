@@ -2,22 +2,22 @@
 #include "my_data_sensitive.h"
 #else
 
-#define WLAN_SSID		    "your wifi name"
-#define WLAN_PASS		    "and password"
-#define WLAN_HOSTNAME	    "connect with hostname"
+#define WLAN_SSID           "your wifi name"
+#define WLAN_PASS           "and password"
+#define WLAN_HOSTNAME       "connect with hostname"
 
-#define MQTT_SERVER		    "127.0.0.1"
-#define MQTT_SERVERPORT	    1883
-#define MQTT_USERNAME	    "your mqtt username"
-#define MQTT_KEY		    "and password"
+#define MQTT_SERVER         "127.0.0.1"
+#define MQTT_SERVERPORT     1883
+#define MQTT_USERNAME       "your mqtt username"
+#define MQTT_KEY            "and password"
 
 #define MQTT_TOPIC_PUB      MQTT_USERNAME"/current/state"
 #define MQTT_TOPIC_SUB1     MQTT_USERNAME"/new/effect"
 #define MQTT_TOPIC_SUB2     MQTT_USERNAME"/new/onoff"
 
-#define ON_CODE		        6735
-#define OFF_CODE	        2344
-#define PAUSE_CODE	        2747
+#define ON_CODE             6735
+#define OFF_CODE            2344
+#define PAUSE_CODE          2747
 
 #endif
 

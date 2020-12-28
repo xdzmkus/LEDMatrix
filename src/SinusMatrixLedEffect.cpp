@@ -7,7 +7,7 @@
 
 const char* const SinusMatrixLedEffect::name = "SINUS";
 
-SinusMatrixLedEffect::SinusMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
+SinusMatrixLedEffect::SinusMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
 	: LedEffect(leds, count, Hz), converter(converter), hue(0)
 {
 	init();

@@ -42,7 +42,7 @@ CRGB leds[NUM_LEDS];
 LEDMatrix ledMatrix(leds, NUM_LEDS);
 
 #include <Ticker.h>
-#define EFFECT_DURATION_SEC 45
+#define EFFECT_DURATION_SEC 30
 Ticker tickerEffects;
 volatile boolean f_publishState = true;
 

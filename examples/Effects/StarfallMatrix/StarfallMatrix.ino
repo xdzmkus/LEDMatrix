@@ -13,10 +13,10 @@
 
 CRGB leds[NUM_LEDS];
 
-#include "BottomLeftCorner.h"
+#include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "StarfallMatrixLedEffect.h"
 
-BottomLeftCorner<MATRIX_W, MATRIX_H> matrix;
+ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
 StarfallMatrixLedEffect* effect;
 
 void setupLED()

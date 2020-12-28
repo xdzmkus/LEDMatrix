@@ -6,12 +6,15 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-IMatrixConverter               KEYWORD1
-BottomLeftCorner               KEYWORD1
+IMatrixToLineConverter           KEYWORD1
+ZigZagFromBottomRightToUpAndLeft KEYWORD1
+ZigZagFromBottomLeftToUpAndRight KEYWORD1
+
 BouncingBallsMatrixLedEffect   KEYWORD1
 FireMatrixLedEffect            KEYWORD1
 GravityMatrixLedEffect         KEYWORD1
 NoiseMatrixLedEffect           KEYWORD1
+RunningStringMatrixLedEffect   KEYWORD1
 SinusMatrixLedEffect		   KEYWORD1
 SnowMatrixLedEffect			   KEYWORD1
 StarfallMatrixLedEffect        KEYWORD1
@@ -25,7 +28,6 @@ paint                          KEYWORD2
 start                          KEYWORD2
 stop                           KEYWORD2
 isReady                        KEYWORD2
-
 
 #######################################
 # Constants (LITERAL1)

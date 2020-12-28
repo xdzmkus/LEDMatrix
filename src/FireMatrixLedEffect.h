@@ -6,17 +6,11 @@
 #ifndef __FIREMATRIXLEDEFFECT_H__
 #define __FIREMATRIXLEDEFFECT_H__
 
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
-
 #define MATRIX_HEIGHT 8
 #define MATRIX_WIDTH 9
 
 #include <LedEffect.h>
-#include "IMatrixConverter.h"
+#include "IMatrixToLineConverter.h"
 
 class FireMatrixLedEffect : public LedEffect
 {
@@ -30,7 +24,7 @@ public:
 
 private:
 
-	const IMatrixConverter* converter;
+	const IMatrixToLineConverter* converter;
 
 protected:
 
@@ -41,7 +35,7 @@ protected:
 
 public:
 
-	FireMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz);
+	FireMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz);
 	~FireMatrixLedEffect();
 
 	void init() override;

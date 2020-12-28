@@ -7,7 +7,7 @@
 #define __NOISEMATRIXLEDEFFECT_H__
 
 #include <LedEffect.h>
-#include "IMatrixConverter.h"
+#include "IMatrixToLineConverter.h"
 
 class NoiseMatrixLedEffect : public LedEffect
 {
@@ -17,7 +17,7 @@ public:
 
 private:
 
-	const IMatrixConverter* converter;
+	const IMatrixToLineConverter* converter;
 
 	uint8_t** noise = nullptr;
 
@@ -46,7 +46,7 @@ private:
 
 public:
 
-	NoiseMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, const CRGBPalette16 &palette, uint8_t zoom = 30);
+	NoiseMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, const CRGBPalette16 &palette, uint8_t zoom = 30);
 	~NoiseMatrixLedEffect();
 
 	void init() override;

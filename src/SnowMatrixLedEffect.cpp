@@ -7,8 +7,8 @@
 
 const char* const SnowMatrixLedEffect::name = "SNOW";
 
-SnowMatrixLedEffect::SnowMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
-	: LedEffect(leds, count, Hz), converter(converter), snowflakeCount(count/10), fade(255/converter->getHeight())
+SnowMatrixLedEffect::SnowMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
+	: LedEffect(leds, count, Hz), converter(converter), snowflakeCount(count/10), fade(70)
 {
 	init();
 }
@@ -73,7 +73,7 @@ bool SnowMatrixLedEffect::paint()
 	while (restSnowflakes < snowflakeCount)
 	{
 		uint8_t x = random(0, converter->getWidth());
-		uint8_t y = random(converter->getHeight()/2, converter->getHeight());
+		uint8_t y = random(1, converter->getHeight());
 
 		ledLine[converter->getPixelNumber(x, y)] = CRGB::White;
 

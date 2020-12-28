@@ -5,11 +5,12 @@
 
 #include <FastLED.h>
 #include <LedEffect.h>
-#include "BottomLeftCorner.h"
+#include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "BouncingBallsMatrixLedEffect.h"
 #include "FireMatrixLedEffect.h"
 #include "GravityMatrixLedEffect.h"
 #include "NoiseMatrixLedEffect.h"
+#include "RunningStringMatrixLedEffect.h"
 #include "SinusMatrixLedEffect.h"
 #include "SnowMatrixLedEffect.h"
 #include "StarfallMatrixLedEffect.h"
@@ -18,13 +19,14 @@ class LEDMatrix
 {
 public:
 
-	static const uint8_t NUM_EFFECTS = 7;
+	static const uint8_t NUM_EFFECTS = 8;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
 		BouncingBallsMatrixLedEffect::name,
 		FireMatrixLedEffect::name,
 		GravityMatrixLedEffect::name,
 		NoiseMatrixLedEffect::name,
+		RunningStringMatrixLedEffect::name,
 		SinusMatrixLedEffect::name,
 		SnowMatrixLedEffect::name,
 		StarfallMatrixLedEffect::name
@@ -52,6 +54,9 @@ public:
 		}
 		else if (strcmp(NoiseMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new NoiseMatrixLedEffect(&matrix, leds, numLeds, 10, wrwPalette);
+		}
+		else if (strcmp(RunningStringMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new RunningStringMatrixLedEffect(&matrix, leds, numLeds, random(5, 30), RunningStringMatrixLedEffect::name);
 		}
 		else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SinusMatrixLedEffect(&matrix, leds, numLeds, random(10, 50));
@@ -117,7 +122,7 @@ protected:
 	const uint16_t numLeds;
 
 	LedEffect* effect = nullptr;
-	BottomLeftCorner<MATRIX_W, MATRIX_H> matrix;
+	ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
 	bool isOn;
 
 	const CRGBPalette16 wrwPalette =

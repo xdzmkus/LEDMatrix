@@ -14,10 +14,10 @@
 CRGB leds[NUM_LEDS];
 
 #include "ZigZagFromBottomRightToUpAndLeft.h"
-#include "FireMatrixLedEffect.h"
+#include "RunningStringMatrixLedEffect.h"
 
 ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
-FireMatrixLedEffect* effect;
+RunningStringMatrixLedEffect* effect;
 
 void setupLED()
 {
@@ -31,11 +31,11 @@ void setup()
 {
 	Serial.begin(115200);
 
-	Serial.println(F("FireMatrix effect"));
+	Serial.println(F("Running String effect"));
 
 	setupLED();
 
-	effect = new FireMatrixLedEffect(&matrix, leds, NUM_LEDS, 10);
+	effect = new RunningStringMatrixLedEffect(&matrix, leds, NUM_LEDS, 10, RunningStringMatrixLedEffect::name);
 }
 
 

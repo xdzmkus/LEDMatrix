@@ -9,7 +9,7 @@
 #include <SparklesLedEffect.h>
 #include <ThreeColorLedEffect.h>
 
-#include "BottomLeftCorner.h"
+#include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "BouncingBallsMatrixLedEffect.h"
 #include "FireMatrixLedEffect.h"
 #include "GravityMatrixLedEffect.h"
@@ -159,16 +159,18 @@ protected:
 	const uint16_t numLeds;
 
 	LedEffect* effect = nullptr;
-	BottomLeftCorner<MATRIX_W, MATRIX_H> matrix;
+	ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
 	bool isOn;
 
 	uint8_t currentEffectIdx;
 
-	const CRGBPalette16 wrwPalette = CRGBPalette16(
-		CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
-		CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
-		CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
-		CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red);
+	const CRGBPalette16 wrwPalette =
+		CRGBPalette16(
+			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red
+		);
 };
 
 

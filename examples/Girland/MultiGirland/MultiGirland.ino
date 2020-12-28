@@ -28,23 +28,16 @@ GButton touch(BTN_PIN, HIGH_PULL, NORM_OPEN);
 #define MAX_BRIGHTNESS 300
 #define MIN_BRIGHTNESS 30
 
-#define EEPROM_ADDRESS_EFFECT 0
-
 #include <FastLED.h>
 
 #include "LEDMatrix.h"
 #include "StarfallMatrixLedEffect.h"
-#include "BottomLeftCorner.h"
+#include "ZigZagFromBottomRightToUpAndLeft.h"
 
 CRGB leds[NUM_LEDS];
 
 #define NUM_EFFECTS 3
-LedEffect* effects[NUM_EFFECTS] =
-{
-	new StarfallMatrixLedEffect(new BottomLeftCorner<MATRIX_W1, MATRIX_H>, leds, (MATRIX_W1 * MATRIX_H), 10, CRGB::White),
-	new StarfallMatrixLedEffect(new BottomLeftCorner<MATRIX_W2, MATRIX_H>, leds+(MATRIX_W1 * MATRIX_H), (MATRIX_W2 * MATRIX_H), 12, 0xFF2400),
-	new StarfallMatrixLedEffect(new BottomLeftCorner<MATRIX_W3, MATRIX_H>, leds+(MATRIX_W1 * MATRIX_H)+(MATRIX_W2 * MATRIX_H), (MATRIX_W3 * MATRIX_H), 10, CRGB::White)
-};
+LedEffect* effects[NUM_EFFECTS];
 
 LEDMatrix ledMatrix(effects, NUM_EFFECTS);
 
@@ -58,6 +51,10 @@ void setup()
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
 	FastLED.setBrightness(brightness);
 	FastLED.clear(true);
+
+	effects[0] = new StarfallMatrixLedEffect(new ZigZagFromBottomRightToUpAndLeft<MATRIX_W1, MATRIX_H>, leds, (MATRIX_W1 * MATRIX_H), 10, CRGB::White);
+	effects[1] = new StarfallMatrixLedEffect(new ZigZagFromBottomRightToUpAndLeft<MATRIX_W2, MATRIX_H>, leds + (MATRIX_W1 * MATRIX_H), (MATRIX_W2 * MATRIX_H), 12, 0xFF2400);
+	effects[2] = new StarfallMatrixLedEffect(new ZigZagFromBottomRightToUpAndLeft<MATRIX_W3, MATRIX_H>, leds + (MATRIX_W1 * MATRIX_H) + (MATRIX_W2 * MATRIX_H), (MATRIX_W3 * MATRIX_H), 10, CRGB::White);
 
 	ledMatrix.resume();
 

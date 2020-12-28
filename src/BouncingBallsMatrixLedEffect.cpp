@@ -7,7 +7,7 @@
 
 const char* const BouncingBallsMatrixLedEffect::name = "BOUNSINGBALLS";
 
-BouncingBallsMatrixLedEffect::BouncingBallsMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t maxBallsCount)
+BouncingBallsMatrixLedEffect::BouncingBallsMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t maxBallsCount)
 	: LedEffect(leds, count, Hz), converter(converter), MaxVelocity(sqrt(2 * Gravity * (converter->getHeight() - 1)))
 {
 	bouncingColumns = new BOUNCING_COLUMN[converter->getWidth()];

@@ -13,10 +13,10 @@
 
 CRGB leds[NUM_LEDS];
 
-#include "BottomLeftCorner.h"
+#include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "SinusMatrixLedEffect.h"
 
-BottomLeftCorner<MATRIX_W, MATRIX_H> matrix;
+ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
 SinusMatrixLedEffect* effect;
 
 void setupLED()

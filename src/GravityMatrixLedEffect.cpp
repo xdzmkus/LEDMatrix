@@ -7,7 +7,7 @@
 
 const char* const GravityMatrixLedEffect::name = "GRAVITY";
 
-GravityMatrixLedEffect::GravityMatrixLedEffect(const IMatrixConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
+GravityMatrixLedEffect::GravityMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
 	: LedEffect(leds, count, Hz), converter(converter)
 {
 	gravities = new GRAVITY[converter->getWidth()];

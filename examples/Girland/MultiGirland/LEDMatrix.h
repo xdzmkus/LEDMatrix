@@ -1,12 +1,5 @@
-
 #ifndef _LEDMATRIX_h
 #define _LEDMATRIX_h
-
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
 
 #include <FastLED.h>
 #include "LedEffect.h"

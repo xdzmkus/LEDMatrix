@@ -12,6 +12,8 @@ GravityMatrixLedEffect::GravityMatrixLedEffect(const IMatrixToLineConverter* con
 {
 	gravities = new GRAVITY[converter->getWidth()];
 
+	clearAllLeds();
+
 	init();
 }
 
@@ -28,19 +30,17 @@ void GravityMatrixLedEffect::init()
 	if (gravities != nullptr)
 	{
 		uint8_t max = converter->getHeight() - 1;
-		uint8_t phase = random8(0, converter->getHeight());
 
-		for (uint8_t x = 0; x < converter->getWidth(); x++, phase++)
+		for (uint8_t x = 0; x < converter->getWidth(); x++)
 		{
-			gravities[x].color = getRandomColor();
+			gravities[x].color = ColorFromPalette(RainbowColors_p, x * 7 + hue, 255);
 			gravities[x].startTime = getClock();
 			gravities[x].height = 1;
 			gravities[x].position = 0;
-			gravities[x].velocity = sqrt(2 * Gravity * ((phase / max) % 2 == 0 ? (phase % max + 1) : (max - 1 - (phase % max))));
+			gravities[x].velocity = sqrt(2 * Gravity * map8(sin8(x*speed + hue), 0, max));
 		}
 	}
-
-	clearAllLeds();
+	hue += speed;
 }
 
 bool GravityMatrixLedEffect::paint()

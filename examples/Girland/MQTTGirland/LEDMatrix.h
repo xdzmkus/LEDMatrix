@@ -28,6 +28,7 @@ public:
 	{
 		SparklesLedEffect::name,
 		ThreeColorLedEffect::name,
+		RunningStringMatrixLedEffect::name,
 		BugsMatrixLedEffect::name,
 		"LAVA",
 		BouncingBallsMatrixLedEffect::name,
@@ -41,8 +42,7 @@ public:
 		SinusMatrixLedEffect::name,
 		"PARTY",
 		GravityMatrixLedEffect::name,
-		"WRW",
-		RunningStringMatrixLedEffect::name
+		"WRW"
 	};
 
 	LEDMatrix(CRGB leds[], uint16_t count) : leds(leds), numLeds(count), isOn(false), currentEffectIdx(0)
@@ -75,7 +75,19 @@ public:
 			delete effect; effect = new FireMatrixLedEffect(&matrix, leds, numLeds, 10);
 		}
 		else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, 10);
+			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, random8(5, 30));
+		}
+		else if (strcmp(RunningStringMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new RunningStringMatrixLedEffect(&matrix, leds, numLeds, random(5, 30), text);
+		}
+		else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new SinusMatrixLedEffect(&matrix, leds, numLeds, random(10, 50));
+		}
+		else if (strcmp(SnowMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new SnowMatrixLedEffect(&matrix, leds, numLeds, 2);
+		}
+		else if (strcmp(StarfallMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new StarfallMatrixLedEffect(&matrix, leds, numLeds, 10);
 		}
 		else if (strcmp("PARTY", effectName) == 0) {
 			delete effect; effect = new NoiseMatrixLedEffect(&matrix, leds, numLeds, random(10, 50), PartyColors_p, random(5, 60));
@@ -98,18 +110,6 @@ public:
 		else if (strcmp("WRW", effectName) == 0) {
 			delete effect; effect = new NoiseMatrixLedEffect(&matrix, leds, numLeds, random(10, 30), wrwPalette, random(5, 50));
 		}
-		else if (strcmp(RunningStringMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new RunningStringMatrixLedEffect(&matrix, leds, numLeds, random(5, 30), text);
-		}
-		else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new SinusMatrixLedEffect(&matrix, leds, numLeds, random(10, 50));
-		}
-		else if (strcmp(SnowMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new SnowMatrixLedEffect(&matrix, leds, numLeds, 2);
-		}
-		else if (strcmp(StarfallMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new StarfallMatrixLedEffect(&matrix, leds, numLeds, 10);
-		}
 		else {
 			return false;
 		}
@@ -126,12 +126,20 @@ public:
 
 		isOn = true;
 		return true;
-
 	};
 
-	bool setNextEffect()
+	bool setEffectByIdx(int8_t idx = -1)
 	{
-		if (++currentEffectIdx > NUM_EFFECTS - 1)
+		if (idx < 0)
+		{
+			currentEffectIdx++;
+		}
+		else
+		{
+			currentEffectIdx = idx;
+		}
+
+		if (currentEffectIdx >= NUM_EFFECTS)
 			currentEffectIdx = 0;
 
 		return setEffectByName(availableEffects[currentEffectIdx]);

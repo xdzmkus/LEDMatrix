@@ -7,6 +7,7 @@
 #include <LedEffect.h>
 #include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "BouncingBallsMatrixLedEffect.h"
+#include "BugsMatrixLedEffect.h"
 #include "FireMatrixLedEffect.h"
 #include "GravityMatrixLedEffect.h"
 #include "NoiseMatrixLedEffect.h"
@@ -19,10 +20,11 @@ class LEDMatrix
 {
 public:
 
-	static const uint8_t NUM_EFFECTS = 8;
+	static const uint8_t NUM_EFFECTS = 9;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
 		BouncingBallsMatrixLedEffect::name,
+		BugsMatrixLedEffect::name,
 		FireMatrixLedEffect::name,
 		GravityMatrixLedEffect::name,
 		NoiseMatrixLedEffect::name,
@@ -46,11 +48,14 @@ public:
 		if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new BouncingBallsMatrixLedEffect(&matrix, leds, numLeds, 10, 3);
 		}
+		else if (strcmp(BugsMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new BugsMatrixLedEffect(&matrix, leds, numLeds, 20, random8(25, 50));
+		}
 		else if (strcmp(FireMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FireMatrixLedEffect(&matrix, leds, numLeds, 10);
 		}
 		else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, 10);
+			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, random8(5, 30));
 		}
 		else if (strcmp(NoiseMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new NoiseMatrixLedEffect(&matrix, leds, numLeds, 10, wrwPalette);

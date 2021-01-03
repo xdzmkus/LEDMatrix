@@ -21,6 +21,8 @@ private:
 
 	const float Gravity = 9.8;
 
+	uint8_t hue = 0;
+
 	struct GRAVITY
 	{
 		CRGB	color;

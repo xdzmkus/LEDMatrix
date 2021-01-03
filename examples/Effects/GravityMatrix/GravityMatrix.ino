@@ -35,7 +35,7 @@ void setup()
 
 	setupLED();
 
-	effect = new GravityMatrixLedEffect(&matrix, leds, NUM_LEDS, 30);
+	effect = new GravityMatrixLedEffect(&matrix, leds, NUM_LEDS, random8(5,30));
 }
 
 

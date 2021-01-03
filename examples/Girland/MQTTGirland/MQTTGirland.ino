@@ -11,14 +11,15 @@
 #define MQTT_USERNAME       "your mqtt username"
 #define MQTT_KEY            "and password"
 
-#define MQTT_TOPIC_PUB      MQTT_USERNAME"/current/state"
-#define MQTT_TOPIC_SUB1     MQTT_USERNAME"/new/effect"
-#define MQTT_TOPIC_SUB2     MQTT_USERNAME"/new/onoff"
-#define MQTT_TOPIC_SUB3     MQTT_USERNAME"/new/runningString"
+#define MQTT_TOPIC_PUB      MQTT_USERNAME"/get/state"
+#define MQTT_TOPIC_SUB1     MQTT_USERNAME"/set/effect"
+#define MQTT_TOPIC_SUB2     MQTT_USERNAME"/set/action"
+#define MQTT_TOPIC_SUB3     MQTT_USERNAME"/set/runningString"
 
-#define ON_CODE             6735
 #define OFF_CODE            2344
+#define NEXT_CODE           7467
 #define PAUSE_CODE          2747
+#define RESUME_CODE         6735
 
 #endif
 
@@ -63,21 +64,28 @@ Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT, MQTT_USERNAME, 
 //Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT);
 
 Adafruit_MQTT_Publish girlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB);
+
 Adafruit_MQTT_Subscribe girlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
-Adafruit_MQTT_Subscribe girlandOnOff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
+Adafruit_MQTT_Subscribe girlandAction = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 Adafruit_MQTT_Subscribe girlandRunningString = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB3, MQTT_QOS_1);
 
 /********************************************/
 
 void handleTimer()
 {
-    if (ledMatrix.isRunning()) ledMatrix.setNextEffect();
     f_publishState = true;
+    
+    if (ledMatrix.isRunning())
+    {
+        ledMatrix.setEffectByIdx();
+    }
 }
 
-void onoff_callback(uint32_t x)
+void newAction_callback(uint32_t x)
 {
-    Serial.print(F("on/off with code: "));
+    f_publishState = true;
+
+    Serial.print(F("action with code: "));
     Serial.println(x);
 
     switch (x)
@@ -86,24 +94,33 @@ void onoff_callback(uint32_t x)
         FastLED.clear(true);
         ledMatrix.pause();
         break;
+    case NEXT_CODE:
+        tickerEffects.detach();
+        ledMatrix.setEffectByIdx();
+        tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
+        break;
     case PAUSE_CODE:
         ledMatrix.pause();
         break;
-    case ON_CODE:
+    case RESUME_CODE:
         ledMatrix.resume();
         break;
     default:
-        f_publishState = true;
         break;
     }
 }
 
 void newEffect_callback(char* data, uint16_t len)
 {
+    f_publishState = true;
+
     Serial.print(F("new effect requested: "));
     Serial.println(data);
 
-    ledMatrix.setEffectByName(data);
+    if (ledMatrix.setEffectByName(data))
+    {
+        tickerEffects.detach();
+    }
 }
 
 void newRunningString_callback(char* data, uint16_t len)
@@ -130,7 +147,7 @@ void setup()
 {
     randomSeed(analogRead(UNPINNED_ANALOG_PIN));
 
-    pinMode(LED_BUILTIN, OUTPUT);       // Initialize the BUILTIN_LED pin as an output
+    pinMode(LED_BUILTIN, OUTPUT);       // Initialize the LED_BUILTIN pin as an output
 
     Serial.begin(115200);
 
@@ -139,12 +156,6 @@ void setup()
     setup_WiFi();
 
     setup_MQTT();
-
-    tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
-
-    ledMatrix.resume();
-
-    ledMatrix.setNextEffect();
 }
 
 void setup_WiFi()
@@ -176,8 +187,8 @@ void setup_MQTT()
     girlandEffect.setCallback(newEffect_callback);
     mqtt.subscribe(&girlandEffect);
 
-    girlandOnOff.setCallback(onoff_callback);
-    mqtt.subscribe(&girlandOnOff);
+    girlandAction.setCallback(newAction_callback);
+    mqtt.subscribe(&girlandAction);
 
     girlandRunningString.setCallback(newRunningString_callback);
     mqtt.subscribe(&girlandRunningString);
@@ -189,6 +200,10 @@ void setup_LED()
     FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
     FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
     FastLED.clear(true);
+
+    ledMatrix.setEffectByIdx(0);
+
+    tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
 }
 
 // Function to connect and reconnect as necessary to the MQTT server.

@@ -14,6 +14,7 @@
 #include "FireMatrixLedEffect.h"
 #include "GravityMatrixLedEffect.h"
 #include "NoiseMatrixLedEffect.h"
+#include "RunningStringMatrixLedEffect.h"
 #include "SinusMatrixLedEffect.h"
 #include "SnowMatrixLedEffect.h"
 #include "StarfallMatrixLedEffect.h"
@@ -25,6 +26,9 @@ public:
 	static const uint8_t NUM_EFFECTS = 14;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
+//		SparklesLedEffect::name,
+//		ThreeColorLedEffect::name,
+//		RunningStringMatrixLedEffect::name,
 		BugsMatrixLedEffect::name,
 		"LAVA",
 		BouncingBallsMatrixLedEffect::name,
@@ -71,8 +75,11 @@ public:
 			delete effect; effect = new FireMatrixLedEffect(&matrix, leds, numLeds, 10);
 		}
 		else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, 10);
+			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, random8(5, 30));
 		}
+//		else if (strcmp(RunningStringMatrixLedEffect::name, effectName) == 0) {
+//			delete effect; effect = new RunningStringMatrixLedEffect(&matrix, leds, numLeds, random(5, 30), text);
+//		}
 		else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SinusMatrixLedEffect(&matrix, leds, numLeds, random(10, 50));
 		}
@@ -121,9 +128,18 @@ public:
 		return true;
 	};
 
-	bool setNextEffect()
+	bool setEffectByIdx(int8_t idx = -1)
 	{
-		if (++currentEffectIdx > NUM_EFFECTS - 1)
+		if (idx < 0)
+		{
+			currentEffectIdx++;
+		}
+		else
+		{
+			currentEffectIdx = idx;
+		}
+
+		if (currentEffectIdx >= NUM_EFFECTS)
 			currentEffectIdx = 0;
 
 		return setEffectByName(availableEffects[currentEffectIdx]);
@@ -133,6 +149,11 @@ public:
 	{
 		return (effect != nullptr) ? availableEffects[currentEffectIdx] : nullptr;
 	};
+
+	void setRunningString(const char* data, uint16_t len)
+	{
+		text = String(data);
+	}
 
 	void pause()
 	{
@@ -163,6 +184,8 @@ protected:
 	bool isOn;
 
 	uint8_t currentEffectIdx;
+
+	String text = String(RunningStringMatrixLedEffect::name);
 
 	const CRGBPalette16 wrwPalette =
 		CRGBPalette16(

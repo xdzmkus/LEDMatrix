@@ -65,7 +65,7 @@ bool BugsMatrixLedEffect::paint()
 			int16_t newXpos = bugs[i].xPos + bugs[i].speed / 10;
 			if (newXpos < 0 || newXpos >= converter->getWidth())
 			{
-				bugs[i].hvDir != bugs[i].hvDir;
+				bugs[i].hvDir = !bugs[i].hvDir;
 				bugs[i].xPos = constrain(newXpos, 0, converter->getWidth() - 1);
 			}
 			else
@@ -78,7 +78,7 @@ bool BugsMatrixLedEffect::paint()
 			int16_t newYpos = bugs[i].yPos + bugs[i].speed / 10;
 			if (newYpos < 0 || newYpos >= converter->getHeight())
 			{
-				bugs[i].hvDir != bugs[i].hvDir;
+				bugs[i].hvDir = !bugs[i].hvDir;
 				bugs[i].yPos = constrain(newYpos, 0, converter->getHeight() - 1);
 			}
 			else

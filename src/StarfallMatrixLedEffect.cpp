@@ -29,20 +29,18 @@ bool StarfallMatrixLedEffect::paint()
 	if (!isReady())
 		return false;
 
-	// shift down all lines
 	for (uint8_t x = 0; x < converter->getWidth(); x++)
 	{
+		// shift down all lines
 		for (uint8_t y = 0; y < converter->getHeight() - 1; y++)
 		{
 			ledLine[converter->getPixelNumber(x, y)] = ledLine[converter->getPixelNumber(x, y + 1)];
 		}
-	}
-	// fill randomly top line
-	for (uint8_t x = 0; x < converter->getWidth(); x++)
-	{
+
+		// fill randomly top line
 		uint16_t pixel = converter->getPixelNumber(x, converter->getHeight() - 1);
 
-		if (!ledLine[pixel] && random(0, converter->getWidth()) == 0)
+		if (!ledLine[pixel] && random8(0, converter->getWidth()) == 0)
 		{
 			ledLine[pixel] = rgb;
 		}

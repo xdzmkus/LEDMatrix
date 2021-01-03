@@ -1,3 +1,13 @@
+/**
+        ^
+HEIGHT  |  x   x   x   x
+2       |  x   x   x   x
+1       |  x   x   x   x
+0       |  x   x   x   x
+        0------------------->
+           0   1   2  WIDTH
+*/
+
 #ifndef __IMATRIXTOLINECONVERTER_H__
 #define __IMATRIXTOLINECONVERTER_H__
 

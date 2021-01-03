@@ -1,3 +1,13 @@
+/**
+	 ^
+Y    |  3   4   11  12
+2    |  2   5   10  13
+1    |  1   6   9   14
+0    |  0   7   8   15
+	 0------------------>
+		0   1   2   X
+*/
+
 #ifndef __ZigZagFromBottomLeftToUpAndRight_H__
 #define __ZigZagFromBottomLeftToUpAndRight_H__
 

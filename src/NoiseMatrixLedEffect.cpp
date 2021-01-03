@@ -46,9 +46,9 @@ bool NoiseMatrixLedEffect::paint()
     if (!isReady())
         return false;
 
-    for (int x = 0; x < converter->getWidth(); x++)
+    for (uint8_t x = 0; x < converter->getWidth(); x++)
     {
-        for (int y = 0; y < converter->getHeight(); y++)
+        for (uint8_t y = 0; y < converter->getHeight(); y++)
         {
             uint8_t data = inoise8(nX + scale * x, nY + scale * y, nZ);
             data = qsub8(data, 16);

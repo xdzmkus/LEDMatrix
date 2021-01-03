@@ -25,7 +25,7 @@ private:
 
 public:
 
-	SnowMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz);
+	SnowMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t fadeSpeed = 70);
 	~SnowMatrixLedEffect();
 
 	void init() override;

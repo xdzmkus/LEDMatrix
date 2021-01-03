@@ -5,12 +5,12 @@
 
 #include <FastLED.h>
 #include <LedEffect.h>
-#include <BugsLedEffect.h>
 #include <SparklesLedEffect.h>
 #include <ThreeColorLedEffect.h>
 
 #include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "BouncingBallsMatrixLedEffect.h"
+#include "BugsMatrixLedEffect.h"
 #include "FireMatrixLedEffect.h"
 #include "GravityMatrixLedEffect.h"
 #include "NoiseMatrixLedEffect.h"
@@ -25,7 +25,7 @@ public:
 	static const uint8_t NUM_EFFECTS = 14;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
-		BugsLedEffect::name,
+		BugsMatrixLedEffect::name,
 		"LAVA",
 		BouncingBallsMatrixLedEffect::name,
 		"OCEAN",
@@ -55,10 +55,7 @@ public:
 
 	bool setEffectByName(const char* effectName)
 	{
-		if (strcmp(BugsLedEffect::name, effectName) == 0) {
-			delete effect; effect = new BugsLedEffect(leds, numLeds, 20, random8(35, 60));
-		}
-		else if (strcmp(SparklesLedEffect::name, effectName) == 0) {
+		if (strcmp(SparklesLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SparklesLedEffect(leds, numLeds, 10);
 		}
 		else if (strcmp(ThreeColorLedEffect::name, effectName) == 0) {
@@ -66,6 +63,9 @@ public:
 		}
 		else if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new BouncingBallsMatrixLedEffect(&matrix, leds, numLeds, 10, 3);
+		}
+		else if (strcmp(BugsMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new BugsMatrixLedEffect(&matrix, leds, numLeds, 20, random8(40, 80));
 		}
 		else if (strcmp(FireMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FireMatrixLedEffect(&matrix, leds, numLeds, 10);

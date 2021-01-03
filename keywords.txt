@@ -11,6 +11,7 @@ ZigZagFromBottomRightToUpAndLeft KEYWORD1
 ZigZagFromBottomLeftToUpAndRight KEYWORD1
 
 BouncingBallsMatrixLedEffect   KEYWORD1
+BugsMatrixLedEffect            KEYWORD1
 FireMatrixLedEffect            KEYWORD1
 GravityMatrixLedEffect         KEYWORD1
 NoiseMatrixLedEffect           KEYWORD1

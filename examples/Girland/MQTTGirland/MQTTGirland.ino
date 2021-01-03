@@ -14,6 +14,7 @@
 #define MQTT_TOPIC_PUB      MQTT_USERNAME"/current/state"
 #define MQTT_TOPIC_SUB1     MQTT_USERNAME"/new/effect"
 #define MQTT_TOPIC_SUB2     MQTT_USERNAME"/new/onoff"
+#define MQTT_TOPIC_SUB3     MQTT_USERNAME"/new/runningString"
 
 #define ON_CODE             6735
 #define OFF_CODE            2344
@@ -64,6 +65,7 @@ Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT, MQTT_USERNAME, 
 Adafruit_MQTT_Publish girlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB);
 Adafruit_MQTT_Subscribe girlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
 Adafruit_MQTT_Subscribe girlandOnOff = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
+Adafruit_MQTT_Subscribe girlandRunningString = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB3, MQTT_QOS_1);
 
 /********************************************/
 
@@ -102,6 +104,14 @@ void newEffect_callback(char* data, uint16_t len)
     Serial.println(data);
 
     ledMatrix.setEffectByName(data);
+}
+
+void newRunningString_callback(char* data, uint16_t len)
+{
+    Serial.print(F("new running string received: "));
+    Serial.println(data);
+
+    ledMatrix.setRunningString(data, len);
 }
 
 void publishState()
@@ -168,6 +178,9 @@ void setup_MQTT()
 
     girlandOnOff.setCallback(onoff_callback);
     mqtt.subscribe(&girlandOnOff);
+
+    girlandRunningString.setCallback(newRunningString_callback);
+    mqtt.subscribe(&girlandRunningString);
 }
 
 void setup_LED()

@@ -7,11 +7,9 @@
 
 const char* const RunningStringMatrixLedEffect::name = "RUNNINGSTRING";
 
-RunningStringMatrixLedEffect::RunningStringMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, const char text[], CRGB color, uint8_t yOffset)
+RunningStringMatrixLedEffect::RunningStringMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, String text, CRGB color, uint8_t yOffset)
 	: LedEffect(leds, count, Hz), converter(converter), str(text), rgb(color ? color : getRandomColor()), yOffset(yOffset)
 {
-    minOffset = -(strlen(str) * 6);
-
 	init();
 }
 
@@ -33,13 +31,13 @@ bool RunningStringMatrixLedEffect::paint()
 
     clearAllLeds();
 
-    for (uint8_t i = 0; i < strlen(str); i++)
+    for (uint8_t i = 0; i < str.length(); i++)
     {
         draw5x8Letter(str[i], rgb, offset + i * 6, yOffset);
     }
 
-    // строка убежала
-    if (minOffset > --offset)
+    // whole string scrolled
+    if (-static_cast<int16_t>(str.length() * 6) > --offset)
     {
         init();
     }
@@ -71,12 +69,13 @@ void RunningStringMatrixLedEffect::draw5x8Letter(unsigned char ascii, CRGB color
     if (xOffset >= converter->getWidth() || yOffset >= converter->getHeight() || xOffset <= -5 || yOffset <= -8)
         return;
 
+    // get visible part of character
     uint8_t firstColumn = xOffset >= 0 ? 0 : -xOffset;
     uint8_t lastColumn = min(5, converter->getWidth() - xOffset);
-
     uint8_t firstRow = yOffset >= 0 ? 0 : -yOffset;
     uint8_t lastRow = min(8, converter->getHeight() - yOffset);
 
+    // draw char
     for (uint8_t x = firstColumn; x < lastColumn; x++)
     {
         uint8_t columnByte = get5x8Column(ascii, x);

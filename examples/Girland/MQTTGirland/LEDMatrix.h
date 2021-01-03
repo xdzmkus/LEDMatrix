@@ -5,12 +5,12 @@
 
 #include <FastLED.h>
 #include <LedEffect.h>
-#include <BugsLedEffect.h>
 #include <SparklesLedEffect.h>
 #include <ThreeColorLedEffect.h>
 
 #include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "BouncingBallsMatrixLedEffect.h"
+#include "BugsMatrixLedEffect.h"
 #include "FireMatrixLedEffect.h"
 #include "GravityMatrixLedEffect.h"
 #include "NoiseMatrixLedEffect.h"
@@ -26,9 +26,9 @@ public:
 	static const uint8_t NUM_EFFECTS = 17;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
-		BugsLedEffect::name,
 		SparklesLedEffect::name,
 		ThreeColorLedEffect::name,
+		BugsMatrixLedEffect::name,
 		"LAVA",
 		BouncingBallsMatrixLedEffect::name,
 		"OCEAN",
@@ -59,10 +59,7 @@ public:
 
 	bool setEffectByName(const char* effectName)
 	{
-		if (strcmp(BugsLedEffect::name, effectName) == 0) {
-			delete effect; effect = new BugsLedEffect(leds, numLeds, 20, random8(25, 50));
-		}
-		else if (strcmp(SparklesLedEffect::name, effectName) == 0) {
+		if (strcmp(SparklesLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SparklesLedEffect(leds, numLeds, 10);
 		}
 		else if (strcmp(ThreeColorLedEffect::name, effectName) == 0) {
@@ -70,6 +67,9 @@ public:
 		}
 		else if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new BouncingBallsMatrixLedEffect(&matrix, leds, numLeds, 10, 3);
+		}
+		else if (strcmp(BugsMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new BugsMatrixLedEffect(&matrix, leds, numLeds, 20, random8(25, 50));
 		}
 		else if (strcmp(FireMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new FireMatrixLedEffect(&matrix, leds, numLeds, 10);
@@ -99,7 +99,7 @@ public:
 			delete effect; effect = new NoiseMatrixLedEffect(&matrix, leds, numLeds, random(10, 30), wrwPalette, random(5, 50));
 		}
 		else if (strcmp(RunningStringMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new RunningStringMatrixLedEffect(&matrix, leds, numLeds, random(5, 30), RunningStringMatrixLedEffect::name);
+			delete effect; effect = new RunningStringMatrixLedEffect(&matrix, leds, numLeds, random(5, 30), text);
 		}
 		else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SinusMatrixLedEffect(&matrix, leds, numLeds, random(10, 50));
@@ -142,6 +142,11 @@ public:
 		return (effect != nullptr) ? availableEffects[currentEffectIdx] : nullptr;
 	};
 
+	void setRunningString(const char* data, uint16_t len)
+	{
+		text = String(data);
+	}
+
 	void pause()
 	{
 		isOn = false;
@@ -171,6 +176,8 @@ protected:
 	bool isOn;
 
 	uint8_t currentEffectIdx;
+
+	String text = String(RunningStringMatrixLedEffect::name);
 
 	const CRGBPalette16 wrwPalette =
 		CRGBPalette16(

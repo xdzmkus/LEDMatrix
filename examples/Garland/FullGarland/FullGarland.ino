@@ -68,11 +68,11 @@ WiFiClient client;
 Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT, MQTT_USERNAME, MQTT_KEY);
 //Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT);
 
-Adafruit_MQTT_Publish girlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB);
+Adafruit_MQTT_Publish garlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB);
 
-Adafruit_MQTT_Subscribe girlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
-Adafruit_MQTT_Subscribe girlandAction = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
-Adafruit_MQTT_Subscribe girlandRunningString = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB3, MQTT_QOS_1);
+Adafruit_MQTT_Subscribe garlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
+Adafruit_MQTT_Subscribe garlandAction = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
+Adafruit_MQTT_Subscribe garlandRunningString = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB3, MQTT_QOS_1);
 
 /********************************************/
 
@@ -171,7 +171,7 @@ void publishState()
 
     Serial.print(F("Publish message: ")); Serial.println(currentEffect);
 
-    if (!girlandState.publish(currentEffect))
+    if (!garlandState.publish(currentEffect))
     {
         Serial.println(F("Publish Message Failed"));
     }
@@ -220,14 +220,14 @@ void setup_WiFi()
 
 void setup_MQTT()
 {
-    girlandEffect.setCallback(newEffect_callback);
-    mqtt.subscribe(&girlandEffect);
+    garlandEffect.setCallback(newEffect_callback);
+    mqtt.subscribe(&garlandEffect);
 
-    girlandAction.setCallback(newAction_callback);
-    mqtt.subscribe(&girlandAction);
+    garlandAction.setCallback(newAction_callback);
+    mqtt.subscribe(&garlandAction);
 
-    girlandRunningString.setCallback(newRunningString_callback);
-    mqtt.subscribe(&girlandRunningString);
+    garlandRunningString.setCallback(newRunningString_callback);
+    mqtt.subscribe(&garlandRunningString);
 }
 
 void setup_LED()

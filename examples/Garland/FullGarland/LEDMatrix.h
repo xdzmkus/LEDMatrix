@@ -23,12 +23,11 @@ class LEDMatrix
 {
 public:
 
-	static const uint8_t NUM_EFFECTS = 14;
+	static const uint8_t NUM_EFFECTS = 15;
 	const char* const availableEffects[NUM_EFFECTS] =
 	{
 //		SparklesLedEffect::name,
 //		ThreeColorLedEffect::name,
-//		RunningStringMatrixLedEffect::name,
 		BugsMatrixLedEffect::name,
 		"LAVA",
 		BouncingBallsMatrixLedEffect::name,
@@ -42,7 +41,8 @@ public:
 		SinusMatrixLedEffect::name,
 		"PARTY",
 		GravityMatrixLedEffect::name,
-		"WRW"
+		"WRW",
+		RunningStringMatrixLedEffect::name
 	};
 
 	LEDMatrix(CRGB leds[], uint16_t count) : leds(leds), numLeds(count), isOn(false), currentEffectIdx(0)
@@ -77,9 +77,9 @@ public:
 		else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new GravityMatrixLedEffect(&matrix, leds, numLeds, random8(5, 30));
 		}
-//		else if (strcmp(RunningStringMatrixLedEffect::name, effectName) == 0) {
-//			delete effect; effect = new RunningStringMatrixLedEffect(&matrix, leds, numLeds, random(5, 30), text);
-//		}
+		else if (strcmp(RunningStringMatrixLedEffect::name, effectName) == 0) {
+			delete effect; effect = new RunningStringMatrixLedEffect(&matrix, leds, numLeds, random(5, 30), text, 1);
+		}
 		else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SinusMatrixLedEffect(&matrix, leds, numLeds, random(10, 50));
 		}
@@ -185,7 +185,7 @@ protected:
 
 	uint8_t currentEffectIdx;
 
-	String text = String(RunningStringMatrixLedEffect::name);
+	String text = "2021";
 
 	const CRGBPalette16 wrwPalette =
 		CRGBPalette16(

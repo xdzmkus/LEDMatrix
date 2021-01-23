@@ -6,10 +6,10 @@
 #ifndef __BUGSMATRIXLEDEFFECT_H__
 #define __BUGSMATRIXLEDEFFECT_H__
 
-#include "LedEffect.h"
+#include "ILedEffect.h"
 #include "IMatrixToLineConverter.h"
 
-class BugsMatrixLedEffect : public LedEffect
+class BugsMatrixLedEffect : public ILedEffect
 {
 public:
 

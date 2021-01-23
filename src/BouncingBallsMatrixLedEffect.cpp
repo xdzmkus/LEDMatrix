@@ -8,7 +8,7 @@
 const char* const BouncingBallsMatrixLedEffect::name = "BOUNSINGBALLS";
 
 BouncingBallsMatrixLedEffect::BouncingBallsMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t maxBallsCount)
-	: LedEffect(leds, count, Hz), converter(converter), MaxVelocity(sqrt(2 * Gravity * (converter->getHeight() - 1)))
+	: ILedEffect(leds, count, Hz), converter(converter), MaxVelocity(sqrt(2 * Gravity * (converter->getHeight() - 1)))
 {
 	bouncingColumns = new BOUNCING_COLUMN[converter->getWidth()];
 
@@ -72,7 +72,7 @@ bool BouncingBallsMatrixLedEffect::paint()
 	{
 		for (uint8_t i = 0; i < bouncingColumns[x].numBalls; i++)
 		{
-			float timeOfFlying = static_cast<float>(getClock() - bouncingColumns[x].balls[i].startTime) / LedEffect::CLOCKS_IN_SEC;
+			float timeOfFlying = static_cast<float>(getClock() - bouncingColumns[x].balls[i].startTime) / ILedEffect::CLOCKS_IN_SEC;
 			bouncingColumns[x].balls[i].height = bouncingColumns[x].balls[i].velocity * timeOfFlying - 0.5 * Gravity * pow(timeOfFlying, 2.0);
 
 			if (bouncingColumns[x].balls[i].height < 0)

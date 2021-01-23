@@ -6,10 +6,10 @@
 #ifndef __SINUSMATRIXLEDEFFECT_H__
 #define __SINUSMATRIXLEDEFFECT_H__
 
-#include <LedEffect.h>
+#include <ILedEffect.h>
 #include "IMatrixToLineConverter.h"
 
-class SinusMatrixLedEffect : public LedEffect
+class SinusMatrixLedEffect : public ILedEffect
 {
 public:
 

@@ -8,7 +8,7 @@
 const char* const SnowMatrixLedEffect::name = "SNOW";
 
 SnowMatrixLedEffect::SnowMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t fadeSpeed)
-	: LedEffect(leds, count, Hz), converter(converter), snowflakeCount(count/10), fade(fadeSpeed)
+	: ILedEffect(leds, count, Hz), converter(converter), snowflakeCount(count/10), fade(fadeSpeed)
 {
 	init();
 }

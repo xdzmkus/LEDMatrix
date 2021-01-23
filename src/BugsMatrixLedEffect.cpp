@@ -8,7 +8,7 @@
 const char* const BugsMatrixLedEffect::name = "BUGS";
 
 BugsMatrixLedEffect::BugsMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugsCount)
-	: LedEffect(leds, count, Hz), converter(converter), numBugs(bugsCount)
+	: ILedEffect(leds, count, Hz), converter(converter), numBugs(bugsCount)
 {
 	if (numBugs > 0)
 	{

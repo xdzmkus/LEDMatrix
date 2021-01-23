@@ -1,37 +1,33 @@
-#######################################
+#########################################
 # Syntax Coloring Map For LEDMatrix
-#######################################
+#########################################
 
-#######################################
+#########################################
 # Datatypes (KEYWORD1)
-#######################################
+#########################################
 
-IMatrixToLineConverter           KEYWORD1
+LEDMatrix                        KEYWORD1
 ZigZagFromBottomRightToUpAndLeft KEYWORD1
 ZigZagFromBottomLeftToUpAndRight KEYWORD1
 
-BouncingBallsMatrixLedEffect   KEYWORD1
-BugsMatrixLedEffect            KEYWORD1
-FireMatrixLedEffect            KEYWORD1
-GravityMatrixLedEffect         KEYWORD1
-NoiseMatrixLedEffect           KEYWORD1
-RunningStringMatrixLedEffect   KEYWORD1
-SinusMatrixLedEffect		   KEYWORD1
-SnowMatrixLedEffect			   KEYWORD1
-StarfallMatrixLedEffect        KEYWORD1
-
-#######################################
+#########################################
 # Methods and Functions (KEYWORD2)
-#######################################
+#########################################
 
-init                           KEYWORD2
-paint                          KEYWORD2
-start                          KEYWORD2
-stop                           KEYWORD2
-isReady                        KEYWORD2
+getAllEffectsNumber              KEYWORD2
+getAllEffectsNames               KEYWORD2
+getEffectName                    KEYWORD2
+getEffectIdx                     KEYWORD2
+setEffectByName                  KEYWORD2
+setEffectByIdx                   KEYWORD2
+setNextEffect                    KEYWORD2
+setRunningString                 KEYWORD2
+pause                            KEYWORD2
+resume                           KEYWORD2
+refresh                          KEYWORD2
+isRunning                        KEYWORD2
 
-#######################################
+#########################################
 # Constants (LITERAL1)
-#######################################
+#########################################
 
-name                           LITERAL1

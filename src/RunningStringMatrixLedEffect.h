@@ -6,11 +6,11 @@
 #ifndef __RUNNINGSTRINGMATRIXLEDEFFECT_H__
 #define __RUNNINGSTRINGMATRIXLEDEFFECT_H__
 
-#include <LedEffect.h>
+#include <ILedEffect.h>
 #include "IMatrixToLineConverter.h"
 #include "fonts/windows-1251-5x8.h"
 
-class RunningStringMatrixLedEffect : public LedEffect
+class RunningStringMatrixLedEffect : public ILedEffect
 {
 public:
 

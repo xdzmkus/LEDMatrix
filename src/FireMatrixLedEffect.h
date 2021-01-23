@@ -9,10 +9,10 @@
 #define MATRIX_HEIGHT 8
 #define MATRIX_WIDTH 9
 
-#include <LedEffect.h>
+#include <ILedEffect.h>
 #include "IMatrixToLineConverter.h"
 
-class FireMatrixLedEffect : public LedEffect
+class FireMatrixLedEffect : public ILedEffect
 {
 public:
 

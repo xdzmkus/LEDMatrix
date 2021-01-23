@@ -6,10 +6,10 @@
 #ifndef __SNOWMATRIXLEDEFFECT_H__
 #define __SNOWMATRIXLEDEFFECT_H__
 
-#include <LedEffect.h>
+#include <ILedEffect.h>
 #include "IMatrixToLineConverter.h"
 
-class SnowMatrixLedEffect : public LedEffect
+class SnowMatrixLedEffect : public ILedEffect
 {
 public:
 

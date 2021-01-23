@@ -1,24 +1,24 @@
-#ifndef _LEDMATRIX_h
-#define _LEDMATRIX_h
+#ifndef _LEDMATRIXEX_h
+#define _LEDMATRIXEX_h
 
 #include <FastLED.h>
-#include "LedEffect.h"
+#include "ILedEffect.h"
 
-class LEDMatrix
+class LEDMatrixEx
 {
 protected:
 
-	LedEffect** effects;
+	ILedEffect** effects;
 	const uint8_t numEffects;
 	bool isOn = false;
 
 public:
 
-	LEDMatrix(LedEffect* effects[], uint8_t numEffects)	: effects(effects), numEffects(numEffects)
+	LEDMatrixEx(ILedEffect* effects[], uint8_t numEffects) : effects(effects), numEffects(numEffects)
 	{
 	}
 
-	virtual ~LEDMatrix()
+	virtual ~LEDMatrixEx()
 	{
 	}
 

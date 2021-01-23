@@ -6,10 +6,10 @@
 #ifndef __STARFALLMATRIXLEDEFFECT_H__
 #define __STARFALLMATRIXLEDEFFECT_H__
 
-#include <LedEffect.h>
+#include <ILedEffect.h>
 #include "IMatrixToLineConverter.h"
 
-class StarfallMatrixLedEffect : public LedEffect
+class StarfallMatrixLedEffect : public ILedEffect
 {
 public:
 

@@ -6,10 +6,10 @@
 #ifndef __BOUNSINGBALLSMATRIXLEDEFFECT_H__
 #define __BOUNSINGBALLSMATRIXLEDEFFECT_H__
 
-#include <LedEffect.h>
+#include <ILedEffect.h>
 #include "IMatrixToLineConverter.h"
 
-class BouncingBallsMatrixLedEffect : public LedEffect
+class BouncingBallsMatrixLedEffect : public ILedEffect
 {
 private:
 

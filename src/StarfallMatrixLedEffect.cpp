@@ -8,7 +8,7 @@
 const char* const StarfallMatrixLedEffect::name = "STARFALL";
 
 StarfallMatrixLedEffect::StarfallMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
-	: LedEffect(leds, count, Hz), converter(converter), rgb(color ? color : getRandomColor())
+	: ILedEffect(leds, count, Hz), converter(converter), rgb(color ? color : getRandomColor())
 {
 	fade = CRGB(1 + rgb.r/(converter->getHeight()+1), 1 + rgb.g/(converter->getHeight()+1), 1 + rgb.b/(converter->getHeight()+1));
 

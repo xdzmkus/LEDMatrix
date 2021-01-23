@@ -8,7 +8,7 @@
 const char* const GravityMatrixLedEffect::name = "GRAVITY";
 
 GravityMatrixLedEffect::GravityMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
-	: LedEffect(leds, count, Hz), converter(converter)
+	: ILedEffect(leds, count, Hz), converter(converter)
 {
 	gravities = new GRAVITY[converter->getWidth()];
 
@@ -54,7 +54,7 @@ bool GravityMatrixLedEffect::paint()
 	{
 		if (gravities[x].height > 0)
 		{
-			float timeOfFlying = static_cast<float>(getClock() - gravities[x].startTime) / LedEffect::CLOCKS_IN_SEC;
+			float timeOfFlying = static_cast<float>(getClock() - gravities[x].startTime) / ILedEffect::CLOCKS_IN_SEC;
 			gravities[x].height = gravities[x].velocity * timeOfFlying - 0.5 * Gravity * timeOfFlying * timeOfFlying;
 
 			if (gravities[x].height <= 0)

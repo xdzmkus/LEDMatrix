@@ -6,10 +6,10 @@
 #ifndef __NOISEMATRIXLEDEFFECT_H__
 #define __NOISEMATRIXLEDEFFECT_H__
 
-#include <LedEffect.h>
+#include <ILedEffect.h>
 #include "IMatrixToLineConverter.h"
 
-class NoiseMatrixLedEffect : public LedEffect
+class NoiseMatrixLedEffect : public ILedEffect
 {
 public:
 
@@ -52,7 +52,7 @@ public:
 	void init() override;
 	bool paint() override;
 
-	operator const char* () const { return name; }
+	operator const char* () const { return id ? id.c_str() : name; }
 
 private:
 

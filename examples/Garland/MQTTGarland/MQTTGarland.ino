@@ -16,36 +16,38 @@
 #define MQTT_TOPIC_SUB2     MQTT_USERNAME"/set/action"
 #define MQTT_TOPIC_SUB3     MQTT_USERNAME"/set/runningString"
 
+#define ON_CODE             6735
 #define OFF_CODE            2344
-#define NEXT_CODE           7467
-#define PAUSE_CODE          2747
-#define RESUME_CODE         6735
+#define NEXT_CODE           2747
 
 #endif
 
 #define LED_PIN D3    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
+
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
 #define MATRIX_H 8
 #define MATRIX_W 32
-#define NUM_LEDS (MATRIX_H * MATRIX_W)
 #define CURRENT_LIMIT 8000
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
 uint16_t brightness = MIN_BRIGHTNESS;
 
-CRGB leds[NUM_LEDS];
+CRGB leds[(MATRIX_H * MATRIX_W)];
 
 /*********** LED Matrix Effects *************/
-#include "LEDMatrix.h"
-LEDMatrix ledMatrix(leds, NUM_LEDS);
+#include "LEDMatrixEx.h"
+#include "ZigZagFromBottomRightToUpAndLeft.h"
+ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> converter;
+LEDMatrixEx ledMatrix(&converter, leds, (MATRIX_H * MATRIX_W));
 
 #include <Ticker.h>
-#define EFFECT_DURATION_SEC 30
+#define EFFECT_DURATION_SEC 45
 Ticker tickerEffects;
+
 volatile boolean f_publishState = true;
 
 /*********** WiFi Client ********************/
@@ -56,12 +58,10 @@ volatile boolean f_publishState = true;
 #include <Adafruit_MQTT_Client.h>
 
 // Create an ESP8266 WiFiClient class to connect to the MQTT server.
-WiFiClient client;
-//WiFiClientSecure client;  // use WiFiClientSecure for SSL
+WiFiClient client;  // use WiFiClientSecure for SSL
 
 // Setup the MQTT client class by passing in the WiFi client
 Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT, MQTT_USERNAME, MQTT_KEY);
-//Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT);
 
 Adafruit_MQTT_Publish garlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB);
 
@@ -71,49 +71,71 @@ Adafruit_MQTT_Subscribe garlandRunningString = Adafruit_MQTT_Subscribe(&mqtt, MQ
 
 /********************************************/
 
-void handleTimer()
+void turnOnLeds()
 {
+    tickerEffects.attach(EFFECT_DURATION_SEC, changeEffect);
+
+    ledMatrix.resume();
+
     f_publishState = true;
-    
-    if (ledMatrix.isRunning())
-    {
-        ledMatrix.setEffectByIdx();
-    }
 }
 
-void newAction_callback(uint32_t x)
+void turnOffLeds()
 {
+    tickerEffects.detach();
+
+    ledMatrix.pause();
+
     f_publishState = true;
 
-    Serial.print(F("action with code: "));
+    FastLED.clear(true);
+}
+
+void changeEffect()
+{
+    tickerEffects.detach();
+
+    ledMatrix.setNextEffect();
+
+    tickerEffects.attach(EFFECT_DURATION_SEC, changeEffect);
+
+    f_publishState = true;
+}
+
+void adjustBrightness()
+{
+    brightness += MIN_BRIGHTNESS;
+    if (brightness > MAX_BRIGHTNESS + MIN_BRIGHTNESS * 2)
+    {
+        brightness = 0;
+    }
+    FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+}
+
+void setAction_callback(uint32_t x)
+{
+    Serial.print(F("on/off with code: "));
     Serial.println(x);
 
     switch (x)
     {
+    case ON_CODE:
+        turnOnLeds();
+        break;
     case OFF_CODE:
-        FastLED.clear(true);
-        ledMatrix.pause();
+        turnOffLeds();
         break;
     case NEXT_CODE:
-        tickerEffects.detach();
-        ledMatrix.setEffectByIdx();
-        tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
-        break;
-    case PAUSE_CODE:
-        ledMatrix.pause();
-        break;
-    case RESUME_CODE:
-        ledMatrix.resume();
+        changeEffect();
         break;
     default:
+        f_publishState = true;
         break;
     }
 }
 
-void newEffect_callback(char* data, uint16_t len)
+void setEffect_callback(char* data, uint16_t len)
 {
-    f_publishState = true;
-
     Serial.print(F("new effect requested: "));
     Serial.println(data);
 
@@ -135,7 +157,8 @@ void publishState()
 {
     auto currentEffect = (ledMatrix.getEffectName() == nullptr || !ledMatrix.isRunning()) ? "OFF" : ledMatrix.getEffectName();
 
-    Serial.print(F("Publish message: ")); Serial.println(currentEffect);
+    Serial.print(F("Publish message: "));
+    Serial.println(currentEffect);
 
     if (!garlandState.publish(currentEffect))
     {
@@ -156,24 +179,32 @@ void setup()
     setup_WiFi();
 
     setup_MQTT();
+
+    turnOnLeds();
 }
 
 void setup_WiFi()
 {
     Serial.println();
-    Serial.print(F("Connecting to ")); Serial.println(WLAN_SSID);
+    Serial.print(F("Connecting to "));
+    Serial.println(WLAN_SSID);
 
     WiFi.mode(WIFI_STA);                  // Set the ESP8266 to be a WiFi-client
     WiFi.hostname(WLAN_HOSTNAME);
     WiFi.begin(WLAN_SSID, WLAN_PASS);
 
-    while (WiFi.status() != WL_CONNECTED)
+    for (uint8_t s = 0; (WiFi.status() != WL_CONNECTED) && (s < 20); s++)
     {
         digitalWrite(LED_BUILTIN, LOW);   // Turn the LED on (Note that LOW is the voltage level but actually the LED is on; this is because it is active low on the ESP-01)
         delay(500);
         Serial.print(".");
         digitalWrite(LED_BUILTIN, HIGH);  // Turn the LED off by making the voltage HIGH
         delay(200);
+    }
+    if (!WiFi.isConnected())
+    {
+        Serial.println("Connection Failed! Rebooting...");
+        ESP.restart();
     }
 
     Serial.println("");
@@ -184,10 +215,10 @@ void setup_WiFi()
 
 void setup_MQTT()
 {
-    garlandEffect.setCallback(newEffect_callback);
+    garlandEffect.setCallback(setEffect_callback);
     mqtt.subscribe(&garlandEffect);
 
-    garlandAction.setCallback(newAction_callback);
+    garlandAction.setCallback(setAction_callback);
     mqtt.subscribe(&garlandAction);
 
     garlandRunningString.setCallback(newRunningString_callback);
@@ -196,14 +227,10 @@ void setup_MQTT()
 
 void setup_LED()
 {
-    FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+    FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, (MATRIX_H * MATRIX_W));
     FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
     FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
     FastLED.clear(true);
-
-    ledMatrix.setEffectByIdx(0);
-
-    tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
 }
 
 // Function to connect and reconnect as necessary to the MQTT server.
@@ -242,7 +269,7 @@ void loop()
         publishState();
     }
 
-    if (ledMatrix.paint())
+    if (ledMatrix.refresh())
     {
         FastLED.show();
     }

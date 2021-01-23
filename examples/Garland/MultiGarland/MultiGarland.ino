@@ -28,20 +28,21 @@ GButton touch(BTN_PIN, HIGH_PULL, NORM_OPEN);
 #define MAX_BRIGHTNESS 300
 #define MIN_BRIGHTNESS 30
 
+uint16_t brightness = MIN_BRIGHTNESS;
+
 #include <FastLED.h>
 
-#include "LEDMatrix.h"
+#include "LEDMatrixEx.h"
+#include "ILedEffect.h"
 #include "StarfallMatrixLedEffect.h"
 #include "ZigZagFromBottomRightToUpAndLeft.h"
 
 CRGB leds[NUM_LEDS];
 
 #define NUM_EFFECTS 3
-LedEffect* effects[NUM_EFFECTS];
+ILedEffect* effects[NUM_EFFECTS];
 
-LEDMatrix ledMatrix(effects, NUM_EFFECTS);
-
-uint16_t brightness = MIN_BRIGHTNESS;
+LEDMatrixEx ledMatrix(effects, NUM_EFFECTS);
 
 void setup()
 {
@@ -53,11 +54,12 @@ void setup()
 	FastLED.clear(true);
 
 	effects[0] = new StarfallMatrixLedEffect(new ZigZagFromBottomRightToUpAndLeft<MATRIX_W1, MATRIX_H>, leds, (MATRIX_W1 * MATRIX_H), 10, CRGB::White);
-	effects[1] = new StarfallMatrixLedEffect(new ZigZagFromBottomRightToUpAndLeft<MATRIX_W2, MATRIX_H>, leds + (MATRIX_W1 * MATRIX_H), (MATRIX_W2 * MATRIX_H), 12, 0xFF2400);
+	effects[1] = new StarfallMatrixLedEffect(new ZigZagFromBottomRightToUpAndLeft<MATRIX_W2, MATRIX_H>, leds + (MATRIX_W1 * MATRIX_H), (MATRIX_W2 * MATRIX_H), 10, 0xFF2400);
 	effects[2] = new StarfallMatrixLedEffect(new ZigZagFromBottomRightToUpAndLeft<MATRIX_W3, MATRIX_H>, leds + (MATRIX_W1 * MATRIX_H) + (MATRIX_W2 * MATRIX_H), (MATRIX_W3 * MATRIX_H), 10, CRGB::White);
 
 	ledMatrix.resume();
 
+	pinMode(BTN_PIN, INPUT_PULLDOWN_16);
 	touch.setTimeout(300);
 	touch.setStepTimeout(50);
 
@@ -76,13 +78,12 @@ void loop()
 		case 1:
 			ledMatrix.resume();
 			FastLED.show();
+			Serial.println(F("ON"));
 			break;
 		case 2:
 			ledMatrix.pause();
 			FastLED.clear(true);
-			break;
-		case 3:
-			ledMatrix.pause();
+			Serial.println(F("OFF"));
 			break;
 		default:
 			break;
@@ -97,6 +98,8 @@ void loop()
 
 		FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, 255));
 		FastLED.show();
+
+		Serial.println(F("BRIGHTNESS"));
 	}
 
 	if (ledMatrix.isChanged())

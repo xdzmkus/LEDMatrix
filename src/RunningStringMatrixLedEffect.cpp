@@ -8,7 +8,7 @@
 const char* const RunningStringMatrixLedEffect::name = "RUNNINGSTRING";
 
 RunningStringMatrixLedEffect::RunningStringMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, String text, CRGB color, uint8_t yOffset)
-	: LedEffect(leds, count, Hz), converter(converter), str(text), rgb(color ? color : getRandomColor()), yOffset(yOffset)
+	: ILedEffect(leds, count, Hz), converter(converter), str(text), rgb(color ? color : getRandomColor()), yOffset(yOffset)
 {
 	init();
 }

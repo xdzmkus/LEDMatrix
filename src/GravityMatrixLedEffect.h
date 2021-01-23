@@ -6,10 +6,10 @@
 #ifndef __GRAVITYMATRIXLEDEFFECT_H__
 #define __GRAVITYMATRIXLEDEFFECT_H__
 
-#include <LedEffect.h>
+#include <ILedEffect.h>
 #include "IMatrixToLineConverter.h"
 
-class GravityMatrixLedEffect : public LedEffect
+class GravityMatrixLedEffect : public ILedEffect
 {
 public:
 

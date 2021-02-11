@@ -36,6 +36,8 @@ void setup()
 	setupLED();
 
 	effect = new FireMatrixLedEffect(&matrix, leds, NUM_LEDS, 10);
+
+	effect->start();
 }
 
 

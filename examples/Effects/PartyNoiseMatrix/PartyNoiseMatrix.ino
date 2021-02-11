@@ -39,6 +39,8 @@ void changeEffect()
 	delete effect;
 
 	effect = new NoiseMatrixLedEffect(&matrix, leds, NUM_LEDS, speed, PartyColors_p, zoom);
+
+	effect->start();
 }
 
 void setupLED()
@@ -60,6 +62,8 @@ void setup()
 	tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
 
 	effect = new NoiseMatrixLedEffect(&matrix, leds, NUM_LEDS, 15, PartyColors_p);
+
+	effect->start();
 }
 
 

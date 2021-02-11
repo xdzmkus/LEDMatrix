@@ -17,7 +17,7 @@ NoiseMatrixLedEffect::NoiseMatrixLedEffect(const IMatrixToLineConverter* convert
 		noise[x] = new uint8_t[converter->getHeight()];
 	}
 
-    init();
+    reset();
 }
 
 NoiseMatrixLedEffect::~NoiseMatrixLedEffect()
@@ -31,8 +31,10 @@ NoiseMatrixLedEffect::~NoiseMatrixLedEffect()
     noise = nullptr;
 }
 
-void NoiseMatrixLedEffect::init()
+void NoiseMatrixLedEffect::reset()
 {
+    ILedEffect::reset();
+
     nX = random16();
     nY = random16();
     nZ = random16();

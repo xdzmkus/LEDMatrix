@@ -36,6 +36,8 @@ void setup()
 	setupLED();
 
 	effect = new RunningStringMatrixLedEffect(&matrix, leds, NUM_LEDS, 10, RunningStringMatrixLedEffect::name);
+
+	effect->start();
 }
 
 

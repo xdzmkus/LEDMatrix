@@ -26,7 +26,7 @@ BouncingBallsMatrixLedEffect::BouncingBallsMatrixLedEffect(const IMatrixToLineCo
 		}
 	}
 
-	init();
+	reset();
 }
 
 BouncingBallsMatrixLedEffect::~BouncingBallsMatrixLedEffect()
@@ -42,8 +42,10 @@ BouncingBallsMatrixLedEffect::~BouncingBallsMatrixLedEffect()
 	}
 }
 
-void BouncingBallsMatrixLedEffect::init()
+void BouncingBallsMatrixLedEffect::reset()
 {
+	ILedEffect::reset();
+
 	if (bouncingColumns != nullptr)
 	{
 		for (uint8_t x = 0; x < converter->getWidth(); x++)

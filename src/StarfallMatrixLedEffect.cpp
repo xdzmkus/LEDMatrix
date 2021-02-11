@@ -12,15 +12,16 @@ StarfallMatrixLedEffect::StarfallMatrixLedEffect(const IMatrixToLineConverter* c
 {
 	fade = CRGB(1 + rgb.r/(converter->getHeight()+1), 1 + rgb.g/(converter->getHeight()+1), 1 + rgb.b/(converter->getHeight()+1));
 
-	init();
+	reset();
 }
 
 StarfallMatrixLedEffect::~StarfallMatrixLedEffect()
 {
 }
 
-void StarfallMatrixLedEffect::init()
+void StarfallMatrixLedEffect::reset()
 {
+	ILedEffect::reset();
 	clearAllLeds();
 }
 

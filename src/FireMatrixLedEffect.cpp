@@ -36,11 +36,12 @@ const uint8_t FireMatrixLedEffect::hueMask[MATRIX_HEIGHT][MATRIX_WIDTH] PROGMEM 
 FireMatrixLedEffect::FireMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
 	: ILedEffect(leds, count, Hz), converter(converter)
 {
-	init();
+	reset();
 }
 
-void FireMatrixLedEffect::init()
+void FireMatrixLedEffect::reset()
 {
+	ILedEffect::reset();
 	clearAllLeds();
 }
 

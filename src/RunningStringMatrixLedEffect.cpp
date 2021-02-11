@@ -10,15 +10,17 @@ const char* const RunningStringMatrixLedEffect::name = "RUNNINGSTRING";
 RunningStringMatrixLedEffect::RunningStringMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, String text, CRGB color, uint8_t yOffset)
 	: ILedEffect(leds, count, Hz), converter(converter), str(text), rgb(color ? color : getRandomColor()), yOffset(yOffset)
 {
-	init();
+	reset();
 }
 
 RunningStringMatrixLedEffect::~RunningStringMatrixLedEffect()
 {
 }
 
-void RunningStringMatrixLedEffect::init()
+void RunningStringMatrixLedEffect::reset()
 {
+    ILedEffect::reset();
+
     offset = converter->getWidth();
 
     clearAllLeds();
@@ -39,7 +41,7 @@ bool RunningStringMatrixLedEffect::paint()
     // whole string scrolled
     if (-static_cast<int16_t>(str.length() * 6) > --offset)
     {
-        init();
+        reset();
     }
 
     return true;

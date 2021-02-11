@@ -14,7 +14,7 @@ GravityMatrixLedEffect::GravityMatrixLedEffect(const IMatrixToLineConverter* con
 
 	clearAllLeds();
 
-	init();
+	reset();
 }
 
 GravityMatrixLedEffect::~GravityMatrixLedEffect()
@@ -25,8 +25,10 @@ GravityMatrixLedEffect::~GravityMatrixLedEffect()
 	}
 }
 
-void GravityMatrixLedEffect::init()
+void GravityMatrixLedEffect::reset()
 {
+	ILedEffect::reset();
+
 	if (gravities != nullptr)
 	{
 		uint8_t max = converter->getHeight() - 1;
@@ -76,7 +78,7 @@ bool GravityMatrixLedEffect::paint()
 
 	if (allGround)
 	{
-		init();
+		reset();
 	}
 
 	return true;

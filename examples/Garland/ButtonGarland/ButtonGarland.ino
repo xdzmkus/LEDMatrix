@@ -49,7 +49,7 @@ void loadEffect()
 
 	if (ledMatrix.setEffectByName(EFFECT_NAME))
 	{
-		ledMatrix.resume();
+		ledMatrix.turnOn();
 	}
 
 	Serial.print(F("LOADED: ")); Serial.println(EFFECT_NAME);
@@ -57,7 +57,7 @@ void loadEffect()
 
 void saveEffect()
 {
-	strncpy(EFFECT_NAME, (ledMatrix.getEffectName() == nullptr || !ledMatrix.isRunning()) ? "OFF" : ledMatrix.getEffectName(), EEPROM_EFFECT_LENGTH);
+	strncpy(EFFECT_NAME, (ledMatrix.getEffectName() == nullptr || !ledMatrix.isOn()) ? "OFF" : ledMatrix.getEffectName(), EEPROM_EFFECT_LENGTH);
 
 	for (uint8_t i = 0; i < EEPROM_EFFECT_LENGTH + 1; i++)
 	{
@@ -67,16 +67,16 @@ void saveEffect()
 	EEPROM.commit();
 #endif
 
-	ledMatrix.pause();
+	ledMatrix.turnOff();
 
 	Serial.print(F("SAVED: ")); Serial.println(EFFECT_NAME);
 }
 
 void changeEffect()
 {
-	if (ledMatrix.setNextEffect() && !ledMatrix.isRunning())
+	if (ledMatrix.setNextEffect() && !ledMatrix.isOn())
 	{
-		ledMatrix.resume();
+		ledMatrix.turnOn();
 	}
 
 	Serial.print(F("EFFECT: "));
@@ -85,7 +85,7 @@ void changeEffect()
 
 void turnOffLeds()
 {
-	ledMatrix.pause();
+	ledMatrix.turnOff();
 	FastLED.clear(true);
 
 	Serial.println(F("OFF"));

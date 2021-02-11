@@ -49,7 +49,7 @@ public:
 	NoiseMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, const CRGBPalette16 &palette, uint8_t zoom = 30);
 	~NoiseMatrixLedEffect();
 
-	void init() override;
+	void reset() override;
 	bool paint() override;
 
 	operator const char* () const { return id ? id.c_str() : name; }

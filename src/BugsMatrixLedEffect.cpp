@@ -15,7 +15,7 @@ BugsMatrixLedEffect::BugsMatrixLedEffect(const IMatrixToLineConverter* converter
 		bugs = new BUGS[numBugs];
 	}
 
-	init();
+	reset();
 }
 
 BugsMatrixLedEffect::~BugsMatrixLedEffect()
@@ -27,8 +27,10 @@ BugsMatrixLedEffect::~BugsMatrixLedEffect()
 	}
 }
 
-void BugsMatrixLedEffect::init()
+void BugsMatrixLedEffect::reset()
 {
+	ILedEffect::reset();
+
 	if (bugs != nullptr)
 	{
 		for (uint8_t i = 0; i < numBugs; i++)

@@ -22,10 +22,10 @@ setEffectByName                  KEYWORD2
 setEffectByIdx                   KEYWORD2
 setNextEffect                    KEYWORD2
 setRunningString                 KEYWORD2
-pause                            KEYWORD2
-resume                           KEYWORD2
 refresh                          KEYWORD2
-isRunning                        KEYWORD2
+turnOn                           KEYWORD2
+turnOf                           KEYWORD2
+isOn                             KEYWORD2
 
 #########################################
 # Constants (LITERAL1)

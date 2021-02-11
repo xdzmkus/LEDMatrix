@@ -30,7 +30,7 @@ public:
 	RunningStringMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, String text, CRGB color = CRGB::Black, uint8_t yOffset = 0);
 	~RunningStringMatrixLedEffect();
 
-	void init() override;
+	void reset() override;
 	bool paint() override;
 
 	operator const char* () const { return name; }

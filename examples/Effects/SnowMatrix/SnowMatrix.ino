@@ -36,6 +36,8 @@ void setup()
 	setupLED();
 
 	effect = new SnowMatrixLedEffect(&matrix, leds, NUM_LEDS, 2);
+
+	effect->start();
 }
 
 

@@ -37,6 +37,8 @@ void setup()
 	setupLED();
 
 	effect = new BugsMatrixLedEffect(&matrix, leds, NUM_LEDS, 10, random8(MATRIX_H, MATRIX_W));
+
+	effect->start();
 }
 
 

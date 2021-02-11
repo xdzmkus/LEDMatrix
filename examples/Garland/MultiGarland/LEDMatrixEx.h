@@ -22,8 +22,22 @@ public:
 	{
 	}
 
-	virtual void pause() { isOn = false; }
-	virtual void resume() { isOn = true; }
+	virtual void pause()
+	{
+		isOn = false;
+		for (uint8_t x = 0; x < numEffects; x++)
+		{
+			effects[x]->stop();
+		}
+	}
+	virtual void resume()
+	{
+		isOn = true;
+		for (uint8_t x = 0; x < numEffects; x++)
+		{
+			effects[x]->start();
+		}
+	}
 
 	virtual bool isChanged()
 	{

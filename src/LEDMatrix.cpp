@@ -30,8 +30,8 @@ const char* LEDMatrix::availableEffects[NUM_EFFECTS] =
 	StarfallMatrixLedEffect::name
 };
 
-LEDMatrix::LEDMatrix(IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, bool start)
-	: LEDLine(leds, count, start), matrix(converter)
+LEDMatrix::LEDMatrix(IMatrixToLineConverter* converter, CRGB leds[], uint16_t count)
+	: LEDLine(leds, count), matrix(converter)
 {
 	text = String(RunningStringMatrixLedEffect::name);
 }
@@ -53,6 +53,8 @@ const char* const* LEDMatrix::getAllEffectsNames() const
 
 bool LEDMatrix::setEffectByName(const char* effectName)
 {
+	bool restart = isOn();
+
 	if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
 		delete effect; effect = new BouncingBallsMatrixLedEffect(matrix, leds, numLeds, 10);
 	}
@@ -82,6 +84,12 @@ bool LEDMatrix::setEffectByName(const char* effectName)
 	}
 	else {
 		return LEDLine::setEffectByName(effectName);
+	}
+
+	// start new effect if previous one was started
+	if (restart)
+	{
+		turnOn();
 	}
 
 	return true;

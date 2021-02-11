@@ -36,6 +36,8 @@ void setup()
 	setupLED();
 
 	effect = new StarfallMatrixLedEffect(&matrix, leds, NUM_LEDS, 10);
+
+	effect->start();
 }
 
 

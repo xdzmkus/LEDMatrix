@@ -35,6 +35,8 @@
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
+#define EFFECT_DURATION_SEC 45
+
 uint16_t brightness = MAX_BRIGHTNESS / 3;
 
 CRGB leds[(MATRIX_H * MATRIX_W)];
@@ -46,7 +48,6 @@ ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> converter;
 LEDMatrixEx ledMatrix(&converter, leds, (MATRIX_H * MATRIX_W));
 
 #include <Ticker.h>
-#define EFFECT_DURATION_SEC 45
 Ticker tickerEffects;
 
 volatile boolean f_publishState = true;
@@ -79,7 +80,8 @@ void turnOnLeds()
 {
     tickerEffects.attach(EFFECT_DURATION_SEC, changeEffect);
 
-    ledMatrix.resume();
+    ledMatrix.setEffectByIdx(0);
+    ledMatrix.turnOn();
 
     f_publishState = true;
 }
@@ -88,7 +90,7 @@ void turnOffLeds()
 {
     tickerEffects.detach();
 
-    ledMatrix.pause();
+    ledMatrix.turnOff();
 
     f_publishState = true;
 
@@ -179,7 +181,7 @@ void newRunningString_callback(char* data, uint16_t len)
 
 void publishState()
 {
-    auto currentEffect = (ledMatrix.getEffectName() == nullptr || !ledMatrix.isRunning()) ? "OFF" : ledMatrix.getEffectName();
+    auto currentEffect = (ledMatrix.getEffectName() == nullptr || !ledMatrix.isOn()) ? "OFF" : ledMatrix.getEffectName();
 
     Serial.print(F("Publish message: "));
     Serial.println(currentEffect);

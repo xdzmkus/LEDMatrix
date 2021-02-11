@@ -53,9 +53,8 @@ private:
 
 public:
 
-	LEDMatrixEx(IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, bool start = false) : LEDMatrix(converter, leds, count, start)
+	LEDMatrixEx(IMatrixToLineConverter* converter, CRGB leds[], uint16_t count) : LEDMatrix(converter, leds, count)
 	{
-		setEffectByIdx(0);
 	};
 
 	~LEDMatrixEx()
@@ -74,6 +73,8 @@ public:
 
 	bool setEffectByName(const char* effectName) override
 	{
+		bool restart = isOn();
+
 		if (strcmp(ThreeColorLedEffect::name, effectName) == 0) {
 			delete effect; effect = new ThreeColorLedEffect(leds, numLeds, 30, { CRGB::White, 3, CRGB::Red, 2, CRGB::White, 3 });
 		}
@@ -131,6 +132,12 @@ public:
 		}
 		else {
 			return LEDMatrix::setEffectByName(effectName);
+		}
+
+		// start new effect if previous one was started
+		if (restart)
+		{
+			turnOn();
 		}
 
 		return true;

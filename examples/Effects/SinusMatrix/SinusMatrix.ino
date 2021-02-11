@@ -36,6 +36,8 @@ void setup()
 	setupLED();
 
 	effect = new SinusMatrixLedEffect(&matrix, leds, NUM_LEDS, 50);
+
+	effect->start();
 }
 
 

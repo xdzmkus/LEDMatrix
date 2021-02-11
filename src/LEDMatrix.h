@@ -19,7 +19,7 @@ private:
 
 public:
 
-	LEDMatrix(IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, bool start = false);
+	LEDMatrix(IMatrixToLineConverter* converter, CRGB leds[], uint16_t count);
 
 	virtual ~LEDMatrix();
 

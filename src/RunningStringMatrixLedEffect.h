@@ -27,7 +27,7 @@ private:
 
 public:
 
-	RunningStringMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, String text, CRGB color = CRGB::Black, uint8_t yOffset = 0);
+	RunningStringMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, String text, uint8_t yOffset = 0, CRGB color = CRGB::Black);
 	~RunningStringMatrixLedEffect();
 
 	void reset() override;

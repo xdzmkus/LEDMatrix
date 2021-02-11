@@ -50,7 +50,7 @@ public:
 
 	LEDMatrixEx(IMatrixToLineConverter* converter, CRGB leds[], uint16_t count) : LEDMatrix(converter, leds, count)
 	{
-		text = "2021";
+		text = String(":) 2021 (:");
 	};
 
 	~LEDMatrixEx()
@@ -87,7 +87,7 @@ public:
 			delete effect; effect = new GravityMatrixLedEffect(matrix, leds, numLeds, random8(5, 30));
 		}
 		else if (strcmp(RunningStringMatrixLedEffect::name, effectName) == 0) {
-			delete effect; effect = new RunningStringMatrixLedEffect(matrix, leds, numLeds, random(5, 30), text, 1);
+			delete effect; effect = new RunningStringMatrixLedEffect(matrix, leds, numLeds, random(5, 30), text);
 		}
 		else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new SinusMatrixLedEffect(matrix, leds, numLeds, random(10, 50));

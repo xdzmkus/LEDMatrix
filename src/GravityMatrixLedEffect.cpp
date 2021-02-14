@@ -7,12 +7,12 @@
 
 const char* const GravityMatrixLedEffect::name = "GRAVITY";
 
-GravityMatrixLedEffect::GravityMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
-	: ILedEffect(leds, count, Hz), converter(converter)
+GravityMatrixLedEffect::GravityMatrixLedEffect(ILedMatrix* converter, uint16_t Hz)
+	: ILedEffect(Hz), matrix(converter)
 {
-	gravities = new GRAVITY[converter->getWidth()];
+	gravities = new GRAVITY[matrix->getWidth()];
 
-	clearAllLeds();
+	matrix->clearAllLeds();
 
 	reset();
 }
@@ -31,9 +31,9 @@ void GravityMatrixLedEffect::reset()
 
 	if (gravities != nullptr)
 	{
-		uint8_t max = converter->getHeight() - 1;
+		uint8_t max = matrix->getHeight() - 1;
 
-		for (uint8_t x = 0; x < converter->getWidth(); x++)
+		for (uint8_t x = 0; x < matrix->getWidth(); x++)
 		{
 			gravities[x].color = ColorFromPalette(RainbowColors_p, x * 7 + hue, 255);
 			gravities[x].startTime = getClock();
@@ -52,7 +52,7 @@ bool GravityMatrixLedEffect::paint()
 
 	bool allGround = true;
 
-	for (uint8_t x = 0; x < converter->getWidth(); x++)
+	for (uint8_t x = 0; x < matrix->getWidth(); x++)
 	{
 		if (gravities[x].height > 0)
 		{
@@ -68,11 +68,11 @@ bool GravityMatrixLedEffect::paint()
 				allGround = false;
 			}
 
-			ledLine[converter->getPixelNumber(x, gravities[x].position)] = CRGB::Black;
+			matrix->getPixel(x, gravities[x].position) = CRGB::Black;
 
 			gravities[x].position = round(gravities[x].height);
 
-			ledLine[converter->getPixelNumber(x, gravities[x].position)] = gravities[x].color;
+			matrix->getPixel(x, gravities[x].position) = gravities[x].color;
 		}
 	}
 

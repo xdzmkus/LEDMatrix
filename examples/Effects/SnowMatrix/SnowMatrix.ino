@@ -16,7 +16,7 @@ CRGB leds[NUM_LEDS];
 #include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "SnowMatrixLedEffect.h"
 
-ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
+ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
 SnowMatrixLedEffect* effect;
 
 void setupLED()
@@ -35,7 +35,7 @@ void setup()
 
 	setupLED();
 
-	effect = new SnowMatrixLedEffect(&matrix, leds, NUM_LEDS, 2);
+	effect = new SnowMatrixLedEffect(&matrix, 3);
 
 	effect->start();
 }

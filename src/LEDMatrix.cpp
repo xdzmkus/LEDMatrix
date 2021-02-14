@@ -30,8 +30,8 @@ const char* LEDMatrix::availableEffects[NUM_EFFECTS] =
 	StarfallMatrixLedEffect::name
 };
 
-LEDMatrix::LEDMatrix(IMatrixToLineConverter* converter, CRGB leds[], uint16_t count)
-	: LEDLine(leds, count), matrix(converter)
+LEDMatrix::LEDMatrix(ILedMatrix* converter)
+	: LEDLine(converter->getAllPixels(), converter->getHeight() * converter->getWidth()), matrix(converter)
 {
 	text = String(RunningStringMatrixLedEffect::name);
 }
@@ -56,31 +56,31 @@ bool LEDMatrix::setEffectByName(const char* effectName)
 	bool restart = isOn();
 
 	if (strcmp(BouncingBallsMatrixLedEffect::name, effectName) == 0) {
-		delete effect; effect = new BouncingBallsMatrixLedEffect(matrix, leds, numLeds, 10);
+		delete effect; effect = new BouncingBallsMatrixLedEffect(matrix, 10);
 	}
 	else if (strcmp(BugsMatrixLedEffect::name, effectName) == 0) {
-		delete effect; effect = new BugsMatrixLedEffect(matrix, leds, numLeds, 10);
+		delete effect; effect = new BugsMatrixLedEffect(matrix, 10);
 	}
 	else if (strcmp(FireMatrixLedEffect::name, effectName) == 0) {
-		delete effect; effect = new FireMatrixLedEffect(matrix, leds, numLeds, 10);
+		delete effect; effect = new FireMatrixLedEffect(matrix, 10);
 	}
 	else if (strcmp(GravityMatrixLedEffect::name, effectName) == 0) {
-		delete effect; effect = new GravityMatrixLedEffect(matrix, leds, numLeds, 10);
+		delete effect; effect = new GravityMatrixLedEffect(matrix, 10);
 	}
 	else if (strcmp(NoiseMatrixLedEffect::name, effectName) == 0) {
-		delete effect; effect = new NoiseMatrixLedEffect(matrix, leds, numLeds, 10, wrwPalette);
+		delete effect; effect = new NoiseMatrixLedEffect(matrix, 10, wrwPalette);
 	}
 	else if (strcmp(RunningStringMatrixLedEffect::name, effectName) == 0) {
-		delete effect; effect = new RunningStringMatrixLedEffect(matrix, leds, numLeds, 10, text);
+		delete effect; effect = new RunningStringMatrixLedEffect(matrix, 10, text);
 	}
 	else if (strcmp(SinusMatrixLedEffect::name, effectName) == 0) {
-		delete effect; effect = new SinusMatrixLedEffect(matrix, leds, numLeds, 10);
+		delete effect; effect = new SinusMatrixLedEffect(matrix, 10);
 	}
 	else if (strcmp(SnowMatrixLedEffect::name, effectName) == 0) {
-		delete effect; effect = new SnowMatrixLedEffect(matrix, leds, numLeds, 2);
+		delete effect; effect = new SnowMatrixLedEffect(matrix, 2);
 	}
 	else if (strcmp(StarfallMatrixLedEffect::name, effectName) == 0) {
-		delete effect; effect = new StarfallMatrixLedEffect(matrix, leds, numLeds, 10);
+		delete effect; effect = new StarfallMatrixLedEffect(matrix, 10);
 	}
 	else {
 		return LEDLine::setEffectByName(effectName);

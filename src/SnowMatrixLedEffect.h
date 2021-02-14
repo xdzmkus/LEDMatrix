@@ -7,7 +7,7 @@
 #define __SNOWMATRIXLEDEFFECT_H__
 
 #include <ILedEffect.h>
-#include "IMatrixToLineConverter.h"
+#include "ILedMatrix.h"
 
 class SnowMatrixLedEffect : public ILedEffect
 {
@@ -17,7 +17,7 @@ public:
 
 private:
 
-	const IMatrixToLineConverter* converter;
+	ILedMatrix* matrix;
 
 	const uint16_t snowflakeCount;
 
@@ -25,7 +25,7 @@ private:
 
 public:
 
-	SnowMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t fadeSpeed = 70);
+	SnowMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, uint8_t fadeSpeed = 70);
 	~SnowMatrixLedEffect();
 
 	void reset() override;

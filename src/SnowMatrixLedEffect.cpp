@@ -7,8 +7,8 @@
 
 const char* const SnowMatrixLedEffect::name = "SNOW";
 
-SnowMatrixLedEffect::SnowMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t fadeSpeed)
-	: ILedEffect(leds, count, Hz), converter(converter), snowflakeCount(count/10), fade(fadeSpeed)
+SnowMatrixLedEffect::SnowMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, uint8_t fadeSpeed)
+	: ILedEffect(Hz), matrix(converter), snowflakeCount(converter->getWidth()), fade(fadeSpeed)
 {
 	reset();
 }
@@ -20,7 +20,7 @@ SnowMatrixLedEffect::~SnowMatrixLedEffect()
 void SnowMatrixLedEffect::reset()
 {
 	ILedEffect::reset();
-	clearAllLeds();
+	matrix->clearAllLeds();
 }
 
 bool SnowMatrixLedEffect::paint()
@@ -33,49 +33,49 @@ bool SnowMatrixLedEffect::paint()
 	if (random8() % 2 == 0)
 	{
 		// shift down all lines and fade
-		for (uint8_t y = 0; y < converter->getHeight() - 1; y++)
+		for (uint8_t y = 0; y < matrix->getHeight() - 1; y++)
 		{
 			// shift left all lines
-			for (uint8_t x = 0; x < converter->getWidth() - 1; x++)
+			for (uint8_t x = 0; x < matrix->getWidth() - 1; x++)
 			{
-				ledLine[converter->getPixelNumber(x, y)] = ledLine[converter->getPixelNumber(x + 1, y + 1)].subtractFromRGB(fade);
-				if (ledLine[converter->getPixelNumber(x, y)])
+				matrix->getPixel(x, y) = matrix->getPixel(x + 1, y + 1).subtractFromRGB(fade);
+				if (matrix->getPixel(x, y))
 					restSnowflakes++;
 			}
 			// clear right column
-			ledLine[converter->getPixelNumber(converter->getWidth() - 1, y)] = CRGB::Black;
+			matrix->getPixel(matrix->getWidth() - 1, y) = CRGB::Black;
 		}
 	}
 	else
 	{
 		// shift down all lines and fade
-		for (uint8_t y = 0; y < converter->getHeight() - 1; y++)
+		for (uint8_t y = 0; y < matrix->getHeight() - 1; y++)
 		{
 			// shift right all lines
-			for (uint8_t x = converter->getWidth() - 1; x > 0; x--)
+			for (uint8_t x = matrix->getWidth() - 1; x > 0; x--)
 			{
-				ledLine[converter->getPixelNumber(x, y)] = ledLine[converter->getPixelNumber(x - 1, y + 1)].subtractFromRGB(fade);
-				if (ledLine[converter->getPixelNumber(x, y)])
+				matrix->getPixel(x, y) = matrix->getPixel(x - 1, y + 1).subtractFromRGB(fade);
+				if (matrix->getPixel(x, y))
 					restSnowflakes++;
 			}
 			// clear left column
-			ledLine[converter->getPixelNumber(0, y)] = CRGB::Black;
+			matrix->getPixel(0, y) = CRGB::Black;
 		}
 	}
 
 	// clear top line
-	for (uint8_t x = 0; x < converter->getWidth(); x++)
+	for (uint8_t x = 0; x < matrix->getWidth(); x++)
 	{
-		ledLine[converter->getPixelNumber(x, converter->getHeight() - 1)] = CRGB::Black;
+		matrix->getPixel(x, matrix->getHeight() - 1) = CRGB::Black;
 	}
 
 	// fill randomly snowflakes
 	while (restSnowflakes < snowflakeCount)
 	{
-		uint8_t x = random8(0, converter->getWidth());
-		uint8_t y = random8(1, converter->getHeight());
+		uint8_t x = random8(0, matrix->getWidth());
+		uint8_t y = random8(1, matrix->getHeight());
 
-		ledLine[converter->getPixelNumber(x, y)] = CRGB::White;
+		matrix->getPixel(x, y) = CRGB::White;
 
 		restSnowflakes++;
 	}

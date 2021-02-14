@@ -29,8 +29,8 @@ CRGB leds[(MATRIX_H * MATRIX_W)];
 
 #include "LEDMatrix.h"
 #include "ZigZagFromBottomRightToUpAndLeft.h"
-ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> converter;
-LEDMatrix ledMatrix(&converter, leds, (MATRIX_H * MATRIX_W));
+ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
+LEDMatrix ledMatrix(&matrix);
 
 void loadEffect()
 {

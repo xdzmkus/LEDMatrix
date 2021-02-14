@@ -8,7 +8,7 @@
 
 #include <FastLED.h>
 #include "LEDLine.h"
-#include "IMatrixToLineConverter.h"
+#include "ILedMatrix.h"
 
 class LEDMatrix : public LEDLine
 {
@@ -19,7 +19,7 @@ private:
 
 public:
 
-	LEDMatrix(IMatrixToLineConverter* converter, CRGB leds[], uint16_t count);
+	LEDMatrix(ILedMatrix* converter);
 
 	virtual ~LEDMatrix();
 
@@ -34,7 +34,7 @@ public:
 
 protected:
 
-	IMatrixToLineConverter* matrix;
+	ILedMatrix* matrix;
 
 	String text;
 

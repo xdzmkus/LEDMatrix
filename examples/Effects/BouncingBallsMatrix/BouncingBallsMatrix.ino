@@ -16,7 +16,7 @@ CRGB leds[NUM_LEDS];
 #include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "BouncingBallsMatrixLedEffect.h"
 
-ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
+ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
 BouncingBallsMatrixLedEffect* effect;
 
 
@@ -36,7 +36,7 @@ void setup()
 
 	setupLED();
 
-	effect = new BouncingBallsMatrixLedEffect(&matrix, leds, NUM_LEDS, 50, 3);
+	effect = new BouncingBallsMatrixLedEffect(&matrix, 50, 3);
 
 	effect->start();
 }

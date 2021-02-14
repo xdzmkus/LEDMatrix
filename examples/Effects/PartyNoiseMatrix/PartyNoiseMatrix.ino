@@ -16,11 +16,12 @@ CRGB leds[NUM_LEDS];
 #include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "NoiseMatrixLedEffect.h"
 
-ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
+ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
 NoiseMatrixLedEffect* effect;
 
-#include <Ticker.h>
 #define EFFECT_DURATION_SEC 30
+
+#include <Ticker.h>
 Ticker tickerEffects;
 volatile boolean f_changeEffect = false;
 
@@ -38,7 +39,7 @@ void changeEffect()
 
 	delete effect;
 
-	effect = new NoiseMatrixLedEffect(&matrix, leds, NUM_LEDS, speed, PartyColors_p, zoom);
+	effect = new NoiseMatrixLedEffect(&matrix, speed, PartyColors_p, zoom);
 
 	effect->start();
 }
@@ -61,7 +62,7 @@ void setup()
 
 	tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
 
-	effect = new NoiseMatrixLedEffect(&matrix, leds, NUM_LEDS, 15, PartyColors_p);
+	effect = new NoiseMatrixLedEffect(&matrix, 15, PartyColors_p);
 
 	effect->start();
 }

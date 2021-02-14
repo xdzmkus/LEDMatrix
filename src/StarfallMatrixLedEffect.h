@@ -7,7 +7,7 @@
 #define __STARFALLMATRIXLEDEFFECT_H__
 
 #include <ILedEffect.h>
-#include "IMatrixToLineConverter.h"
+#include "ILedMatrix.h"
 
 class StarfallMatrixLedEffect : public ILedEffect
 {
@@ -17,14 +17,14 @@ public:
 
 private:
 
-	const IMatrixToLineConverter* converter;
+	ILedMatrix* matrix;
 	const CRGB rgb;
 
 	CRGB fade;
 
 public:
 
-	StarfallMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, CRGB color = CRGB::Black);
+	StarfallMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, CRGB color = CRGB::Black);
 	~StarfallMatrixLedEffect();
 
 	void reset() override;

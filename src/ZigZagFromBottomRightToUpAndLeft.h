@@ -11,20 +11,30 @@ Y    |  12  11  4   3
 #ifndef __ZigZagFromBottomRightToUpAndLeft_H__
 #define __ZigZagFromBottomRightToUpAndLeft_H__
 
-#include "IMatrixToLineConverter.h"
+#include "ILedMatrix.h"
 
-template <uint8_t WIDTH, uint8_t HEIGHT>
-class ZigZagFromBottomRightToUpAndLeft : public IMatrixToLineConverter
+class ZigZagFromBottomRightToUpAndLeft : public ILedMatrix
 {
 public:
-	uint8_t getWidth() const { return WIDTH; }
-	uint8_t getHeight() const { return HEIGHT; }
+
+	ZigZagFromBottomRightToUpAndLeft(CRGB leds[], uint8_t width, uint8_t height)
+		: ILedMatrix(leds, width, height)
+	{
+	};
+
+	~ZigZagFromBottomRightToUpAndLeft()
+	{
+	};
+
+
+protected:
+
 	uint16_t getPixelNumber(uint8_t x, uint8_t y) const
 	{
-		if (x >= WIDTH) x = WIDTH - 1;
-		if (y >= HEIGHT) y = HEIGHT - 1;
+		if (x >= getWidth()) x = getWidth() - 1;
+		if (y >= getHeight()) y = getHeight() - 1;
 
-		return ((WIDTH - 1 - x) * HEIGHT) + (((WIDTH - x) % 2 == 1) ? y : (HEIGHT - 1 - y));
+		return ((getWidth() - 1 - x) * getHeight()) + (((getWidth() - x) % 2 == 1) ? y : (getHeight() - 1 - y));
 	}
 };
 

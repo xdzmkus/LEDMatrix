@@ -10,7 +10,7 @@
 #define MATRIX_WIDTH 9
 
 #include <ILedEffect.h>
-#include "IMatrixToLineConverter.h"
+#include "ILedMatrix.h"
 
 class FireMatrixLedEffect : public ILedEffect
 {
@@ -24,7 +24,7 @@ public:
 
 private:
 
-	const IMatrixToLineConverter* converter;
+	ILedMatrix* matrix;
 
 protected:
 
@@ -35,7 +35,7 @@ protected:
 
 public:
 
-	FireMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz);
+	FireMatrixLedEffect(ILedMatrix* converter, uint16_t Hz);
 	~FireMatrixLedEffect();
 
 	void reset() override;

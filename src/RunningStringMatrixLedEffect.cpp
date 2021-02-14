@@ -7,8 +7,8 @@
 
 const char* const RunningStringMatrixLedEffect::name = "RUNNINGSTRING";
 
-RunningStringMatrixLedEffect::RunningStringMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, String text, uint8_t yOffset, CRGB color)
-	: ILedEffect(leds, count, Hz), converter(converter), str(text), yOffset(yOffset), rgb(color ? color : getRandomColor())
+RunningStringMatrixLedEffect::RunningStringMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, String text, uint8_t yOffset, CRGB color)
+	: ILedEffect(Hz), matrix(converter), str(text), yOffset(yOffset), rgb(color ? color : matrix->getRandomColor())
 {
 	reset();
 }
@@ -21,9 +21,9 @@ void RunningStringMatrixLedEffect::reset()
 {
     ILedEffect::reset();
 
-    offset = converter->getWidth();
+    offset = matrix->getWidth();
 
-    clearAllLeds();
+    matrix->clearAllLeds();
 }
 
 bool RunningStringMatrixLedEffect::paint()
@@ -31,7 +31,7 @@ bool RunningStringMatrixLedEffect::paint()
     if (!isReady())
         return false;
 
-    clearAllLeds();
+    matrix->clearAllLeds();
 
     for (uint8_t i = 0; i < str.length(); i++)
     {
@@ -68,14 +68,14 @@ uint8_t RunningStringMatrixLedEffect::get5x8Column(unsigned char ascii, uint8_t 
 void RunningStringMatrixLedEffect::draw5x8Letter(unsigned char ascii, CRGB color, int16_t xOffset, int16_t yOffset)
 {
     // check if oversized
-    if (xOffset >= converter->getWidth() || yOffset >= converter->getHeight() || xOffset <= -5 || yOffset <= -8)
+    if (xOffset >= matrix->getWidth() || yOffset >= matrix->getHeight() || xOffset <= -5 || yOffset <= -8)
         return;
 
     // get visible part of character
     uint8_t firstColumn = xOffset >= 0 ? 0 : -xOffset;
-    uint8_t lastColumn = min(5, converter->getWidth() - xOffset);
+    uint8_t lastColumn = min(5, matrix->getWidth() - xOffset);
     uint8_t firstRow = yOffset >= 0 ? 0 : -yOffset;
-    uint8_t lastRow = min(8, converter->getHeight() - yOffset);
+    uint8_t lastRow = min(8, matrix->getHeight() - yOffset);
 
     // draw char
     for (uint8_t x = firstColumn; x < lastColumn; x++)
@@ -84,7 +84,7 @@ void RunningStringMatrixLedEffect::draw5x8Letter(unsigned char ascii, CRGB color
 
         for (uint8_t y = firstRow; y < lastRow; y++)
         {
-            ledLine[converter->getPixelNumber(xOffset + x, yOffset + y)] = (columnByte & (1 << (7 - y))) ? color : CRGB::Black;
+            matrix->getPixel(xOffset + x, yOffset + y) = (columnByte & (1 << (7 - y))) ? color : CRGB::Black;
         }
     }
 }

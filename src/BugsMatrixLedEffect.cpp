@@ -7,8 +7,8 @@
 
 const char* const BugsMatrixLedEffect::name = "BUGS";
 
-BugsMatrixLedEffect::BugsMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugsCount)
-	: ILedEffect(leds, count, Hz), converter(converter), numBugs(bugsCount)
+BugsMatrixLedEffect::BugsMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, uint8_t bugsCount)
+	: ILedEffect(Hz), matrix(converter), numBugs(bugsCount)
 {
 	if (numBugs > 0)
 	{
@@ -35,15 +35,15 @@ void BugsMatrixLedEffect::reset()
 	{
 		for (uint8_t i = 0; i < numBugs; i++)
 		{
-			bugs[i].color = getRandomColor();
-			bugs[i].xPos = random8(0, converter->getWidth());
-			bugs[i].yPos = random8(0, converter->getHeight());
+			bugs[i].color = matrix->getRandomColor();
+			bugs[i].xPos = random8(0, matrix->getWidth());
+			bugs[i].yPos = random8(0, matrix->getHeight());
 			bugs[i].speed += random(-5, 6);
 			bugs[i].hvDir = static_cast<bool>(random8() % 2);
 		}
 	}
 
-	clearAllLeds();
+	matrix->clearAllLeds();
 }
 
 bool BugsMatrixLedEffect::paint()
@@ -53,7 +53,7 @@ bool BugsMatrixLedEffect::paint()
 		
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
-		ledLine[converter->getPixelNumber(bugs[i].xPos, bugs[i].yPos)] -= bugs[i].color;
+		matrix->getPixel(bugs[i].xPos, bugs[i].yPos) -= bugs[i].color;
 
 		bugs[i].speed += random(-5, 6);
 		if (abs(bugs[i].speed) > BUGS_MAX_SPEED)
@@ -65,10 +65,10 @@ bool BugsMatrixLedEffect::paint()
 		if (bugs[i].hvDir)
 		{
 			int16_t newXpos = bugs[i].xPos + bugs[i].speed / 10;
-			if (newXpos < 0 || newXpos >= converter->getWidth())
+			if (newXpos < 0 || newXpos >= matrix->getWidth())
 			{
 				bugs[i].hvDir = !bugs[i].hvDir;
-				bugs[i].xPos = constrain(newXpos, 0, converter->getWidth() - 1);
+				bugs[i].xPos = constrain(newXpos, 0, matrix->getWidth() - 1);
 			}
 			else
 			{
@@ -78,10 +78,10 @@ bool BugsMatrixLedEffect::paint()
 		else
 		{
 			int16_t newYpos = bugs[i].yPos + bugs[i].speed / 10;
-			if (newYpos < 0 || newYpos >= converter->getHeight())
+			if (newYpos < 0 || newYpos >= matrix->getHeight())
 			{
 				bugs[i].hvDir = !bugs[i].hvDir;
-				bugs[i].yPos = constrain(newYpos, 0, converter->getHeight() - 1);
+				bugs[i].yPos = constrain(newYpos, 0, matrix->getHeight() - 1);
 			}
 			else
 			{
@@ -89,7 +89,7 @@ bool BugsMatrixLedEffect::paint()
 			}
 		}
     
-		ledLine[converter->getPixelNumber(bugs[i].xPos, bugs[i].yPos)] += bugs[i].color;
+		matrix->getPixel(bugs[i].xPos, bugs[i].yPos) += bugs[i].color;
 	}
 
 	return true;

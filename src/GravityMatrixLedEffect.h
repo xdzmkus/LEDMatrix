@@ -7,7 +7,7 @@
 #define __GRAVITYMATRIXLEDEFFECT_H__
 
 #include <ILedEffect.h>
-#include "IMatrixToLineConverter.h"
+#include "ILedMatrix.h"
 
 class GravityMatrixLedEffect : public ILedEffect
 {
@@ -17,7 +17,7 @@ public:
 
 private:
 
-	const IMatrixToLineConverter* converter;
+	ILedMatrix* matrix;
 
 	const float Gravity = 9.8;
 
@@ -35,7 +35,7 @@ private:
 
 public:
 
-	GravityMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz);
+	GravityMatrixLedEffect(ILedMatrix* converter, uint16_t Hz);
 	~GravityMatrixLedEffect();
 
 	void reset() override;

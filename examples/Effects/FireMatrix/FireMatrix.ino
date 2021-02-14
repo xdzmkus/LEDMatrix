@@ -16,7 +16,7 @@ CRGB leds[NUM_LEDS];
 #include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "FireMatrixLedEffect.h"
 
-ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
+ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
 FireMatrixLedEffect* effect;
 
 void setupLED()
@@ -35,7 +35,7 @@ void setup()
 
 	setupLED();
 
-	effect = new FireMatrixLedEffect(&matrix, leds, NUM_LEDS, 10);
+	effect = new FireMatrixLedEffect(&matrix, 10);
 
 	effect->start();
 }

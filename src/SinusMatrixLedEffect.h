@@ -7,7 +7,7 @@
 #define __SINUSMATRIXLEDEFFECT_H__
 
 #include <ILedEffect.h>
-#include "IMatrixToLineConverter.h"
+#include "ILedMatrix.h"
 
 class SinusMatrixLedEffect : public ILedEffect
 {
@@ -17,13 +17,13 @@ public:
 
 private:
 
-	const IMatrixToLineConverter* converter;
+	ILedMatrix* matrix;
 
 	uint8_t hue;
 
 public:
 
-	SinusMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz);
+	SinusMatrixLedEffect(ILedMatrix* converter, uint16_t Hz);
 	~SinusMatrixLedEffect();
 
 	void reset() override;

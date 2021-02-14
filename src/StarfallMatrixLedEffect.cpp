@@ -7,10 +7,10 @@
 
 const char* const StarfallMatrixLedEffect::name = "STARFALL";
 
-StarfallMatrixLedEffect::StarfallMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, CRGB color)
-	: ILedEffect(leds, count, Hz), converter(converter), rgb(color ? color : getRandomColor())
+StarfallMatrixLedEffect::StarfallMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, CRGB color)
+	: ILedEffect(Hz), matrix(converter), rgb(color ? color : matrix->getRandomColor())
 {
-	fade = CRGB(1 + rgb.r/(converter->getHeight()+1), 1 + rgb.g/(converter->getHeight()+1), 1 + rgb.b/(converter->getHeight()+1));
+	fade = CRGB(1 + rgb.r/(matrix->getHeight()+1), 1 + rgb.g/(matrix->getHeight()+1), 1 + rgb.b/(matrix->getHeight()+1));
 
 	reset();
 }
@@ -22,7 +22,7 @@ StarfallMatrixLedEffect::~StarfallMatrixLedEffect()
 void StarfallMatrixLedEffect::reset()
 {
 	ILedEffect::reset();
-	clearAllLeds();
+	matrix->clearAllLeds();
 }
 
 bool StarfallMatrixLedEffect::paint()
@@ -30,24 +30,22 @@ bool StarfallMatrixLedEffect::paint()
 	if (!isReady())
 		return false;
 
-	for (uint8_t x = 0; x < converter->getWidth(); x++)
+	for (uint8_t x = 0; x < matrix->getWidth(); x++)
 	{
 		// shift down all lines
-		for (uint8_t y = 0; y < converter->getHeight() - 1; y++)
+		for (uint8_t y = 0; y < matrix->getHeight() - 1; y++)
 		{
-			ledLine[converter->getPixelNumber(x, y)] = ledLine[converter->getPixelNumber(x, y + 1)];
+			matrix->getPixel(x, y) = matrix->getPixel(x, y + 1);
 		}
 
 		// fill randomly top line
-		uint16_t pixel = converter->getPixelNumber(x, converter->getHeight() - 1);
-
-		if (!ledLine[pixel] && random8(0, converter->getWidth()) == 0)
+		if (!matrix->getPixel(x, matrix->getHeight() - 1) && random8(0, matrix->getWidth()) == 0)
 		{
-			ledLine[pixel] = rgb;
+			matrix->getPixel(x, matrix->getHeight() - 1) = rgb;
 		}
 		else
 		{
-			ledLine[pixel] -= fade;
+			matrix->getPixel(x, matrix->getHeight() - 1) -= fade;
 		}
 	}
 	return true;

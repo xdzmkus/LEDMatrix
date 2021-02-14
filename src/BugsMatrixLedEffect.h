@@ -7,7 +7,7 @@
 #define __BUGSMATRIXLEDEFFECT_H__
 
 #include "ILedEffect.h"
-#include "IMatrixToLineConverter.h"
+#include "ILedMatrix.h"
 
 class BugsMatrixLedEffect : public ILedEffect
 {
@@ -17,7 +17,7 @@ public:
 
 protected:
 
-	const IMatrixToLineConverter* converter;
+	ILedMatrix* matrix;
 
 	const uint8_t BUGS_MAX_SPEED = 20;
 
@@ -34,7 +34,7 @@ protected:
 	*bugs = nullptr;
 
 public:
-	BugsMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t bugs = 1);
+	BugsMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, uint8_t bugs = 1);
 	~BugsMatrixLedEffect();
 	
 	void reset() override;

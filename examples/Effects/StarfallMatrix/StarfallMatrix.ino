@@ -16,7 +16,7 @@ CRGB leds[NUM_LEDS];
 #include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "StarfallMatrixLedEffect.h"
 
-ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
+ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
 StarfallMatrixLedEffect* effect;
 
 void setupLED()
@@ -35,7 +35,7 @@ void setup()
 
 	setupLED();
 
-	effect = new StarfallMatrixLedEffect(&matrix, leds, NUM_LEDS, 10);
+	effect = new StarfallMatrixLedEffect(&matrix, 10);
 
 	effect->start();
 }

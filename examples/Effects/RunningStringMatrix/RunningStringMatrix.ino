@@ -16,7 +16,7 @@ CRGB leds[NUM_LEDS];
 #include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "RunningStringMatrixLedEffect.h"
 
-ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
+ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
 RunningStringMatrixLedEffect* effect;
 
 void setupLED()
@@ -35,7 +35,7 @@ void setup()
 
 	setupLED();
 
-	effect = new RunningStringMatrixLedEffect(&matrix, leds, NUM_LEDS, 10, RunningStringMatrixLedEffect::name);
+	effect = new RunningStringMatrixLedEffect(&matrix, 10, RunningStringMatrixLedEffect::name);
 
 	effect->start();
 }

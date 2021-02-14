@@ -5,16 +5,16 @@
 
 #include "BouncingBallsMatrixLedEffect.h"
 
-const char* const BouncingBallsMatrixLedEffect::name = "BOUNSINGBALLS";
+const char* const BouncingBallsMatrixLedEffect::name = "BOUNCINGBALLS";
 
-BouncingBallsMatrixLedEffect::BouncingBallsMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t maxBallsCount)
-	: ILedEffect(leds, count, Hz), converter(converter), MaxVelocity(sqrt(2 * Gravity * (converter->getHeight() - 1)))
+BouncingBallsMatrixLedEffect::BouncingBallsMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, uint8_t maxBallsCount)
+	: ILedEffect(Hz), matrix(converter), MaxVelocity(sqrt(2 * Gravity * (converter->getHeight() - 1)))
 {
-	bouncingColumns = new BOUNCING_COLUMN[converter->getWidth()];
+	bouncingColumns = new BOUNCING_COLUMN[matrix->getWidth()];
 
 	if (bouncingColumns != nullptr)
 	{
-		for (uint8_t x = 0; x < converter->getWidth(); x++)
+		for (uint8_t x = 0; x < matrix->getWidth(); x++)
 		{
 			bouncingColumns[x].numBalls = (x % maxBallsCount == 0) ? random8(1, maxBallsCount + 1) : 0;
 			if (bouncingColumns[x].numBalls != 0)
@@ -33,7 +33,7 @@ BouncingBallsMatrixLedEffect::~BouncingBallsMatrixLedEffect()
 {
 	if (bouncingColumns != nullptr)
 	{
-		for (uint8_t x = 0; x < converter->getWidth(); x++)
+		for (uint8_t x = 0; x < matrix->getWidth(); x++)
 		{
 			if (bouncingColumns[x].numBalls != 0)
 				delete[] bouncingColumns[x].balls;
@@ -48,11 +48,11 @@ void BouncingBallsMatrixLedEffect::reset()
 
 	if (bouncingColumns != nullptr)
 	{
-		for (uint8_t x = 0; x < converter->getWidth(); x++)
+		for (uint8_t x = 0; x < matrix->getWidth(); x++)
 		{
 			for (uint8_t i = 0; i < bouncingColumns[x].numBalls; i++)
 			{
-				bouncingColumns[x].balls[i].color = getRandomColor();
+				bouncingColumns[x].balls[i].color = matrix->getRandomColor();
 				bouncingColumns[x].balls[i].startTime = getClock();
 				bouncingColumns[x].balls[i].height = 0;
 				bouncingColumns[x].balls[i].position = 0;
@@ -62,7 +62,7 @@ void BouncingBallsMatrixLedEffect::reset()
 		}
 	}
 
-	clearAllLeds();
+	matrix->clearAllLeds();
 }
 
 bool BouncingBallsMatrixLedEffect::paint()
@@ -70,7 +70,7 @@ bool BouncingBallsMatrixLedEffect::paint()
 	if (!isReady() || bouncingColumns == nullptr)
 		return false;
 
-	for (uint8_t x = 0; x < converter->getWidth(); x++)
+	for (uint8_t x = 0; x < matrix->getWidth(); x++)
 	{
 		for (uint8_t i = 0; i < bouncingColumns[x].numBalls; i++)
 		{
@@ -90,11 +90,11 @@ bool BouncingBallsMatrixLedEffect::paint()
 				}
 			}
 
-			ledLine[converter->getPixelNumber(x, bouncingColumns[x].balls[i].position)] = CRGB::Black;
+			matrix->getPixel(x, bouncingColumns[x].balls[i].position) = CRGB::Black;
 
 			bouncingColumns[x].balls[i].position = round(bouncingColumns[x].balls[i].height);
 
-			ledLine[converter->getPixelNumber(x, bouncingColumns[x].balls[i].position)] = bouncingColumns[x].balls[i].color;
+			matrix->getPixel(x, bouncingColumns[x].balls[i].position) = bouncingColumns[x].balls[i].color;
 		}
 	}
 	return true;

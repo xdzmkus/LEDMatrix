@@ -7,13 +7,13 @@
 #define __BOUNSINGBALLSMATRIXLEDEFFECT_H__
 
 #include <ILedEffect.h>
-#include "IMatrixToLineConverter.h"
+#include "ILedMatrix.h"
 
 class BouncingBallsMatrixLedEffect : public ILedEffect
 {
 private:
 
-	const IMatrixToLineConverter* converter;
+	ILedMatrix* matrix;
 
 	const float Gravity = 9.8;
 	const float MaxVelocity;
@@ -42,7 +42,7 @@ protected:
 	*bouncingColumns = nullptr;
 
 public:
-	BouncingBallsMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, uint8_t maxBallsCount = 1);
+	BouncingBallsMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, uint8_t maxBallsCount = 1);
 	~BouncingBallsMatrixLedEffect();
 
 	void reset() override;

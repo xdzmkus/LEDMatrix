@@ -33,8 +33,8 @@ const uint8_t FireMatrixLedEffect::hueMask[MATRIX_HEIGHT][MATRIX_WIDTH] PROGMEM 
 		{0 , 0  , 0  , 1  , 3  , 1  , 0  , 0  , 0 }
 };
 
-FireMatrixLedEffect::FireMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
-	: ILedEffect(leds, count, Hz), converter(converter)
+FireMatrixLedEffect::FireMatrixLedEffect(ILedMatrix* converter, uint16_t Hz)
+	: ILedEffect(Hz), matrix(converter)
 {
 	reset();
 }
@@ -42,7 +42,7 @@ FireMatrixLedEffect::FireMatrixLedEffect(const IMatrixToLineConverter* converter
 void FireMatrixLedEffect::reset()
 {
 	ILedEffect::reset();
-	clearAllLeds();
+	matrix->clearAllLeds();
 }
 
 FireMatrixLedEffect::~FireMatrixLedEffect()
@@ -75,9 +75,9 @@ bool FireMatrixLedEffect::paint()
 	}
 
 	// each row interpolates with the one before it
-	for (uint8_t y = converter->getHeight() - 1; y > 0; y--)
+	for (uint8_t y = matrix->getHeight() - 1; y > 0; y--)
 	{
-		for (uint8_t x = 0; x < converter->getWidth(); x++)
+		for (uint8_t x = 0; x < matrix->getWidth(); x++)
 		{
 			uint8_t mX = x % MATRIX_WIDTH;
 
@@ -85,28 +85,28 @@ bool FireMatrixLedEffect::paint()
 			{
 				int nextv = (static_cast<int16_t>((10 - pcnt) * matrixValue[y][mX] + pcnt * matrixValue[y - 1][mX]) / 10) - pgm_read_byte(&(valueMask[y][mX]));
 
-				ledLine[converter->getPixelNumber(x, y)] = CHSV(pgm_read_byte(&(hueMask[y][mX])), 255, static_cast<uint8_t>(max(0, nextv)));
+				matrix->getPixel(x, y) = CHSV(pgm_read_byte(&(hueMask[y][mX])), 255, static_cast<uint8_t>(max(0, nextv)));
 			}
 			else
 			{
 				if (y == MATRIX_HEIGHT && random(0, 20) == 0)
 				{
-					ledLine[converter->getPixelNumber(x, y)] = CRGB::Black;
+					matrix->getPixel(x, y) = CRGB::Black;
 				}
 				else
 				{
-					ledLine[converter->getPixelNumber(x, y)] = ledLine[converter->getPixelNumber(x, y - 1)];
+					matrix->getPixel(x, y) = matrix->getPixel(x, y - 1);
 				}
 			}
 		}
 	}
 
 	// first row interpolates with the "next" line
-	for (uint8_t x = 0; x < converter->getWidth(); x++)
+	for (uint8_t x = 0; x < matrix->getWidth(); x++)
 	{
 		uint8_t mX = x % MATRIX_WIDTH;
 
-		ledLine[converter->getPixelNumber(x, 0)] = CHSV(pgm_read_byte(&(hueMask[0][mX])), 255, static_cast<uint8_t>(static_cast<int16_t>((10 - pcnt) * matrixValue[0][mX] + pcnt * line[mX]) / 10));
+		matrix->getPixel(x, 0) = CHSV(pgm_read_byte(&(hueMask[0][mX])), 255, static_cast<uint8_t>(static_cast<int16_t>((10 - pcnt) * matrixValue[0][mX] + pcnt * line[mX]) / 10));
 	}
 
 	pcnt += 3;

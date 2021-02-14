@@ -7,7 +7,7 @@
 #define __RUNNINGSTRINGMATRIXLEDEFFECT_H__
 
 #include <ILedEffect.h>
-#include "IMatrixToLineConverter.h"
+#include "ILedMatrix.h"
 #include "fonts/windows-1251-5x8.h"
 
 class RunningStringMatrixLedEffect : public ILedEffect
@@ -18,7 +18,8 @@ public:
 
 private:
 
-	const IMatrixToLineConverter* converter;
+	ILedMatrix* matrix;
+
 	const String str;
 	const CRGB rgb;
 	const uint8_t yOffset;
@@ -27,7 +28,7 @@ private:
 
 public:
 
-	RunningStringMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz, String text, uint8_t yOffset = 0, CRGB color = CRGB::Black);
+	RunningStringMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, String text, uint8_t yOffset = 0, CRGB color = CRGB::Black);
 	~RunningStringMatrixLedEffect();
 
 	void reset() override;

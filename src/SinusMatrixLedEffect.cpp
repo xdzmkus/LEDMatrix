@@ -7,8 +7,8 @@
 
 const char* const SinusMatrixLedEffect::name = "SINUS";
 
-SinusMatrixLedEffect::SinusMatrixLedEffect(const IMatrixToLineConverter* converter, CRGB leds[], uint16_t count, uint16_t Hz)
-	: ILedEffect(leds, count, Hz), converter(converter), hue(0)
+SinusMatrixLedEffect::SinusMatrixLedEffect(ILedMatrix* converter, uint16_t Hz)
+	: ILedEffect(Hz), matrix(converter), hue(0)
 {
 	reset();
 }
@@ -20,7 +20,7 @@ SinusMatrixLedEffect::~SinusMatrixLedEffect()
 void SinusMatrixLedEffect::reset()
 {
     ILedEffect::reset();
-    clearAllLeds();
+    matrix->clearAllLeds();
 }
 
 bool SinusMatrixLedEffect::paint()
@@ -28,23 +28,23 @@ bool SinusMatrixLedEffect::paint()
 	if (!isReady())
 		return false;
 
-    clearAllLeds();
+    matrix->clearAllLeds();
 
     hue++;
 
-    if (converter->getWidth() > converter->getHeight())
+    if (matrix->getWidth() > matrix->getHeight())
     {
-        for (uint8_t x = 0; x < converter->getWidth(); x++)
+        for (uint8_t x = 0; x < matrix->getWidth(); x++)
         {
-            uint8_t y = beatsin8(speed + x, 0, converter->getHeight() - 1);
-            ledLine[converter->getPixelNumber(x, y)] = ColorFromPalette(RainbowColors_p, x * 7 + hue, 255);
+            uint8_t y = beatsin8(speed + x, 0, matrix->getHeight() - 1);
+            matrix->getPixel(x, y) = ColorFromPalette(RainbowColors_p, x * 7 + hue, 255);
         }
     }
     else
     {
-        for (uint8_t y = 0; y < converter->getHeight(); y++) {
-            uint8_t x = beatsin8(speed + y, 0, converter->getWidth() - 1);
-            ledLine[converter->getPixelNumber(x, y)] = ColorFromPalette(RainbowColors_p, x * 7 + hue, 255);
+        for (uint8_t y = 0; y < matrix->getHeight(); y++) {
+            uint8_t x = beatsin8(speed + y, 0, matrix->getWidth() - 1);
+            matrix->getPixel(x, y) = ColorFromPalette(RainbowColors_p, x * 7 + hue, 255);
         }
     }
 

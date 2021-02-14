@@ -16,7 +16,7 @@ CRGB leds[NUM_LEDS];
 #include "ZigZagFromBottomRightToUpAndLeft.h"
 #include "BugsMatrixLedEffect.h"
 
-ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> matrix;
+ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
 BugsMatrixLedEffect* effect;
 
 
@@ -36,7 +36,7 @@ void setup()
 
 	setupLED();
 
-	effect = new BugsMatrixLedEffect(&matrix, leds, NUM_LEDS, 10, random8(MATRIX_H, MATRIX_W));
+	effect = new BugsMatrixLedEffect(&matrix, 10, random8(MATRIX_H, MATRIX_W));
 
 	effect->start();
 }

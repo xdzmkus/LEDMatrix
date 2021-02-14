@@ -44,8 +44,8 @@ CRGB leds[(MATRIX_H * MATRIX_W)];
 /*********** LED Matrix Effects *************/
 #include "LEDMatrixEx.h"
 #include "ZigZagFromBottomRightToUpAndLeft.h"
-ZigZagFromBottomRightToUpAndLeft<MATRIX_W, MATRIX_H> converter;
-LEDMatrixEx ledMatrix(&converter, leds, (MATRIX_H * MATRIX_W));
+ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
+LEDMatrixEx ledMatrix(&matrix);
 
 #include <Ticker.h>
 Ticker tickerEffects;

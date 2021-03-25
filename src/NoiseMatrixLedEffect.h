@@ -52,7 +52,7 @@ public:
 	void reset() override;
 	bool paint() override;
 
-	operator const char* () const { return id.isEmpty() ? name : id.c_str(); }
+	operator const char* () const { return id.length() == 0 ? name : id.c_str(); }
 
 private:
 

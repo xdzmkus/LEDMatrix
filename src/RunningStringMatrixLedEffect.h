@@ -21,8 +21,8 @@ private:
 	ILedMatrix* matrix;
 
 	const String str;
-	const CRGB rgb;
 	const uint8_t yOffset;
+	const CRGB rgb;
 
 	int16_t offset;
 

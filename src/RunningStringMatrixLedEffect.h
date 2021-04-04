@@ -32,7 +32,7 @@ public:
 	~RunningStringMatrixLedEffect();
 
 	void reset() override;
-	bool paint() override;
+	void paint() override;
 
 	operator const char* () const { return name; }
 

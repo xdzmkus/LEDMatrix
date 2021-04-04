@@ -45,10 +45,10 @@ void GravityMatrixLedEffect::reset()
 	hue += speed;
 }
 
-bool GravityMatrixLedEffect::paint()
+void GravityMatrixLedEffect::paint()
 {
-	if (!isReady() || gravities == nullptr)
-		return false;
+	if (gravities == nullptr)
+		return;
 
 	bool allGround = true;
 
@@ -80,6 +80,4 @@ bool GravityMatrixLedEffect::paint()
 	{
 		reset();
 	}
-
-	return true;
 }

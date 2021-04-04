@@ -23,11 +23,8 @@ void SinusMatrixLedEffect::reset()
     matrix->clearAllLeds();
 }
 
-bool SinusMatrixLedEffect::paint()
+void SinusMatrixLedEffect::paint()
 {
-	if (!isReady())
-		return false;
-
     matrix->clearAllLeds();
 
     hue++;
@@ -47,6 +44,4 @@ bool SinusMatrixLedEffect::paint()
             matrix->getPixel(x, y) = ColorFromPalette(RainbowColors_p, x * 7 + hue, 255);
         }
     }
-
-	return true;
 }

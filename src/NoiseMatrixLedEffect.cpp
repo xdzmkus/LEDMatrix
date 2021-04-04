@@ -43,11 +43,8 @@ void NoiseMatrixLedEffect::reset()
     matrix->clearAllLeds();
 }
 
-bool NoiseMatrixLedEffect::paint()
+void NoiseMatrixLedEffect::paint()
 {
-    if (!isReady())
-        return false;
-
     for (uint8_t x = 0; x < matrix->getWidth(); x++)
     {
         for (uint8_t y = 0; y < matrix->getHeight(); y++)
@@ -76,6 +73,4 @@ bool NoiseMatrixLedEffect::paint()
     nX += speed / 8;
     nY -= speed / 16;
     ihue++;
-
-    return true;
 }

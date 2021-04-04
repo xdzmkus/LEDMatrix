@@ -46,10 +46,10 @@ void BugsMatrixLedEffect::reset()
 	matrix->clearAllLeds();
 }
 
-bool BugsMatrixLedEffect::paint()
+void BugsMatrixLedEffect::paint()
 {
-	if (!isReady() || bugs == nullptr)
-		return false;
+	if (bugs == nullptr)
+		return;
 		
 	for (uint8_t i = 0; i < numBugs; i++)
 	{
@@ -91,6 +91,4 @@ bool BugsMatrixLedEffect::paint()
     
 		matrix->getPixel(bugs[i].xPos, bugs[i].yPos) += bugs[i].color;
 	}
-
-	return true;
 }

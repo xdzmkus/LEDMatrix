@@ -65,10 +65,10 @@ void BouncingBallsMatrixLedEffect::reset()
 	matrix->clearAllLeds();
 }
 
-bool BouncingBallsMatrixLedEffect::paint()
+void BouncingBallsMatrixLedEffect::paint()
 {
-	if (!isReady() || bouncingColumns == nullptr)
-		return false;
+	if (bouncingColumns == nullptr)
+		return;
 
 	for (uint8_t x = 0; x < matrix->getWidth(); x++)
 	{
@@ -97,5 +97,4 @@ bool BouncingBallsMatrixLedEffect::paint()
 			matrix->getPixel(x, bouncingColumns[x].balls[i].position) = bouncingColumns[x].balls[i].color;
 		}
 	}
-	return true;
 }

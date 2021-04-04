@@ -44,8 +44,9 @@ void setup()
 
 void loop()
 {
-	if (effect->paint())
+	if (effect->isReady())
 	{
+		effect->paint();
 		FastLED.show();
 	}
 }

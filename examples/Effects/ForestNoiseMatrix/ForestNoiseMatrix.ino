@@ -77,8 +77,9 @@ void loop()
 		changeEffect();
 	}
 
-	if (effect->paint())
+	if (effect->isReady())
 	{
+		effect->paint();
 		FastLED.show();
 	}
 }

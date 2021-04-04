@@ -25,11 +25,8 @@ void StarfallMatrixLedEffect::reset()
 	matrix->clearAllLeds();
 }
 
-bool StarfallMatrixLedEffect::paint()
+void StarfallMatrixLedEffect::paint()
 {
-	if (!isReady())
-		return false;
-
 	for (uint8_t x = 0; x < matrix->getWidth(); x++)
 	{
 		// shift down all lines
@@ -48,5 +45,4 @@ bool StarfallMatrixLedEffect::paint()
 			matrix->getPixel(x, matrix->getHeight() - 1) -= fade;
 		}
 	}
-	return true;
 }

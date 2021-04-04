@@ -23,11 +23,8 @@ void SnowMatrixLedEffect::reset()
 	matrix->clearAllLeds();
 }
 
-bool SnowMatrixLedEffect::paint()
+void SnowMatrixLedEffect::paint()
 {
-	if (!isReady())
-		return false;
-
 	uint16_t restSnowflakes = 0;
 
 	if (random8() % 2 == 0)
@@ -79,7 +76,5 @@ bool SnowMatrixLedEffect::paint()
 
 		restSnowflakes++;
 	}
-
-	return true;
 }
 

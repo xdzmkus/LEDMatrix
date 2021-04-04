@@ -49,11 +49,8 @@ FireMatrixLedEffect::~FireMatrixLedEffect()
 {
 }
 
-bool FireMatrixLedEffect::paint()
+void FireMatrixLedEffect::paint()
 {
-	if (!isReady())
-		return false;
-
 	// update matrix each 4 cycles
 	if (pcnt == 0)
 	{
@@ -112,6 +109,4 @@ bool FireMatrixLedEffect::paint()
 	pcnt += 3;
 
 	if (pcnt >= 10) pcnt = 0;
-
-	return true;
 }

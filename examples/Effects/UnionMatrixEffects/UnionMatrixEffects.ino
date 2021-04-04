@@ -59,7 +59,11 @@ void loop()
 
 	for (uint8_t i = 0; i < NUM_EFFECTS; i++)
 	{
-		isChanged |= effects[i]->paint();
+		if (effects[i]->isReady())
+		{
+			isChanged = true;
+			effects[i]->paint();
+		}
 	}
 
 	if (isChanged)

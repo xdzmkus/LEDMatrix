@@ -26,11 +26,8 @@ void RunningStringMatrixLedEffect::reset()
     matrix->clearAllLeds();
 }
 
-bool RunningStringMatrixLedEffect::paint()
+void RunningStringMatrixLedEffect::paint()
 {
-    if (!isReady())
-        return false;
-
     matrix->clearAllLeds();
 
     for (uint8_t i = 0; i < str.length(); i++)
@@ -43,8 +40,6 @@ bool RunningStringMatrixLedEffect::paint()
     {
         reset();
     }
-
-    return true;
 }
 
 uint8_t RunningStringMatrixLedEffect::get5x8Column(unsigned char ascii, uint8_t columnNumber)

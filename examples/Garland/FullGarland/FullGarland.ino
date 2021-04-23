@@ -53,8 +53,8 @@ Ticker tickerEffects;
 volatile boolean f_publishState = true;
 
 /********** Touch button module *************/
-#include <Denel_Button.h>
-Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
+#include <ArduinoDebounceButton.h>
+ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 
 /*********** WiFi Client ********************/
 #include <ESP8266WiFi.h>
@@ -118,7 +118,7 @@ void adjustBrightness()
     FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
 }
 
-void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
+void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
 {
     switch (eventType)
     {
@@ -198,7 +198,12 @@ void setup()
 
     pinMode(LED_BUILTIN, OUTPUT);       // Initialize the LED_BUILTIN pin as an output
 
+#if defined(ESP8266) && (BTN_PIN == 16)
     pinMode(BTN_PIN, INPUT_PULLDOWN_16);
+#else
+    btn.initPin();
+#endif
+
     btn.setEventHandler(handleButtonEvent);
 
     Serial.begin(115200);

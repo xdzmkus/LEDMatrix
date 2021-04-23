@@ -7,8 +7,8 @@
 #endif
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
-#include <Denel_Button.h>
-Denel_Button btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
+#include <ArduinoDebounceButton.h>
+ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::VCC, BUTTON_NORMAL::OPEN);
 
 #include <EEPROM.h>
 #define EEPROM_ADDRESS_EFFECT 0
@@ -103,7 +103,7 @@ void adjustBrightness()
 	Serial.print(F("BRIGHTNESS: ")); Serial.println(brightness);
 }
 
-void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
+void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
 {
 	switch (eventType)
 	{
@@ -126,7 +126,7 @@ void handleButtonEvent(const Denel_Button* button, BUTTON_EVENT eventType)
 
 void setupLED()
 {
-	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, (MATRIX_H * MATRIX_W)).setCorrection(TypicalLEDStrip);
+	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, (MATRIX_H * MATRIX_W)).setCorrection(TypicalSMD5050);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
 	FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
 	FastLED.clear(true);
@@ -144,7 +144,12 @@ void setup()
 
 	setupLED();
 
+#if defined(ESP8266) && (BTN_PIN == 16)
 	pinMode(BTN_PIN, INPUT_PULLDOWN_16);
+#else
+	btn.initPin();
+#endif
+
 	btn.setEventHandler(handleButtonEvent);
 
 	loadEffect();

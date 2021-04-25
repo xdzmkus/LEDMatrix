@@ -38,13 +38,7 @@ protected:
 
 	String text;
 
-	const CRGBPalette16 wrwPalette =
-		CRGBPalette16(
-			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
-			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
-			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
-			CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red);
-
+	static const TProgmemRGBPalette16 wrwPalette_p PROGMEM;
 };
 
 #endif

@@ -16,7 +16,7 @@ BouncingBallsMatrixLedEffect::BouncingBallsMatrixLedEffect(ILedMatrix* converter
 	{
 		for (uint8_t x = 0; x < matrix->getWidth(); x++)
 		{
-			bouncingColumns[x].numBalls = (x % maxBallsCount == 0) ? random8(1, maxBallsCount + 1) : 0;
+			bouncingColumns[x].numBalls = random8(0, maxBallsCount + 1);
 			if (bouncingColumns[x].numBalls != 0)
 			{
 				bouncingColumns[x].balls = new BOUNCING_COLUMN::BOUNCING_BALL[bouncingColumns[x].numBalls];

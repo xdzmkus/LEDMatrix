@@ -30,6 +30,14 @@ const char* LEDMatrix::availableEffects[NUM_EFFECTS] =
 	StarfallMatrixLedEffect::name
 };
 
+const TProgmemRGBPalette16 LEDMatrix::wrwPalette_p PROGMEM =
+{
+	CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+	CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+	CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red,
+	CRGB::White, CRGB::Red, CRGB::Red, CRGB::Red
+};
+
 LEDMatrix::LEDMatrix(ILedMatrix* converter)
 	: LEDLine(converter->getAllPixels(), converter->getHeight() * converter->getWidth()), matrix(converter)
 {
@@ -68,7 +76,7 @@ bool LEDMatrix::setEffectByName(const char* effectName)
 		delete effect; effect = new GravityMatrixLedEffect(matrix, 10);
 	}
 	else if (strcmp(NoiseMatrixLedEffect::name, effectName) == 0) {
-		delete effect; effect = new NoiseMatrixLedEffect(matrix, 10, wrwPalette);
+		delete effect; effect = new NoiseMatrixLedEffect(matrix, 10, wrwPalette_p);
 	}
 	else if (strcmp(RunningStringMatrixLedEffect::name, effectName) == 0) {
 		delete effect; effect = new RunningStringMatrixLedEffect(matrix, 10, text);

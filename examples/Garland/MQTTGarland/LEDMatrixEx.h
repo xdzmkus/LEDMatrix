@@ -127,7 +127,7 @@ public:
 			effect->setId("RAINBOW_NOISE");
 		}
 		else if (strcmp("WRW_NOISE", effectName) == 0) {
-			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(10, 30), wrwPalette, random(5, 50));
+			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(10, 30), wrwPalette_p, random(5, 50));
 			effect->setId("WRW_NOISE");
 		}
 		else {

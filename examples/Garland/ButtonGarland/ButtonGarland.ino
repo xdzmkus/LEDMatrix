@@ -1,10 +1,11 @@
-#if defined(ESP32) || defined(ESP8266)
+#if defined(ESP8266)
 #define LED_PIN D3  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
 #define BTN_PIN 16  // D0 button pin
 #else
 #define LED_PIN 9   // leds pin
 #define BTN_PIN 10  // button pin
 #endif
+
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 #include <ArduinoDebounceButton.h>
@@ -40,6 +41,10 @@ void loadEffect()
 		Serial.println(ledMatrix.getAllEffectsNames()[var]);
 	}
 
+#if defined(ESP32) || defined(ESP8266)
+	EEPROM.begin(EEPROM_EFFECT_LENGTH);
+#endif
+
 	for (int i = 0; i < EEPROM_EFFECT_LENGTH; i++)
 	{
 		EFFECT_NAME[i] = EEPROM.read(EEPROM_ADDRESS_EFFECT + i);
@@ -49,15 +54,25 @@ void loadEffect()
 
 	if (ledMatrix.setEffectByName(EFFECT_NAME))
 	{
-		ledMatrix.turnOn();
+		Serial.print(F("LOADED EFFECT: "));
+	}
+	else
+	{
+		Serial.print(F("WRONG EFFECT: "));
 	}
 
-	Serial.print(F("LOADED: ")); Serial.println(EFFECT_NAME);
+	Serial.println(EFFECT_NAME);
+
+	ledMatrix.turnOn();
 }
 
 void saveEffect()
 {
 	strncpy(EFFECT_NAME, (ledMatrix.getEffectName() == nullptr || !ledMatrix.isOn()) ? "OFF" : ledMatrix.getEffectName(), EEPROM_EFFECT_LENGTH);
+
+#if defined(ESP32) || defined(ESP8266)
+	EEPROM.begin(EEPROM_EFFECT_LENGTH + 1);
+#endif
 
 	for (uint8_t i = 0; i < EEPROM_EFFECT_LENGTH + 1; i++)
 	{
@@ -69,7 +84,8 @@ void saveEffect()
 
 	ledMatrix.turnOff();
 
-	Serial.print(F("SAVED: ")); Serial.println(EFFECT_NAME);
+	Serial.print(F("SAVED: "));
+	Serial.println(EFFECT_NAME);
 }
 
 void changeEffect()
@@ -137,10 +153,6 @@ void setup()
 	randomSeed(analogRead(UNPINNED_ANALOG_PIN));
 
 	Serial.begin(115200);
-
-#if defined(ESP32) || defined(ESP8266)
-	EEPROM.begin(EEPROM_EFFECT_LENGTH + 1);
-#endif
 
 	setupLED();
 

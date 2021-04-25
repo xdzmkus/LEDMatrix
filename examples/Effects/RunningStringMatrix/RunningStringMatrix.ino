@@ -1,4 +1,4 @@
-#if defined(ESP32) || defined(ESP8266)
+#if defined(ESP8266)
 #define LED_PIN D3  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
 #else
 #define LED_PIN 9   // leds pin
@@ -21,7 +21,7 @@ RunningStringMatrixLedEffect* effect;
 
 void setupLED()
 {
-	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
 	FastLED.setBrightness(BRIGHTNESS);
 	FastLED.clear(true);

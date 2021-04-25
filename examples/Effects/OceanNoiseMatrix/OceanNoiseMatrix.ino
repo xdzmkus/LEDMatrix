@@ -1,4 +1,4 @@
-#if defined(ESP32) || defined(ESP8266)
+#if defined(ESP8266)
 #define LED_PIN D3  // D1 leds pin (connected to D5 on my NodeMCU1.0 !!!)
 #else
 #define LED_PIN 9   // leds pin
@@ -19,16 +19,9 @@ CRGB leds[NUM_LEDS];
 ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
 NoiseMatrixLedEffect* effect;
 
+#include <EffectTimer.h>
 #define EFFECT_DURATION_SEC 30
-
-#include <Ticker.h>
-Ticker tickerEffects;
-volatile boolean f_changeEffect = false;
-
-void handleTimer()
-{
-	f_changeEffect = true;
-}
+MillisTimer tickerEffects(EFFECT_DURATION_SEC* MillisTimer::CLOCKS_IN_SEC);
 
 void changeEffect()
 {
@@ -46,7 +39,7 @@ void changeEffect()
 
 void setupLED()
 {
-	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+	FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalSMD5050);
 	FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
 	FastLED.setBrightness(BRIGHTNESS);
 	FastLED.clear(true);
@@ -60,20 +53,17 @@ void setup()
 
 	setupLED();
 
-	tickerEffects.attach(EFFECT_DURATION_SEC, handleTimer);
-
 	effect = new NoiseMatrixLedEffect(&matrix, 15, OceanColors_p);
 
 	effect->start();
-}
 
+	tickerEffects.start();
+}
 
 void loop()
 {
-	if (f_changeEffect)
+	if (tickerEffects.isReady())
 	{
-		f_changeEffect = false;
-
 		changeEffect();
 	}
 

@@ -41,6 +41,12 @@ public:
 	CRGB* getAllPixels();
 	CRGB& getPixel(uint8_t x, uint8_t y);
 
+	void operator>>(uint8_t startX);
+	void operator<<(uint8_t startX);
+
+	void clearColumn(uint8_t col);
+	void clearLine(uint8_t line);
+
 protected:
 
 	virtual uint16_t getPixelNumber(uint8_t x, uint8_t y) const = 0;

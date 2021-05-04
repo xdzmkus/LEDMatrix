@@ -7,19 +7,30 @@
 
 const char* const SnowMatrixLedEffect::name = "SNOW";
 
-SnowMatrixLedEffect::SnowMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, uint8_t fadeSpeed)
-	: ILedEffect(Hz), matrix(converter), snowflakeCount(converter->getWidth()), fade(fadeSpeed)
+SnowMatrixLedEffect::SnowMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, unsigned long changeDirection, uint8_t fadeSpeed)
+	: ILedEffect(Hz), matrix(converter), snowflakeCount(converter->getWidth()), dirTimer(changeDirection), fade(fadeSpeed)
 {
 	reset();
+
+	dirTimer.start();
 }
 
 SnowMatrixLedEffect::~SnowMatrixLedEffect()
 {
 }
 
+bool SnowMatrixLedEffect::isReady()
+{
+	if (dirTimer.isReady())
+		direction = !direction;
+
+	return ILedEffect::isReady();
+}
+
 void SnowMatrixLedEffect::reset()
 {
 	ILedEffect::reset();
+	dirTimer.reset();
 	matrix->clearAllLeds();
 }
 
@@ -27,7 +38,7 @@ void SnowMatrixLedEffect::paint()
 {
 	uint16_t restSnowflakes = 0;
 
-	if (random8() % 2 == 0)
+	if (direction)
 	{
 		// shift down all lines and fade
 		for (uint8_t y = 0; y < matrix->getHeight() - 1; y++)
@@ -39,9 +50,9 @@ void SnowMatrixLedEffect::paint()
 				if (matrix->getPixel(x, y))
 					restSnowflakes++;
 			}
-			// clear right column
-			matrix->getPixel(matrix->getWidth() - 1, y) = CRGB::Black;
 		}
+		// clear right column
+		matrix->clearColumn(matrix->getWidth() - 1);
 	}
 	else
 	{
@@ -55,16 +66,13 @@ void SnowMatrixLedEffect::paint()
 				if (matrix->getPixel(x, y))
 					restSnowflakes++;
 			}
-			// clear left column
-			matrix->getPixel(0, y) = CRGB::Black;
 		}
+		// clear left column
+		matrix->clearColumn(0);
 	}
 
 	// clear top line
-	for (uint8_t x = 0; x < matrix->getWidth(); x++)
-	{
-		matrix->getPixel(x, matrix->getHeight() - 1) = CRGB::Black;
-	}
+	matrix->clearLine(matrix->getHeight() - 1);
 
 	// fill randomly snowflakes
 	while (restSnowflakes < snowflakeCount)

@@ -1,4 +1,4 @@
-#if true // && __has_include("my_data_sensitive.h")
+#if __has_include("my_data_sensitive.h")
 #include "my_data_sensitive.h"
 #else
 
@@ -23,17 +23,17 @@
 #endif
 
 #define LED_PIN D3    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
-#define BTN_PIN 16    // D0 button pin   // D6 button pin
+#define BTN_PIN 16    // D0 button pin
 
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
 
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
-#define MATRIX_H 8  //11
-#define MATRIX_W 32 //36
-#define CURRENT_LIMIT 8000 //16000
+#define MATRIX_H 11
+#define MATRIX_W 36
+#define CURRENT_LIMIT 16000
 #define MAX_BRIGHTNESS 255
-#define MIN_BRIGHTNESS 20
+#define MIN_BRIGHTNESS 120
 
 #define EFFECT_DURATION_SEC 45
 

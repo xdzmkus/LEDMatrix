@@ -24,7 +24,7 @@ char EFFECT_NAME[EEPROM_EFFECT_LENGTH + 1];
 #define MAX_BRIGHTNESS 255
 #define MIN_BRIGHTNESS 20
 
-uint16_t brightness = MAX_BRIGHTNESS/2;
+uint16_t brightness = MAX_BRIGHTNESS / 2;
 
 CRGB leds[(MATRIX_H * MATRIX_W)];
 

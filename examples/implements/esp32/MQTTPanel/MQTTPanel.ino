@@ -1,4 +1,4 @@
-#if true // && __has_include("my_data_sensitive.h")
+#if __has_include("my_data_sensitive.h")
 #include "my_data_sensitive.h"
 #else
 
@@ -22,9 +22,11 @@
 
 #endif
 
-#define LED_PIN D3    // D1 leds pin (connected to D5 on my NodeMCU 1.0 !!!)
+#define LED_BUILTIN 2
 
-#define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+#define LED_PIN 17
+
+#define UNPINNED_ANALOG_PIN 35 // not connected analog pin
 
 /*********** WS2812B leds *******************/
 #include <FastLED.h>
@@ -52,7 +54,7 @@ Ticker tickerEffects;
 volatile boolean f_publishState = true;
 
 /*********** WiFi Client ********************/
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
 
 /*********** MQTT Server ********************/
 #include <Adafruit_MQTT.h>

@@ -207,11 +207,11 @@ void setup_WiFi()
     }
     if (!WiFi.isConnected())
     {
-        Serial.println("Connection Failed! Rebooting...");
+        Serial.println(F("Connection Failed! Rebooting..."));
         ESP.restart();
     }
 
-    Serial.println("");
+    Serial.println();
     Serial.println(F("WiFi connected"));
     Serial.print(F("IP address: "));
     Serial.println(WiFi.localIP());

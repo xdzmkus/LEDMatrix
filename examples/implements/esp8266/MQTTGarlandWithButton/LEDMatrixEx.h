@@ -23,25 +23,38 @@ class LEDMatrixEx : public LEDMatrix
 {
 private:
 
+	enum NOISE_NAME { WRW = 0, OCEAN, RAINBOW, CLOUD, FOREST, PARTY, LAVA };
+
+	const char* noiseEffects[7] =
+	{
+		"WRW_NOISE",
+		"OCEAN_NOISE",
+		"RAINBOW_NOISE",
+		"CLOUD_NOISE",
+		"FOREST_NOISE",
+		"PARTY_NOISE",
+		"LAVA_NOISE"
+	};
+
 	static const uint8_t NUM_EFFECTS = 17;
 	const char* availableEffects[NUM_EFFECTS] =
 	{
-		SparklesLedEffect::name,
 		RainbowLedEffect::name,
+		SparklesLedEffect::name,
 		BugsMatrixLedEffect::name,
-		"LAVA_NOISE",
+		noiseEffects[WRW],
 		BouncingBallsMatrixLedEffect::name,
-		"OCEAN_NOISE",
+		noiseEffects[OCEAN],
 		SnowMatrixLedEffect::name,
-		"RAINBOW_NOISE",
+		noiseEffects[RAINBOW],
 		StarfallMatrixLedEffect::name,
-		"CLOUD_NOISE",
+		noiseEffects[CLOUD],
 		FireMatrixLedEffect::name,
-		"FOREST_NOISE",
+		noiseEffects[FOREST],
 		SinusMatrixLedEffect::name,
-		"PARTY_NOISE",
+		noiseEffects[PARTY],
 		GravityMatrixLedEffect::name,
-		"WRW_NOISE",
+		noiseEffects[LAVA],
 		RunningStringMatrixLedEffect::name
 	};
 
@@ -49,7 +62,7 @@ public:
 
 	LEDMatrixEx(ILedMatrix* converter) : LEDMatrix(converter)
 	{
-		text = String("<-- 2021 -->");
+		text = String(":-)");
 	};
 
 	~LEDMatrixEx()
@@ -97,33 +110,33 @@ public:
 		else if (strcmp(StarfallMatrixLedEffect::name, effectName) == 0) {
 			delete effect; effect = new StarfallMatrixLedEffect(matrix, 10);
 		}
-		else if (strcmp("PARTY_NOISE", effectName) == 0) {
-			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(10, 50), PartyColors_p, random(5, 60));
-			effect->setId("PARTY_NOISE");
+		else if (strcmp(noiseEffects[LAVA], effectName) == 0) {
+			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(8, 30), LavaColors_p, random(5, 50));
+			if (effect != NULL) effect->setId(noiseEffects[LAVA]);
 		}
-		else if (strcmp("CLOUD_NOISE", effectName) == 0) {
-			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(8, 30), CloudColors_p);
-			effect->setId("CLOUD_NOISE");
+		else if (strcmp(noiseEffects[OCEAN], effectName) == 0) {
+			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(8, 30), OceanColors_p, random(5, 50));
+			if (effect != NULL) effect->setId(noiseEffects[OCEAN]);
 		}
-		else if (strcmp("LAVA_NOISE", effectName) == 0) {
-			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(8, 30), LavaColors_p);
-			effect->setId("LAVA_NOISE");
+		else if (strcmp(noiseEffects[RAINBOW], effectName) == 0) {
+			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(10, 50), RainbowColors_p, random(5, 50));
+			if (effect != NULL) effect->setId(noiseEffects[RAINBOW]);
 		}
-		else if (strcmp("OCEAN_NOISE", effectName) == 0) {
-			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(8, 30), OceanColors_p);
-			effect->setId("OCEAN_NOISE");
+		else if (strcmp(noiseEffects[CLOUD], effectName) == 0) {
+			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(8, 30), CloudColors_p, random(5, 50));
+			if (effect != NULL) effect->setId(noiseEffects[CLOUD]);
 		}
-		else if (strcmp("FOREST_NOISE", effectName) == 0) {
-			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(8, 30), ForestColors_p);
-			effect->setId("FOREST_NOISE");
+		else if (strcmp(noiseEffects[FOREST], effectName) == 0) {
+			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(8, 30), ForestColors_p, random(5, 50));
+			if (effect != NULL) effect->setId(noiseEffects[FOREST]);
 		}
-		else if (strcmp("RAINBOW_NOISE", effectName) == 0) {
-			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(10, 50), RainbowColors_p, random(5, 80));
-			effect->setId("RAINBOW_NOISE");
+		else if (strcmp(noiseEffects[PARTY], effectName) == 0) {
+			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(10, 50), PartyColors_p, random(5, 50));
+			if (effect != NULL) effect->setId(noiseEffects[PARTY]);
 		}
-		else if (strcmp("WRW_NOISE", effectName) == 0) {
+		else if (strcmp(noiseEffects[WRW], effectName) == 0) {
 			delete effect; effect = new NoiseMatrixLedEffect(matrix, random(10, 30), wrwPalette_p, random(5, 50));
-			effect->setId("WRW_NOISE");
+			if (effect != NULL) effect->setId(noiseEffects[WRW]);
 		}
 		else {
 			return LEDMatrix::setEffectByName(effectName);

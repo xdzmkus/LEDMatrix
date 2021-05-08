@@ -25,7 +25,7 @@
 
 class ILedMatrix : public ILedLine
 {
-private:
+protected:
 
 	const uint8_t width;
 	const uint8_t height;
@@ -44,7 +44,7 @@ public:
 	void operator>>(uint8_t startX);
 	void operator<<(uint8_t startX);
 
-	void clearColumn(uint8_t col);
+	void clearColumn(uint8_t column);
 	void clearLine(uint8_t line);
 
 protected:

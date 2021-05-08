@@ -30,10 +30,10 @@ protected:
 
 	uint16_t getPixelNumber(uint8_t x, uint8_t y) const
 	{
-		if (x >= getWidth()) x = getWidth() - 1;
-		if (y >= getHeight()) y = getHeight() - 1;
+		if (x >= width) x = width - 1;
+		if (y >= height) y = height - 1;
 
-		return (x * getHeight()) + ((x % 2 == 0) ? y : (getHeight() - 1 - y));
+		return (x * height) + ((x % 2 == 0) ? y : (height - 1 - y));
 	}
 };
 

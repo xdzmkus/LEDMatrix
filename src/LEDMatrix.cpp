@@ -41,7 +41,7 @@ const TProgmemRGBPalette16 LEDMatrix::wrwPalette_p PROGMEM =
 LEDMatrix::LEDMatrix(ILedMatrix* converter)
 	: LEDLine(converter->getAllPixels(), converter->getHeight() * converter->getWidth()), matrix(converter)
 {
-	text = String(RunningStringMatrixLedEffect::name);
+	text = String("LEDMatrix");
 }
 
 LEDMatrix::~LEDMatrix()

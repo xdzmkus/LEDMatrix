@@ -1,281 +1,141 @@
-#if __has_include("my_data_sensitive.h")
-#include "my_data_sensitive.h"
-#else
+//#define LED_BUILTIN 2
 
-#define WLAN_SSID           "your wifi name"
-#define WLAN_PASS           "and password"
-#define WLAN_HOSTNAME       "connect with hostname"
-
-#define MQTT_SERVER         "127.0.0.1"
-#define MQTT_SERVERPORT     1883
-#define MQTT_USERNAME       "your mqtt username"
-#define MQTT_KEY            "and password"
-
-#define MQTT_TOPIC_PUB      MQTT_USERNAME"/get/state"
-#define MQTT_TOPIC_SUB1     MQTT_USERNAME"/set/effect"
-#define MQTT_TOPIC_SUB2     MQTT_USERNAME"/set/action"
-#define MQTT_TOPIC_SUB3     MQTT_USERNAME"/set/runningString"
-
-#define ON_CODE             6735
-#define OFF_CODE            2344
-#define NEXT_CODE           2747
-
-#endif
-
-#define LED_BUILTIN 2
-
-#define LED_PIN 17
+#define BTN_PIN 5  // button pin
+#define ENC1_PIN 18 // encoder S1 pin
+#define ENC2_PIN 19	// encoder S2 pin
 
 #define UNPINNED_ANALOG_PIN 35 // not connected analog pin
 
-/*********** WS2812B leds *******************/
-#include <FastLED.h>
-#define MATRIX_H 8
-#define MATRIX_W 32
-#define CURRENT_LIMIT 8000
-#define MAX_BRIGHTNESS 255
-#define MIN_BRIGHTNESS 20
+/********** Encoder button module ***********/
+#include <ArduinoDebounceButton.h>
+ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::GND, BUTTON_NORMAL::OPEN);
 
-#define EFFECT_DURATION_SEC 45
+#include <ArduinoRotaryEncoder.h>
+ArduinoRotaryEncoder encoder(ENC2_PIN, ENC1_PIN);
 
-uint16_t brightness = MIN_BRIGHTNESS;
-
-CRGB leds[(MATRIX_H * MATRIX_W)];
-
-/*********** LED Matrix Effects *************/
-#include "LEDMatrixEx.h"
-#include "ZigZagFromTopLeftToBottomAndRight.h"
-
-ZigZagFromTopLeftToBottomAndRight matrix(leds, MATRIX_W, MATRIX_H);
-LEDMatrixEx ledMatrix(&matrix);
+#include <EventsQueue.hpp>
+EventsQueue<ENCODER_EVENT, 10> queue;
 
 #include <Ticker.h>
-Ticker tickerEffects;
-
-volatile boolean f_publishState = true;
-
-/*********** WiFi Client ********************/
-#include <WiFi.h>
-
-/*********** MQTT Server ********************/
-#include <Adafruit_MQTT.h>
-#include <Adafruit_MQTT_Client.h>
-
-// Create an ESP8266 WiFiClient class to connect to the MQTT server.
-WiFiClient client;  // use WiFiClientSecure for SSL
-
-// Setup the MQTT client class by passing in the WiFi client
-Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT, MQTT_USERNAME, MQTT_KEY);
-
-Adafruit_MQTT_Publish garlandState = Adafruit_MQTT_Publish(&mqtt, MQTT_TOPIC_PUB);
-
-Adafruit_MQTT_Subscribe garlandEffect = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
-Adafruit_MQTT_Subscribe garlandAction = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
-Adafruit_MQTT_Subscribe garlandRunningString = Adafruit_MQTT_Subscribe(&mqtt, MQTT_TOPIC_SUB3, MQTT_QOS_1);
+Ticker ledTicker;
 
 /********************************************/
 
-void turnOnLeds()
+IRAM_ATTR void catchEncoderTicks()
 {
-    tickerEffects.attach(EFFECT_DURATION_SEC, changeEffect);
-
-    ledMatrix.setEffectByIdx(0);
-    ledMatrix.turnOn();
-
-    f_publishState = true;
+    encoder.catchTicks();
 }
 
-void turnOffLeds()
+void handleEncoderEvent(const RotaryEncoder* enc, ENCODER_EVENT eventType)
 {
-    tickerEffects.detach();
-
-    ledMatrix.turnOff();
-
-    f_publishState = true;
-
-    FastLED.clear(true);
+    queue.push(eventType);
 }
 
-void changeEffect()
+void processEncoder()
 {
-    tickerEffects.detach();
+    bool processEncEvent;
+    ENCODER_EVENT encEvent;
 
-    ledMatrix.setNextEffect();
-
-    tickerEffects.attach(EFFECT_DURATION_SEC, changeEffect);
-
-    f_publishState = true;
-}
-
-void adjustBrightness()
-{
-    brightness += MIN_BRIGHTNESS;
-    if (brightness > MAX_BRIGHTNESS + MIN_BRIGHTNESS * 2)
+    do
     {
-        brightness = 0;
-    }
-    FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
+        noInterrupts();
+
+        processEncEvent = queue.length();
+
+        if (processEncEvent)
+        {
+            encEvent = queue.pop();
+        }
+
+        interrupts();
+
+        if (processEncEvent)
+        {
+            switch (encEvent)
+            {
+            case ENCODER_EVENT::LEFT:
+                adjustBrightness(-5);
+                break;
+            case ENCODER_EVENT::RIGHT:
+                adjustBrightness(5);
+                break;
+            default:
+                break;
+            }
+        }
+    } while (processEncEvent);
 }
 
-void setAction_callback(uint32_t x)
+void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
 {
-    Serial.print(F("on/off with code: "));
-    Serial.println(x);
-
-    switch (x)
+    switch (eventType)
     {
-    case ON_CODE:
-        turnOnLeds();
-        break;
-    case OFF_CODE:
-        turnOffLeds();
-        break;
-    case NEXT_CODE:
+    case BUTTON_EVENT::Clicked:
         changeEffect();
         break;
-    default:
-        f_publishState = true;
+    case BUTTON_EVENT::DoubleClicked:
+        turnOnLeds();
         break;
+    case BUTTON_EVENT::RepeatClicked:
+        adjustBrightness(-10);
+        break;
+    case BUTTON_EVENT::LongPressed:
+        turnOffLeds();
+        break;
+    default:
+        return;
     }
+
+    publishState();
 }
 
-void setEffect_callback(char* data, uint16_t len)
+void blinkLED()
 {
-    Serial.print(F("new effect requested: "));
-    Serial.println(data);
-
-    if (ledMatrix.setEffectByName(data))
-    {
-        tickerEffects.detach();
-    }
-}
-
-void newRunningString_callback(char* data, uint16_t len)
-{
-    Serial.print(F("new running string received: "));
-    Serial.println(data);
-
-    ledMatrix.setRunningString(data, len);
-}
-
-void publishState()
-{
-    auto currentEffect = (ledMatrix.getEffectName() == nullptr || !ledMatrix.isOn()) ? "OFF" : ledMatrix.getEffectName();
-
-    Serial.print(F("Publish message: "));
-    Serial.println(currentEffect);
-
-    if (!garlandState.publish(currentEffect))
-    {
-        Serial.println(F("Publish Message Failed"));
-    }
+    //toggle LED state
+    digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
 }
 
 void setup()
 {
-    randomSeed(analogRead(UNPINNED_ANALOG_PIN));
-
-    pinMode(LED_BUILTIN, OUTPUT);       // Initialize the LED_BUILTIN pin as an output
-
     Serial.begin(115200);
+
+    randomSeed(analogRead(UNPINNED_ANALOG_PIN));
 
     setup_LED();
 
-    setup_WiFi();
+    pinMode(LED_BUILTIN, OUTPUT);        // Initialize the BUILTIN_LED pin as an output
+    digitalWrite(LED_BUILTIN, LOW);      // Turn the LED on by making the voltage LOW
 
+    btn.initPin();
+
+    delay(5000);
+
+    ledTicker.attach_ms(500, blinkLED);  // Blink led while setup
+
+    setup_WiFi();
     setup_MQTT();
+
+    encoder.initPins();
+    encoder.setEventHandler(handleEncoderEvent);
+
+    attachInterrupt(digitalPinToInterrupt(ENC1_PIN), catchEncoderTicks, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(ENC2_PIN), catchEncoderTicks, CHANGE);
+
+    btn.setEventHandler(handleButtonEvent);
+
+    ledTicker.detach();
+    digitalWrite(LED_BUILTIN, HIGH);    // Turn the LED off by making the voltage HIGH
 
     turnOnLeds();
 }
 
-void setup_WiFi()
-{
-    Serial.println();
-    Serial.print(F("Connecting to "));
-    Serial.println(WLAN_SSID);
-
-    WiFi.mode(WIFI_STA);                  // Set the ESP8266 to be a WiFi-client
-    WiFi.hostname(WLAN_HOSTNAME);
-    WiFi.begin(WLAN_SSID, WLAN_PASS);
-
-    for (uint8_t s = 0; (WiFi.status() != WL_CONNECTED) && (s < 20); s++)
-    {
-        digitalWrite(LED_BUILTIN, LOW);   // Turn the LED on (Note that LOW is the voltage level but actually the LED is on; this is because it is active low on the ESP-01)
-        delay(500);
-        Serial.print(".");
-        digitalWrite(LED_BUILTIN, HIGH);  // Turn the LED off by making the voltage HIGH
-        delay(200);
-    }
-    if (!WiFi.isConnected())
-    {
-        Serial.println(F("Connection Failed! Rebooting..."));
-        ESP.restart();
-    }
-
-    Serial.println();
-    Serial.println(F("WiFi connected"));
-    Serial.print(F("IP address: "));
-    Serial.println(WiFi.localIP());
-}
-
-void setup_MQTT()
-{
-    garlandEffect.setCallback(setEffect_callback);
-    mqtt.subscribe(&garlandEffect);
-
-    garlandAction.setCallback(setAction_callback);
-    mqtt.subscribe(&garlandAction);
-
-    garlandRunningString.setCallback(newRunningString_callback);
-    mqtt.subscribe(&garlandRunningString);
-}
-
-void setup_LED()
-{
-    FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, (MATRIX_H * MATRIX_W)).setCorrection(TypicalSMD5050);
-    FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
-    FastLED.setBrightness(constrain(brightness, MIN_BRIGHTNESS, MAX_BRIGHTNESS));
-    FastLED.clear(true);
-}
-
-// Function to connect and reconnect as necessary to the MQTT server.
-// Should be called in the loop function and it will take care if connecting.
-void mqtt_loop()
-{
-    if (!mqtt.connected())
-    {
-        uint8_t ret(mqtt.connect());
-
-        Serial.println(F("Connecting to MQTT... "));
-        if (ret != 0)
-        {
-            Serial.println(mqtt.connectErrorString(ret));
-            Serial.println(F("Retry MQTT connection ..."));
-            mqtt.disconnect();
-            return;
-        }
-        else
-        {
-            Serial.println(F("MQTT Connected!"));
-        }
-    }
-
-    mqtt.processPackets(10);
-}
-
 void loop()
 {
-    mqtt_loop();
+    btn.check();
 
-    if (f_publishState)
-    {
-        f_publishState = false;
+    processEncoder();
 
-        publishState();
-    }
+    processMQTT();
 
-    if (ledMatrix.refresh())
-    {
-        FastLED.show();
-    }
+    processLED();
 }

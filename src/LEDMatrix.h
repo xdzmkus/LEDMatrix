@@ -7,7 +7,7 @@
 #define _LEDMATRIX_H_
 
 #include <FastLED.h>
-#include "LEDLine.h"
+#include <LEDLine.h>
 #include "ILedMatrix.h"
 
 class LEDMatrix : public LEDLine

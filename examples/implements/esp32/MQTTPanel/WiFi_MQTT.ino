@@ -34,7 +34,7 @@
 WiFiClient client;  // use WiFiClientSecure for SSL
 
 // Setup the MQTT client class by passing in the WiFi client
-Adafruit_MQTT_Client    mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT, MQTT_USERNAME, MQTT_KEY);
+Adafruit_MQTT_Client mqtt(&client, MQTT_SERVER, MQTT_SERVERPORT, MQTT_USERNAME, MQTT_KEY);
 
 // Setup MQTT topics
 Adafruit_MQTT_Publish   garlandState(&mqtt, MQTT_TOPIC_PUB);
@@ -42,19 +42,23 @@ Adafruit_MQTT_Subscribe garlandEffect(&mqtt, MQTT_TOPIC_SUB1, MQTT_QOS_1);
 Adafruit_MQTT_Subscribe garlandAction(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 Adafruit_MQTT_Subscribe garlandRunningString(&mqtt, MQTT_TOPIC_SUB3, MQTT_QOS_1);
 
-#include <Ticker.h>
-Ticker mqttTicker;
+volatile boolean f_pingMQTT = false;
 
 volatile boolean f_publishState = true;
-volatile boolean f_pingMQTT = true;
 
-void pingMQTT_callback()
+TaskHandle_t xHandle = NULL;
+SemaphoreHandle_t xPublishSemaphore = NULL;
+TimerHandle_t xTimerMqttPing = NULL;
+
+void pingMQTT_callback(TimerHandle_t xTimer)
 {
 	f_pingMQTT = true;
 }
 
 void setAction_callback(uint32_t x)
 {
+	xTimerReset(xTimerMqttPing, 10);
+
 	Serial.print(F("new action requested: "));
 	Serial.println(x);
 
@@ -76,6 +80,8 @@ void setAction_callback(uint32_t x)
 
 void setEffect_callback(char* data, uint16_t len)
 {
+	xTimerReset(xTimerMqttPing, 10);
+
 	Serial.print(F("new effect requested: "));
 	Serial.println(data);
 
@@ -84,6 +90,8 @@ void setEffect_callback(char* data, uint16_t len)
 
 void newRunningString_callback(char* data, uint16_t len)
 {
+	xTimerReset(xTimerMqttPing, 10);
+
 	Serial.print(F("new running string received: "));
 	Serial.println(data);
 
@@ -105,7 +113,7 @@ void configure_WiFi()
     }
 }
 
-void setup_WiFi()
+void connect_WiFi()
 {
     WiFiManager wm;
 
@@ -128,68 +136,153 @@ void setup_WiFi()
 
 void setup_MQTT()
 {
-    garlandEffect.setCallback(setEffect_callback);
-    mqtt.subscribe(&garlandEffect);
+	garlandEffect.setCallback(setEffect_callback);
+	mqtt.subscribe(&garlandEffect);
 
-    garlandAction.setCallback(setAction_callback);
-    mqtt.subscribe(&garlandAction);
+	garlandAction.setCallback(setAction_callback);
+	mqtt.subscribe(&garlandAction);
 
 	garlandRunningString.setCallback(newRunningString_callback);
 	mqtt.subscribe(&garlandRunningString);
 
-    mqttTicker.attach(10.0, pingMQTT_callback);
+	xPublishSemaphore = xSemaphoreCreateMutex();
+
+	if (xPublishSemaphore == NULL)
+	{
+		Serial.println(F("There was insufficient FreeRTOS heap available for the semaphore to be created successfully."));
+		return;
+	}
+
+	xTimerMqttPing = xTimerCreate(
+		/* Just a text name, not used by the RTOS kernel. */
+		"pingMQTT",
+		/* The timer period in ticks, must be greater than 0. */
+		pdMS_TO_TICKS(30000),
+		/* The timers will auto-reload themselves when they expire. */
+		pdTRUE,
+		/* The ID is used to store a count of the number of times the timer has expired, which is initialised to 0. */
+		(void*) 0,
+		/* Each timer calls the same callback when it expires. */
+		pingMQTT_callback
+	);
+
+	if (xTimerMqttPing == NULL)
+	{
+		Serial.println(F("Error creating MQTT ping timer!"));
+	}
+	else
+	{
+		/* Start the timer.  No block time is specified, and
+		even if one was it would be ignored because the RTOS
+		scheduler has not yet been started. */
+		if (xTimerStart(xTimerMqttPing, 0) != pdPASS)
+		{
+			Serial.println(F("The timer could not be set into the Active state."));
+		}
+	}
+
+	/* Create the task, storing the handle. */
+	BaseType_t xReturned = xTaskCreatePinnedToCore(
+		vTaskMQTT,       /* Function that implements the task. */
+		"processMQTT",   /* Text name for the task. */
+		2048,            /* Stack size in words, not bytes. */
+		NULL,            /* Parameter passed into the task. */
+		tskIDLE_PRIORITY,/* Priority at which the task is created. */
+		&xHandle,        /* Used to pass out the created task's handle. */
+		0);
+
+	if (xReturned != pdPASS)
+	{
+		Serial.println(F("Error creating MQTT task!"));
+		return;
+	}
 }
 
-void pingMQTT()
+bool keepAliveMQTT()
 {
-	f_pingMQTT = false;
-
 	if (!mqtt.connected())
 	{
-		uint8_t ret(mqtt.connect());
-
 		Serial.println(F("Connecting to MQTT... "));
+
+		uint8_t ret = mqtt.connect();
+
 		if (ret != 0)
 		{
 			Serial.println(mqtt.connectErrorString(ret));
 			Serial.println(F("Retry MQTT connection ..."));
 			mqtt.disconnect();
-			return;
+			return false;
 		}
 		else
 		{
 			Serial.println(F("MQTT Connected!"));
+			return true;
 		}
 	}
 
-	mqtt.ping();
+	if (f_pingMQTT)
+	{
+		f_pingMQTT = false;
+
+		Serial.println(F("Ping MQTT... "));
+
+		return mqtt.ping();
+	}
+
+	return true;
 }
 
-void processMQTT()
+void vTaskMQTT(void *pvParameters)
 {
-	if (f_pingMQTT)	pingMQTT();
-
-	 mqtt.processPackets(10);
-
-	if (f_publishState && mqtt.connected())
+	for (;;)
 	{
-		auto currentEffect = getEffect();
-		if (currentEffect == nullptr) currentEffect = "OFF";
-
-		Serial.print(F("Publish message: "));
-		Serial.println(currentEffect);
-
-		if (!garlandState.publish(currentEffect))
+		if (!keepAliveMQTT())
 		{
-			Serial.println(F("Publish Message Failed"));
-			return;
+			vTaskDelay(pdMS_TO_TICKS(1000));
+			continue;
 		}
 
-		f_publishState = false;
+		mqtt.processPackets(100);
+
+		/* See if we can obtain the semaphore.  If the semaphore is not	available wait 10 ms to see if it becomes free. */
+		if (xSemaphoreTake(xPublishSemaphore, pdMS_TO_TICKS(10)) == pdTRUE)
+		{
+			if (f_publishState)
+			{
+				auto currentEffect = getEffect();
+				if (currentEffect == nullptr) currentEffect = "OFF";
+
+				Serial.print(F("Publish message: "));
+				Serial.println(currentEffect);
+
+				if (garlandState.publish(currentEffect))
+				{
+					f_publishState = false;
+					xTimerReset(xTimerMqttPing, 10);
+				}
+				else
+				{
+					Serial.println(F("Publish Message Failed"));
+				}
+			}
+
+			/* We have finished accessing the shared resource.  Release the	semaphore. */
+			xSemaphoreGive(xPublishSemaphore);
+		}
 	}
 }
 
 void publishState()
 {
-	f_publishState = true;
+	if (xPublishSemaphore != NULL)
+	{
+		/* See if we can obtain the semaphore.  If the semaphore is not	available wait 10 ms to see if it becomes free. */
+		if (xSemaphoreTake(xPublishSemaphore, pdMS_TO_TICKS(10)) == pdTRUE)
+		{
+			f_publishState = true;
+
+			/* We have finished accessing the shared resource.  Release the	semaphore. */
+			xSemaphoreGive(xPublishSemaphore);
+		}
+	}
 }

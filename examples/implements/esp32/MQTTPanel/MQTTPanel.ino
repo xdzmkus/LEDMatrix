@@ -1,8 +1,8 @@
 //#define LED_BUILTIN 2
 
 #define BTN_PIN 5  // button pin
-#define ENC1_PIN 18 // encoder S1 pin
-#define ENC2_PIN 19	// encoder S2 pin
+#define ENC1_PIN 19 // encoder S1 pin
+#define ENC2_PIN 18	// encoder S2 pin
 
 #define UNPINNED_ANALOG_PIN 35 // not connected analog pin
 
@@ -12,9 +12,6 @@ ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::GND, BUTTON_NORMAL::OPEN);
 
 #include <ArduinoRotaryEncoder.h>
 ArduinoRotaryEncoder encoder(ENC2_PIN, ENC1_PIN);
-
-#include <EventsQueue.hpp>
-EventsQueue<ENCODER_EVENT, 10> queue;
 
 #include <Ticker.h>
 Ticker ledTicker;
@@ -28,42 +25,17 @@ IRAM_ATTR void catchEncoderTicks()
 
 void handleEncoderEvent(const RotaryEncoder* enc, ENCODER_EVENT eventType)
 {
-    queue.push(eventType);
-}
-
-void processEncoder()
-{
-    bool processEncEvent;
-    ENCODER_EVENT encEvent;
-
-    do
+    switch (eventType)
     {
-        noInterrupts();
-
-        processEncEvent = queue.length();
-
-        if (processEncEvent)
-        {
-            encEvent = queue.pop();
-        }
-
-        interrupts();
-
-        if (processEncEvent)
-        {
-            switch (encEvent)
-            {
-            case ENCODER_EVENT::LEFT:
-                adjustBrightness(-5);
-                break;
-            case ENCODER_EVENT::RIGHT:
-                adjustBrightness(5);
-                break;
-            default:
-                break;
-            }
-        }
-    } while (processEncEvent);
+    case ENCODER_EVENT::LEFT:
+        adjustBrightnessFromISR(-5);
+        break;
+    case ENCODER_EVENT::RIGHT:
+        adjustBrightnessFromISR(5);
+        break;
+    default:
+        break;
+    }
 }
 
 void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
@@ -83,10 +55,8 @@ void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
         turnOffLeds();
         break;
     default:
-        return;
+        break;
     }
-
-    publishState();
 }
 
 void blinkLED()
@@ -95,47 +65,48 @@ void blinkLED()
     digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
 }
 
+void setup_Button()
+{
+    btn.initPin();
+
+    btn.setEventHandler(handleButtonEvent);
+}
+
+void setup_RotaryEncoder()
+{
+    encoder.initPins();
+    encoder.setEventHandler(handleEncoderEvent);
+
+    attachInterrupt(digitalPinToInterrupt(ENC1_PIN), catchEncoderTicks, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(ENC2_PIN), catchEncoderTicks, CHANGE);
+}
+
 void setup()
 {
     Serial.begin(115200);
 
     randomSeed(analogRead(UNPINNED_ANALOG_PIN));
 
-    setup_LED();
-
     pinMode(LED_BUILTIN, OUTPUT);        // Initialize the BUILTIN_LED pin as an output
     digitalWrite(LED_BUILTIN, LOW);      // Turn the LED on by making the voltage LOW
 
-    btn.initPin();
-
-    delay(5000);
-
     ledTicker.attach_ms(500, blinkLED);  // Blink led while setup
 
-    setup_WiFi();
+    setup_Button();
+
+    connect_WiFi();
+
     setup_MQTT();
 
-    encoder.initPins();
-    encoder.setEventHandler(handleEncoderEvent);
+    setup_LED();
 
-    attachInterrupt(digitalPinToInterrupt(ENC1_PIN), catchEncoderTicks, CHANGE);
-    attachInterrupt(digitalPinToInterrupt(ENC2_PIN), catchEncoderTicks, CHANGE);
-
-    btn.setEventHandler(handleButtonEvent);
+    setup_RotaryEncoder();
 
     ledTicker.detach();
     digitalWrite(LED_BUILTIN, HIGH);    // Turn the LED off by making the voltage HIGH
-
-    turnOnLeds();
 }
 
 void loop()
 {
     btn.check();
-
-    processEncoder();
-
-    processMQTT();
-
-    processLED();
 }

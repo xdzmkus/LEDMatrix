@@ -8,7 +8,7 @@
 
 #define EFFECT_DURATION_SEC 45
 
-uint8_t brightness = 100;
+volatile uint8_t brightness = 10;
 
 CRGB leds[(MATRIX_H * MATRIX_W)];
 
@@ -21,61 +21,137 @@ LEDMatrixEx ledMatrix(&matrix);
 #include <Ticker.h>
 Ticker effectsTicker;
 
+TaskHandle_t xLEDHandle = NULL;
+SemaphoreHandle_t xLEDSemaphore = NULL;
+
+const TickType_t xMaxBlockTime = pdMS_TO_TICKS(100);
+
 void setup_LED()
 {
     FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, (MATRIX_H * MATRIX_W)).setCorrection(TypicalSMD5050);
     FastLED.setMaxPowerInVoltsAndMilliamps(5, CURRENT_LIMIT);
     FastLED.setBrightness(brightness);
     FastLED.clear(true);
+
+	xLEDSemaphore = xSemaphoreCreateMutex();
+
+	if (xLEDSemaphore == NULL)
+	{
+		Serial.println(F("There was insufficient FreeRTOS heap available for the LED semaphore to be created successfully."));
+		return;
+	}
+
+	/* Create the task, storing the handle. */
+	BaseType_t xReturned = xTaskCreatePinnedToCore(
+		vTaskLED,        /* Function that implements the task. */
+		"processLED",    /* Text name for the task. */
+		8192,            /* Stack size in words, not bytes. */
+		NULL,            /* Parameter passed into the task. */
+		1,				 /* Priority at which the task is created. */
+		&xLEDHandle,     /* Used to pass out the created task's handle. */
+		1);
+
+	if (xReturned != pdPASS)
+	{
+		Serial.println(F("Error creating LED task!"));
+		return;
+	}
 }
 
-void processLED()
+void vTaskLED(void* pvParameters)
 {
-    if (ledMatrix.refresh())
-    {
-        FastLED.show();
-    }
+	turnOnLeds();
+
+	uint32_t ulNotifiedValue;
+
+	while (true)
+	{
+		/* Wait to be notified of brightness. */
+		BaseType_t xResult = xTaskNotifyWait(
+			pdFALSE,			/* Don't clear bits on entry. */
+			ULONG_MAX,			/* Clear all bits on exit. */
+			&ulNotifiedValue,	/* Stores the notified value. */
+			0);
+
+		if (xResult == pdPASS)
+		{
+			/* A notification was received. */
+			if (ulNotifiedValue < 256)
+			{
+				FastLED.setBrightness(static_cast<uint8_t>(ulNotifiedValue));
+			}
+		}
+
+		if (xSemaphoreTake(xLEDSemaphore, 0) == pdTRUE)
+		{
+			if (ledMatrix.refresh())
+			{
+				FastLED.show();
+			}
+			/* We have finished accessing the shared resource.  Release the	semaphore. */
+			xSemaphoreGive(xLEDSemaphore);
+		}
+	}
 }
 
 void turnOnLeds()
 {
-	effectsTicker.detach();
+	if (xSemaphoreTake(xLEDSemaphore, xMaxBlockTime) == pdTRUE)
+	{
+		effectsTicker.detach();
 
-	ledMatrix.setEffectByIdx(0);
-	ledMatrix.turnOn();
+		ledMatrix.setEffectByIdx(0);
+		ledMatrix.turnOn();
 
-	effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
+		effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
+
+		xSemaphoreGive(xLEDSemaphore);
+	}
 
 	publishState();
 }
 
 void turnOffLeds()
 {
-	effectsTicker.detach();
+	if (xSemaphoreTake(xLEDSemaphore, xMaxBlockTime) == pdTRUE)
+	{
+		effectsTicker.detach();
 
-	ledMatrix.turnOff();
+		ledMatrix.turnOff();
 
-	FastLED.clear(true);
+		FastLED.clear(true);
+
+		xSemaphoreGive(xLEDSemaphore);
+	}
 
 	publishState();
 }
 
 void changeEffect()
 {
-	effectsTicker.detach();
+	if (xSemaphoreTake(xLEDSemaphore, xMaxBlockTime) == pdTRUE)
+	{
+		effectsTicker.detach();
 
-	ledMatrix.setNextEffect();
+		ledMatrix.setNextEffect();
 
-	effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
+		effectsTicker.attach(EFFECT_DURATION_SEC, changeEffect);
+
+		xSemaphoreGive(xLEDSemaphore);
+	}
 
 	publishState();
 }
 
 void setEffect(const char* data)
 {
-	if (ledMatrix.setEffectByName(data))
+	if (xSemaphoreTake(xLEDSemaphore, xMaxBlockTime) == pdTRUE)
 	{
-		effectsTicker.detach();
+		if (ledMatrix.setEffectByName(data))
+		{
+			effectsTicker.detach();
+		}
+		xSemaphoreGive(xLEDSemaphore);
 	}
 
 	publishState();
@@ -83,16 +159,53 @@ void setEffect(const char* data)
 
 const char* getEffect()
 {
-	return !ledMatrix.isOn() ? nullptr : ledMatrix.getEffectName();
+	const char* effectName = nullptr;
+
+	if (xSemaphoreTake(xLEDSemaphore, xMaxBlockTime) == pdTRUE)
+	{
+		effectName = !ledMatrix.isOn() ? nullptr : ledMatrix.getEffectName();
+
+		xSemaphoreGive(xLEDSemaphore);
+	}
+
+	return effectName;
 }
 
 void setRunningString(char* data, uint16_t len)
 {
-	ledMatrix.setRunningString(data, len);
+	if (xSemaphoreTake(xLEDSemaphore, xMaxBlockTime) == pdTRUE)
+	{
+		ledMatrix.setRunningString(data, len);
+
+		xSemaphoreGive(xLEDSemaphore);
+	}
 }
 
 void adjustBrightness(int8_t delta)
 {
-    brightness += delta;
-    FastLED.setBrightness(brightness);
+	brightness += delta;
+	xTaskNotify(xLEDHandle, brightness, eSetValueWithOverwrite);
+}
+
+void adjustBrightnessFromISR(int8_t delta)
+{
+	brightness += delta;
+
+	BaseType_t xHigherPriorityTaskWoken;
+
+	/* xHigherPriorityTaskWoken must be initialised to pdFALSE.  If calling
+	xTaskNotifyFromISR() unblocks the handling task, and the priority of
+	the handling task is higher than the priority of the currently running task,
+	then xHigherPriorityTaskWoken will automatically get set to pdTRUE. */
+	xHigherPriorityTaskWoken = pdFALSE;
+
+	/* Unblock the handling task so the task can perform any processing necessitated
+	by the interrupt.  xHandlingTask is the task's handle, which was obtained
+	when the task was created.  The handling task's 0th notification value
+	is bitwise ORed with the interrupt status - ensuring bits that are already
+	set are not overwritten. */
+	xTaskNotifyFromISR(xLEDHandle, brightness, eSetValueWithOverwrite, &xHigherPriorityTaskWoken);
+
+	/* Force a context switch. */
+	portYIELD_FROM_ISR();
 }

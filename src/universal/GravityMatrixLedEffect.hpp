@@ -24,13 +24,12 @@ private:
 
 	struct GRAVITY
 	{
-		CRGB	color;
 		uint8_t	position;
 		float	altitude;
-		float	velocity;
 		unsigned long startTime;
+		float MaxVelocity;
 	}
-	gravities[width];
+	gravitiy;
 
 public:
 
@@ -69,53 +68,37 @@ void GravityMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 {
 	ILedEffect::reset();
 
-	uint8_t max = MATRIX<ledLine, width, height>::getHeight() - 1;
-
-	for (uint8_t x = 0; x < MATRIX<ledLine, width, height>::getWidth(); x++)
-	{
-		gravities[x].color = ColorFromPalette(RainbowColors_p, x * 7 + hue, 255);
-		gravities[x].startTime = getClock();
-		gravities[x].altitude = 1;
-		gravities[x].position = 0;
-		gravities[x].velocity = sqrt(2 * Gravity * map8(sin8(x * speed + hue), 0, max));
-	}
-
-	hue += speed;
+	gravitiy.position = 0;
+	gravitiy.altitude = 0;
+	gravitiy.startTime = getClock();
+	gravitiy.MaxVelocity = sqrt(2 * Gravity * (MATRIX<ledLine, width, height>::getHeight() - 1));
 }
 
 template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
 void GravityMatrixLedEffect<MATRIX, ledLine, width, height>::paint()
 {
-	bool allGround = true;
+	*this >> 0;
 
-	for (uint8_t x = 0; x < MATRIX<ledLine, width, height>::getWidth(); x++)
+	float timeOfFlying = static_cast<float>(getClock() - gravitiy.startTime) / ILedEffect::CLOCKS_IN_SEC;
+	gravitiy.altitude = gravitiy.MaxVelocity * timeOfFlying - 0.5 * Gravity * timeOfFlying * timeOfFlying;
+
+	if (gravitiy.altitude <= -2)
 	{
-		if (gravities[x].altitude > 0)
-		{
-			float timeOfFlying = static_cast<float>(getClock() - gravities[x].startTime) / ILedEffect::CLOCKS_IN_SEC;
-			gravities[x].altitude = gravities[x].velocity * timeOfFlying - 0.5 * Gravity * timeOfFlying * timeOfFlying;
-
-			if (gravities[x].altitude <= 0)
-			{
-				gravities[x].altitude = 0;
-			}
-			else
-			{
-				allGround = false;
-			}
-
-			MATRIX<ledLine, width, height>::getPixel(x, gravities[x].position) = CRGB::Black;
-
-			gravities[x].position = round(gravities[x].altitude);
-
-			MATRIX<ledLine, width, height>::getPixel(x, gravities[x].position) = gravities[x].color;
-		}
+		gravitiy.startTime = getClock();
 	}
 
-	if (allGround)
+	if (gravitiy.altitude < 0)
 	{
-		reset();
+		gravitiy.altitude = 0;
 	}
+
+	hue += speed;
+
+	MATRIX<ledLine, width, height>::getPixel(0, gravitiy.position) = CRGB::Black;
+
+	gravitiy.position = round(gravitiy.altitude);
+
+	MATRIX<ledLine, width, height>::getPixel(0, gravitiy.position) = ColorFromPalette(RainbowColors_p, hue, 255);
 }
 
 #endif

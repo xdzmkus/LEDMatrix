@@ -16,9 +16,9 @@
 CRGB leds[NUM_LEDS];
 
 #include "ZigZagFromTopLeftToBottomAndRight.hpp"
-#include "UniversalLEDMatrixEffects.h"
+#include "StaticLEDMatrixEffects.h"
 
-GravityMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(5);
+BouncingLinesMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H, 2> effect(10);
 
 void setupLED()
 {

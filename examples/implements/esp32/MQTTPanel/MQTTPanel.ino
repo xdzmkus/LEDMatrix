@@ -3,7 +3,6 @@
 #define BTN_PIN 5  // button pin
 #define ENC1_PIN 19 // encoder S1 pin
 #define ENC2_PIN 18	// encoder S2 pin
-
 #define UNPINNED_ANALOG_PIN 35 // not connected analog pin
 
 /********** Encoder button module ***********/

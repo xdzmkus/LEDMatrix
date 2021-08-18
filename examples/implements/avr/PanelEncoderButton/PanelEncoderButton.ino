@@ -1,18 +1,24 @@
+//#define DYNAMIC_EFFECTS
+
 #if defined(ESP8266)
-#define LED_PIN D5  // leds pin
-#define BTN_PIN D0  // 16(pulldown) - button pin
+#define LED_PIN  D5 // leds pin
+#define BTN_PIN  D0 // button pin
 #define ENC1_PIN D1 // encoder S1 pin
 #define ENC2_PIN D2	// encoder S2 pin
-
+#define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+#elif defined(ESP32)
+#define LED_PIN  16 // leds pin
+#define BTN_PIN  5  // button pin
+#define ENC1_PIN 19 // encoder S1 pin
+#define ENC2_PIN 18	// encoder S2 pin
+#define UNPINNED_ANALOG_PIN 35 // not connected analog pin
 #else
 #define LED_PIN  9  // leds pin
 #define BTN_PIN  4  // button pin
 #define ENC1_PIN 3  // encoder S1 pin
 #define ENC2_PIN 2	// encoder S2 pin
-
-#endif
-
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+#endif
 
 #include <ArduinoDebounceButton.h>
 ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::GND, BUTTON_NORMAL::OPEN);
@@ -24,13 +30,9 @@ ArduinoRotaryEncoder encoder(ENC2_PIN, ENC1_PIN);
 EventsQueue<ENCODER_EVENT, 8> queue;
 
 #include <FastLED.h>
-#define MATRIX_H 8
 
-#if defined(ESP8266)
+#define MATRIX_H 8
 #define MATRIX_W 32
-#else
-#define MATRIX_W 16
-#endif
 
 #define CURRENT_LIMIT 8000
 
@@ -38,10 +40,15 @@ uint8_t brightness = 100;
 
 CRGB leds[(MATRIX_H * MATRIX_W)];
 
-#include "LEDMatrix.h"
-#include "ZigZagFromTopLeftToBottomAndRight.h"
-ZigZagFromTopLeftToBottomAndRight matrix(leds, MATRIX_W, MATRIX_H);
-LEDMatrix ledMatrix(&matrix);
+#include "ZigZagFromTopLeftToBottomAndRight.hpp"
+
+#ifdef DYNAMIC_EFFECTS
+#include "DynamicLEDMatrix.hpp"
+DynamicLEDMatrix<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> ledMatrix;
+#else
+#include "StaticLEDMatrix.hpp"
+StaticLEDMatrix<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> ledMatrix;
+#endif
 
 #if defined(ESP8266)
 IRAM_ATTR

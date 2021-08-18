@@ -54,7 +54,6 @@ template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB
 GravityMatrixLedEffect<MATRIX, ledLine, width, height>::GravityMatrixLedEffect(uint16_t Hz)
 	: ILedEffect(Hz)
 {
-	MATRIX<ledLine, width, height>::clearAllLeds();
 	reset();
 }
 
@@ -72,6 +71,8 @@ void GravityMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 	gravitiy.altitude = 0;
 	gravitiy.startTime = getClock();
 	gravitiy.MaxVelocity = sqrt(2 * Gravity * (MATRIX<ledLine, width, height>::getHeight() - 1));
+
+	MATRIX<ledLine, width, height>::clearAllLeds();
 }
 
 template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>

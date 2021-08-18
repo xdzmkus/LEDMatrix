@@ -117,9 +117,9 @@ void RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::draw5x8Letter
 
     // get visible part of character
     uint8_t firstColumn = xOffset >= 0 ? 0 : -xOffset;
-    uint8_t lastColumn = min(5, MATRIX<ledLine, width, height>::getWidth() - xOffset);
+    uint8_t lastColumn = min(5, (MATRIX<ledLine, width, height>::getWidth() - xOffset));
     uint8_t firstRow = yOffset >= 0 ? 0 : -yOffset;
-    uint8_t lastRow = min(8, MATRIX<ledLine, width, height>::getHeight() - yOffset);
+    uint8_t lastRow = min(8, (MATRIX<ledLine, width, height>::getHeight() - yOffset));
 
     // draw char
     for (uint8_t x = firstColumn; x < lastColumn; x++)

@@ -12,11 +12,9 @@ volatile uint8_t brightness = 10;
 
 CRGB leds[(MATRIX_H * MATRIX_W)];
 
-/*********** LED Matrix Effects *************/
-#include "LEDMatrixEx.h"
-#include "ZigZagFromTopLeftToBottomAndRight.h"
-ZigZagFromTopLeftToBottomAndRight matrix(leds, MATRIX_W, MATRIX_H);
-LEDMatrixEx ledMatrix(&matrix);
+#include "ZigZagFromTopLeftToBottomAndRight.hpp"
+#include "LEDMatrixEx.hpp"
+LEDMatrixEx<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> ledMatrix;
 
 #include <Ticker.h>
 Ticker effectsTicker;

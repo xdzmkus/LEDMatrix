@@ -9,7 +9,7 @@
 #include <ILedEffect.hpp>
 #include "ILedMatrix.hpp"
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class NoiseMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEffect
 {
 public:
@@ -61,22 +61,22 @@ private:
 };
 
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 const char* const NoiseMatrixLedEffect<MATRIX, ledLine, width, height>::name = "NOISE";
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 NoiseMatrixLedEffect<MATRIX, ledLine, width, height>::NoiseMatrixLedEffect(uint16_t Hz, const CRGBPalette16& palette, uint8_t zoom)
 	: ILedEffect(Hz), currentPalette(palette), dataSmoothing((Hz < 50) ? (200 - Hz * 4) : 0), scale(zoom)
 {
     reset();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 NoiseMatrixLedEffect<MATRIX, ledLine, width, height>::~NoiseMatrixLedEffect()
 {
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void NoiseMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 {
     ILedEffect::reset();
@@ -89,7 +89,7 @@ void NoiseMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
     MATRIX<ledLine, width, height>::clearAllLeds();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void NoiseMatrixLedEffect<MATRIX, ledLine, width, height>::paint()
 {
     for (uint8_t x = 0; x < MATRIX<ledLine, width, height>::getWidth(); x++)

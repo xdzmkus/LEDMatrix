@@ -8,7 +8,7 @@
 
 #include <ILedEffect.hpp>
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class StarfallMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEffect
 {
 public:
@@ -39,10 +39,10 @@ private:
 };
 
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 const char* const StarfallMatrixLedEffect<MATRIX, ledLine, width, height>::name = "STARFALL";
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 StarfallMatrixLedEffect<MATRIX, ledLine, width, height>::StarfallMatrixLedEffect(uint16_t Hz, CRGB color)
 	: ILedEffect(Hz), rgb(color ? color : MATRIX<ledLine, width, height>::getRandomColor())
 {
@@ -51,19 +51,19 @@ StarfallMatrixLedEffect<MATRIX, ledLine, width, height>::StarfallMatrixLedEffect
 	reset();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 StarfallMatrixLedEffect<MATRIX, ledLine, width, height>::~StarfallMatrixLedEffect()
 {
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void StarfallMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 {
 	ILedEffect::reset();
 	MATRIX<ledLine, width, height>::clearAllLeds();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void StarfallMatrixLedEffect<MATRIX, ledLine, width, height>::paint()
 {
 	for (uint8_t x = 0; x < MATRIX<ledLine, width, height>::getWidth(); x++)

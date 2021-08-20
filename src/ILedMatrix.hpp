@@ -15,7 +15,7 @@
 
 #include <ILedLine.hpp>
 
-template <CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template <CRGB* ledLine, uint8_t width, uint8_t height>
 class ILedMatrix : public ILedLine<ledLine, width * height>
 {
 public:

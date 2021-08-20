@@ -9,7 +9,7 @@
 #include <ILedEffect.hpp>
 #include "ILedMatrix.hpp"
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class BouncingBallsMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEffect
 {
 private:
@@ -54,10 +54,10 @@ private:
 	BouncingBallsMatrixLedEffect& operator=(const BouncingBallsMatrixLedEffect&) = delete;
 };
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 const char* const BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>::name = "BOUNCINGBALLS";
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>::BouncingBallsMatrixLedEffect(uint16_t Hz, uint8_t maxBallsCount)
 	: ILedEffect(Hz), MaxVelocity(sqrt(2 * Gravity * (MATRIX<ledLine, width, height>::getHeight() - 1)))
 {
@@ -80,7 +80,7 @@ BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>::BouncingBallsMatri
 	reset();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>::~BouncingBallsMatrixLedEffect()
 {
 	if (bouncingColumns != nullptr)
@@ -94,7 +94,7 @@ BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>::~BouncingBallsMatr
 	}
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 {
 	ILedEffect::reset();
@@ -118,7 +118,7 @@ void BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 	MATRIX<ledLine, width, height>::clearAllLeds();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>::paint()
 {
 	if (bouncingColumns == nullptr)

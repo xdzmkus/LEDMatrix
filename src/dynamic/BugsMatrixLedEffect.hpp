@@ -9,7 +9,7 @@
 #include "ILedEffect.hpp"
 #include "ILedMatrix.hpp"
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class BugsMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEffect
 {
 public:
@@ -48,10 +48,10 @@ private:
 
 };
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 const char* const BugsMatrixLedEffect<MATRIX, ledLine, width, height>::name = "BUGS";
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 BugsMatrixLedEffect<MATRIX, ledLine, width, height>::BugsMatrixLedEffect(uint16_t Hz, uint8_t bugsCount)
 	: ILedEffect(Hz), numBugs(bugsCount)
 {
@@ -63,7 +63,7 @@ BugsMatrixLedEffect<MATRIX, ledLine, width, height>::BugsMatrixLedEffect(uint16_
 	reset();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 BugsMatrixLedEffect<MATRIX, ledLine, width, height>::~BugsMatrixLedEffect()
 {
 	if (bugs != nullptr)
@@ -73,7 +73,7 @@ BugsMatrixLedEffect<MATRIX, ledLine, width, height>::~BugsMatrixLedEffect()
 	}
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void BugsMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 {
 	ILedEffect::reset();
@@ -93,7 +93,7 @@ void BugsMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 	MATRIX<ledLine, width, height>::clearAllLeds();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void BugsMatrixLedEffect<MATRIX, ledLine, width, height>::paint()
 {
 	if (bugs == nullptr)

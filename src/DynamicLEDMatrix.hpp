@@ -10,7 +10,7 @@
 #include "DynamicLEDMatrixEffects.h"
 #include "UniversalLEDMatrixEffects.h"
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class DynamicLEDMatrix : public LEDMatrix
 {
 private:
@@ -89,10 +89,10 @@ public:
 };
 
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 const uint8_t DynamicLEDMatrix<MATRIX, ledLine, width, height>::NUM_EFFECTS = 9;
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 const char* const DynamicLEDMatrix<MATRIX, ledLine, width, height>::availableEffects[] =
 {
 	BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>::name,

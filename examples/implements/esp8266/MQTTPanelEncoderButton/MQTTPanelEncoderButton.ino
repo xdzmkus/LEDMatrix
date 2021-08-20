@@ -1,9 +1,14 @@
-
-#define BTN_PIN D0  // 16(pulldown) - button pin
+#if defined(ESP8266)
+#define BTN_PIN  D0 // button pin
 #define ENC1_PIN D1 // encoder S1 pin
 #define ENC2_PIN D2	// encoder S2 pin
-
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+#elif defined(ESP32)
+#define BTN_PIN  5  // button pin
+#define ENC1_PIN 19 // encoder S1 pin
+#define ENC2_PIN 18	// encoder S2 pin
+#define UNPINNED_ANALOG_PIN 35 // not connected analog pin
+#endif
 
 /********** Encoder button module ***********/
 #include <ArduinoDebounceButton.h>
@@ -16,7 +21,7 @@ ArduinoRotaryEncoder encoder(ENC2_PIN, ENC1_PIN);
 EventsQueue<ENCODER_EVENT, 10> queue;
 
 #include <Ticker.h>
-Ticker ledTicker;
+Ticker builtinLedTicker;
 
 /********************************************/
 
@@ -75,9 +80,6 @@ void handleButtonEvent(const DebounceButton* button, BUTTON_EVENT eventType)
 	case BUTTON_EVENT::DoubleClicked:
 		turnOnLeds();
 		break;
-	case BUTTON_EVENT::RepeatClicked:
-		adjustBrightness(-10);
-		break;
 	case BUTTON_EVENT::LongPressed:
 		turnOffLeds();
 		break;
@@ -107,11 +109,9 @@ void setup()
 
 	btn.initPin();
 
-	delay(5000);
+	builtinLedTicker.attach_ms(500, blinkLED);  // Blink led while setup
 
-	ledTicker.attach_ms(500, blinkLED);  // Blink led while setup
-
-	setup_WiFi();
+	connect_WiFi();
 	setup_MQTT();
 
 	encoder.initPins();
@@ -122,7 +122,7 @@ void setup()
 
 	btn.setEventHandler(handleButtonEvent);
 
-	ledTicker.detach();
+	builtinLedTicker.detach();
 	digitalWrite(LED_BUILTIN, HIGH);    // Turn the LED off by making the voltage HIGH
 
 	turnOnLeds();

@@ -12,7 +12,7 @@
 #include <ILedEffect.hpp>
 #include "ILedMatrix.hpp"
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class FireMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEffect
 {
 public:
@@ -45,11 +45,11 @@ private:
 	FireMatrixLedEffect& operator=(const FireMatrixLedEffect&) = delete;
 };
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 const char* const FireMatrixLedEffect<MATRIX, ledLine, width, height>::name = "FIRE";
 
 // these values are subtracted from the generated values to give a shape to the animation
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 const uint8_t FireMatrixLedEffect<MATRIX, ledLine, width, height>::valueMask[MATRIX_HEIGHT][MATRIX_WIDTH] PROGMEM =
 {
 		{32 , 0  , 0  , 0  , 0  , 0  , 0  , 0  , 32  },
@@ -63,7 +63,7 @@ const uint8_t FireMatrixLedEffect<MATRIX, ledLine, width, height>::valueMask[MAT
 };
 
 //these are the hues for the fire, should be between 0 (red) to about 25 (yellow)
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 const uint8_t FireMatrixLedEffect<MATRIX, ledLine, width, height>::hueMask[MATRIX_HEIGHT][MATRIX_WIDTH] PROGMEM =
 {
 		{1 , 13 , 19 , 25 , 25 , 25 , 22 , 13 , 1 },
@@ -76,25 +76,25 @@ const uint8_t FireMatrixLedEffect<MATRIX, ledLine, width, height>::hueMask[MATRI
 		{0 , 0  , 0  , 1  , 3  , 1  , 0  , 0  , 0 }
 };
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 FireMatrixLedEffect<MATRIX, ledLine, width, height>::FireMatrixLedEffect(uint16_t Hz) : ILedEffect(Hz)
 {
 	reset();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void FireMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 {
 	ILedEffect::reset();
 	MATRIX<ledLine, width, height>::clearAllLeds();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 FireMatrixLedEffect<MATRIX, ledLine, width, height>::~FireMatrixLedEffect()
 {
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void FireMatrixLedEffect<MATRIX, ledLine, width, height>::paint()
 {
 	// update matrix each 4 cycles

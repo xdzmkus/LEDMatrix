@@ -15,6 +15,7 @@
 #define MQTT_TOPIC_PUB      MQTT_USERNAME"/get/state"
 #define MQTT_TOPIC_SUB1     MQTT_USERNAME"/set/effect"
 #define MQTT_TOPIC_SUB2     MQTT_USERNAME"/set/action"
+#define MQTT_TOPIC_SUB3     MQTT_USERNAME"/set/runningString"
 
 #define ON_CODE             6735
 #define OFF_CODE            2344
@@ -43,9 +44,16 @@ Adafruit_MQTT_Subscribe garlandAction(&mqtt, MQTT_TOPIC_SUB2, MQTT_QOS_1);
 Adafruit_MQTT_Subscribe garlandRunningString(&mqtt, MQTT_TOPIC_SUB3, MQTT_QOS_1);
 
 #include <Ticker.h>
-Ticker mqttTicker;
+Ticker mqttTicker; 
+
+volatile boolean f_pingMQTT = false;
 
 volatile boolean f_publishState = true;
+
+void pingMQTT_callback()
+{
+	f_pingMQTT = true;
+}
 
 void setAction_callback(uint32_t x)
 {
@@ -86,82 +94,95 @@ void newRunningString_callback(char* data, uint16_t len)
 
 void configure_WiFi()
 {
-    WiFiManager wm;
+	WiFiManager wm;
 
-    wm.setConfigPortalTimeout(180);
+	wm.setConfigPortalTimeout(180);
 
-    wm.setConfigPortalBlocking(true);
-    if (wm.startConfigPortal(WLAN_SSID, WLAN_PASS))
-    {
-        Serial.println(F("WiFi Reconfigured! Rebooting..."));
-        delay(5000);
-        ESP.restart();
-    }
+	wm.setConfigPortalBlocking(true);
+	if (wm.startConfigPortal(WLAN_SSID, WLAN_PASS))
+	{
+		Serial.println(F("WiFi Reconfigured! Rebooting..."));
+		delay(5000);
+		ESP.restart();
+	}
 }
 
-void setup_WiFi()
+void connect_WiFi()
 {
-    WiFiManager wm;
+	WiFiManager wm;
 
-    WiFi.mode(WIFI_STA);                // Set the ESP8266 to be a WiFi-client
-    WiFi.hostname(WLAN_HOSTNAME);
+	WiFi.mode(WIFI_STA);                // Set the ESP8266 to be a WiFi-client
+	WiFi.hostname(WLAN_HOSTNAME);
 
-    Serial.println(WLAN_HOSTNAME);
+	Serial.println(WLAN_HOSTNAME);
 
-    if (!wm.autoConnect(WLAN_SSID, WLAN_PASS))
-    {
-        Serial.println(F("Connection Failed! Rebooting..."));
-        delay(5000);
-        ESP.restart();
-    }
+	if (!wm.autoConnect(WLAN_SSID, WLAN_PASS))
+	{
+		Serial.println(F("Connection Failed! Rebooting..."));
+		delay(5000);
+		ESP.restart();
+	}
 
-    Serial.println(F("WiFi connected"));
-    Serial.print(F("IP address: "));
-    Serial.println(WiFi.localIP());
+	Serial.println(F("WiFi connected"));
+	Serial.print(F("IP address: "));
+	Serial.println(WiFi.localIP());
 }
 
 void setup_MQTT()
 {
-    garlandEffect.setCallback(setEffect_callback);
-    mqtt.subscribe(&garlandEffect);
+	garlandEffect.setCallback(setEffect_callback);
+	mqtt.subscribe(&garlandEffect);
 
-    garlandAction.setCallback(setAction_callback);
-    mqtt.subscribe(&garlandAction);
+	garlandAction.setCallback(setAction_callback);
+	mqtt.subscribe(&garlandAction);
 
 	garlandRunningString.setCallback(newRunningString_callback);
 	mqtt.subscribe(&garlandRunningString);
 
-    mqttTicker.attach_scheduled(10.0, pingMQTT);
+	mqttTicker.attach(60.0, pingMQTT_callback);
 }
 
-void pingMQTT()
+bool keepAliveMQTT()
 {
 	if (!mqtt.connected())
 	{
-		uint8_t ret(mqtt.connect());
-
 		Serial.println(F("Connecting to MQTT... "));
+
+		uint8_t ret = mqtt.connect();
+
 		if (ret != 0)
 		{
 			Serial.println(mqtt.connectErrorString(ret));
 			Serial.println(F("Retry MQTT connection ..."));
 			mqtt.disconnect();
-			return;
+			return false;
 		}
 		else
 		{
 			Serial.println(F("MQTT Connected!"));
+			return true;
 		}
 	}
 
-	mqtt.ping();
+	if (f_pingMQTT)
+	{
+		f_pingMQTT = false;
+
+		Serial.println(F("Ping MQTT... "));
+
+		return mqtt.ping();
+	}
+
+	return true;
 }
 
 void processMQTT()
 {
-	 mqtt.processPackets(10);
+	if (!keepAliveMQTT()) return;
 
-	if (f_publishState && mqtt.connected())
+	mqtt.processPackets(10);
+
+	if (f_publishState)
 	{
 		auto currentEffect = getEffect();
 		if (currentEffect == nullptr) currentEffect = "OFF";
@@ -169,13 +190,14 @@ void processMQTT()
 		Serial.print(F("Publish message: "));
 		Serial.println(currentEffect);
 
-		if (!garlandState.publish(currentEffect))
+		if (garlandState.publish(currentEffect))
+		{
+			f_publishState = false;
+		}
+		else
 		{
 			Serial.println(F("Publish Message Failed"));
-			return;
 		}
-
-		f_publishState = false;
 	}
 }
 

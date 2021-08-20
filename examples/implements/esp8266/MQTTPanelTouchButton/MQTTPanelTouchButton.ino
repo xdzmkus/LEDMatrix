@@ -1,7 +1,14 @@
-
-#define BTN_PIN D0  // 16(pulldown) - button pin
-
+#if defined(ESP8266)
+#define BTN_PIN  D0 // button pin
+#define ENC1_PIN D1 // encoder S1 pin
+#define ENC2_PIN D2	// encoder S2 pin
 #define UNPINNED_ANALOG_PIN A0 // not connected analog pin
+#elif defined(ESP32)
+#define BTN_PIN  5  // button pin
+#define ENC1_PIN 19 // encoder S1 pin
+#define ENC2_PIN 18	// encoder S2 pin
+#define UNPINNED_ANALOG_PIN 35 // not connected analog pin
+#endif
 
 /********** Touch button module ***********/
 #include <ArduinoDebounceButton.h>
@@ -11,7 +18,7 @@ ArduinoDebounceButton btn(BTN_PIN, BUTTON_CONNECTED::GND, BUTTON_NORMAL::OPEN);
 EventsQueue<BUTTON_EVENT, 10> queue;
 
 #include <Ticker.h>
-Ticker ledTicker;
+Ticker builtinLedTicker;
 Ticker btnTicker;
 
 /********************************************/
@@ -88,16 +95,16 @@ void setup()
 
 	delay(5000);
 
-	ledTicker.attach_ms(500, blinkLED);  // Blink led while setup
+	builtinLedTicker.attach_ms(500, blinkLED);  // Blink led while setup
 
-	setup_WiFi();
+	connect_WiFi();
 	setup_MQTT();
 
 	btn.setEventHandler(handleButtonEvent);
 
 	btnTicker.attach_ms(btn.delayDebounce >> 1, check_button);
 
-	ledTicker.detach();
+	builtinLedTicker.detach();
 	digitalWrite(LED_BUILTIN, HIGH);    // Turn the LED off by making the voltage HIGH
 
 	turnOnLeds();

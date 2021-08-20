@@ -1,7 +1,10 @@
 /*********** WS2812B leds *******************/
-#define LED_PIN D5  // leds pin
+#if defined(ESP8266)
+#define LED_PIN  D5 // leds pin
+#elif defined(ESP32)
+#define LED_PIN  16 // leds pin
+#endif
 
-#include <FastLED.h>
 #define MATRIX_H 8
 #define MATRIX_W 32
 #define CURRENT_LIMIT 8000
@@ -10,6 +13,7 @@
 
 uint8_t brightness = 100;
 
+#include <FastLED.h>
 CRGB leds[(MATRIX_H * MATRIX_W)];
 
 /*********** LED Matrix Effects *************/
@@ -94,4 +98,7 @@ void adjustBrightness(int8_t delta)
 {
     brightness += delta;
     FastLED.setBrightness(brightness);
+
+	Serial.print(F("BRIGHTNESS: "));
+	Serial.println(brightness);
 }

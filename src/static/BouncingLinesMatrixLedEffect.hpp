@@ -9,7 +9,7 @@
 #include <ILedEffect.hpp>
 #include "ILedMatrix.hpp"
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height, const uint8_t linesCount>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height, const uint8_t linesCount>
 class BouncingLinesMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEffect
 {
 private:
@@ -46,22 +46,22 @@ private:
 	BouncingLinesMatrixLedEffect& operator=(const BouncingLinesMatrixLedEffect&) = delete;
 };
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height, const uint8_t linesCount>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height, const uint8_t linesCount>
 const char* const BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, linesCount>::name = "BOUNCINGLINES";
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height, const uint8_t linesCount>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height, const uint8_t linesCount>
 BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, linesCount>::BouncingLinesMatrixLedEffect(uint16_t Hz)
 	: ILedEffect(Hz)
 {
 	reset();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height, const uint8_t linesCount>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height, const uint8_t linesCount>
 BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, linesCount>::~BouncingLinesMatrixLedEffect()
 {
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height, const uint8_t linesCount>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height, const uint8_t linesCount>
 void BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, linesCount>::reset()
 {
 	ILedEffect::reset();
@@ -87,7 +87,7 @@ void BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, linesCount>::r
 	MATRIX<ledLine, width, height>::clearAllLeds();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height, const uint8_t linesCount>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height, const uint8_t linesCount>
 void BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, linesCount>::paint()
 {
 	*this >> 0;

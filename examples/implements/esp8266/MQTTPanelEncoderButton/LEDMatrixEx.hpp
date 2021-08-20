@@ -11,7 +11,7 @@
 
 #define NUM_LINES 2
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class LEDMatrixEx : public LEDMatrix
 {
 private:

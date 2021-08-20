@@ -8,7 +8,7 @@
 
 #include <ILedEffect.hpp>
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class SnowMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEffect
 {
 public:
@@ -45,10 +45,10 @@ private:
 };
 
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 const char* const SnowMatrixLedEffect<MATRIX, ledLine, width, height>::name = "SNOW";
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 SnowMatrixLedEffect<MATRIX, ledLine, width, height>::SnowMatrixLedEffect(uint16_t Hz, unsigned long changeDirection, uint8_t fadeSpeed)
 	: ILedEffect(Hz), snowflakeCount(MATRIX<ledLine, width, height>::getWidth()), dirTimer(changeDirection), fade(fadeSpeed)
 {
@@ -57,12 +57,12 @@ SnowMatrixLedEffect<MATRIX, ledLine, width, height>::SnowMatrixLedEffect(uint16_
 	dirTimer.start();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 SnowMatrixLedEffect<MATRIX, ledLine, width, height>::~SnowMatrixLedEffect()
 {
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 bool SnowMatrixLedEffect<MATRIX, ledLine, width, height>::isReady()
 {
 	if (dirTimer.isReady())
@@ -71,7 +71,7 @@ bool SnowMatrixLedEffect<MATRIX, ledLine, width, height>::isReady()
 	return ILedEffect::isReady();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void SnowMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 {
 	ILedEffect::reset();
@@ -79,7 +79,7 @@ void SnowMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 	MATRIX<ledLine, width, height>::clearAllLeds();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void SnowMatrixLedEffect<MATRIX, ledLine, width, height>::paint()
 {
 	uint16_t restSnowflakes = 0;

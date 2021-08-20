@@ -9,7 +9,7 @@
 #include <ILedEffect.hpp>
 #include "fonts/windows-1251-5x8.h"
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class RunningStringMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEffect
 {
 public:
@@ -47,22 +47,22 @@ private:
 
 };
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 const char* const RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::name = "RUNNINGSTRING";
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::RunningStringMatrixLedEffect(uint16_t Hz, String text, uint8_t yOffset, CRGB color)
     : ILedEffect(Hz), str(text), yOffset(yOffset), rgb(color ? color : MATRIX<ledLine, width, height>::getRandomColor())
 {
     reset();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::~RunningStringMatrixLedEffect()
 {
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 {
     ILedEffect::reset();
@@ -72,7 +72,7 @@ void RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
     MATRIX<ledLine, width, height>::clearAllLeds();
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::paint()
 {
     MATRIX<ledLine, width, height>::clearAllLeds();
@@ -89,7 +89,7 @@ void RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::paint()
     }
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 uint8_t RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::get5x8Column(unsigned char ascii, uint8_t columnNumber)
 {
     if (columnNumber >= 5)
@@ -108,7 +108,7 @@ uint8_t RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::get5x8Colu
     return pgm_read_byte(&(font5x8[ascii - 97][columnNumber]));			// для русских букв
 }
 
-template<template <CRGB* const, const uint8_t, const uint8_t> class MATRIX, CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::draw5x8Letter(unsigned char ascii, CRGB color, int16_t xOffset, int16_t yOffset)
 {
     // check if oversized

@@ -13,7 +13,7 @@ Y    |  12  11  4   3
 
 #include "ILedMatrix.hpp"
 
-template <CRGB* const ledLine, const uint8_t width, const uint8_t height>
+template <CRGB* ledLine, uint8_t width, uint8_t height>
 class ZigZagFromBottomRightToUpAndLeft : public ILedMatrix<ledLine, width, height>
 {
 protected:

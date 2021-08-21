@@ -15,6 +15,7 @@
 #define MQTT_TOPIC_PUB      MQTT_USERNAME"/get/state"
 #define MQTT_TOPIC_SUB1     MQTT_USERNAME"/set/effect"
 #define MQTT_TOPIC_SUB2     MQTT_USERNAME"/set/action"
+#define MQTT_TOPIC_SUB3     MQTT_USERNAME"/set/runningString"
 
 #define ON_CODE             6735
 #define OFF_CODE            2344

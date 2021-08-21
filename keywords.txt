@@ -2,19 +2,23 @@
 # Syntax Coloring Map For LEDMatrix
 #########################################
 
-#########################################
+##########################################
 # Datatypes (KEYWORD1)
-#########################################
+##########################################
 
-LEDMatrix                        KEYWORD1
-ZigZagFromBottomRightToUpAndLeft KEYWORD1
-ZigZagFromBottomLeftToUpAndRight KEYWORD1
+LEDMatrix                         KEYWORD1
+StaticLEDMatrix                   KEYWORD1
+DynamicLEDMatrix                  KEYWORD1
+ZigZagFromBottomRightToUpAndLeft  KEYWORD1
+ZigZagFromBottomLeftToUpAndRight  KEYWORD1
+ZigZagFromTopLeftToBottomAndRight KEYWORD1
+ZigZagFromTopRightToBottomAndLeft KEYWORD1
 
 #########################################
 # Methods and Functions (KEYWORD2)
 #########################################
 
-getAllEffectsNumber              KEYWORD2
+howManyEffects                   KEYWORD2
 getAllEffectsNames               KEYWORD2
 getEffectName                    KEYWORD2
 getEffectIdx                     KEYWORD2

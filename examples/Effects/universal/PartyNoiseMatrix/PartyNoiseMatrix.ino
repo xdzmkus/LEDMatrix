@@ -1,4 +1,6 @@
 #if defined(ESP8266)
+#define FASTLED_FORCE_SOFTWARE_SPI
+#define FASTLED_FORCE_SOFTWARE_PINS
 #define LED_PIN D5  // leds pin
 #elif defined(ESP32)
 #define LED_PIN  16 // leds pin

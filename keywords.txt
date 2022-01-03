@@ -13,6 +13,10 @@ ZigZagFromBottomRightToUpAndLeft  KEYWORD1
 ZigZagFromBottomLeftToUpAndRight  KEYWORD1
 ZigZagFromTopLeftToBottomAndRight KEYWORD1
 ZigZagFromTopRightToBottomAndLeft KEYWORD1
+ParallelFromBottomLeftToRight     KEYWORD1
+ParallelFromBottomRightToLeft     KEYWORD1
+ParallelFromTopLeftToRight        KEYWORD1
+ParallelFromTopRightToLeft        KEYWORD1
 
 #########################################
 # Methods and Functions (KEYWORD2)

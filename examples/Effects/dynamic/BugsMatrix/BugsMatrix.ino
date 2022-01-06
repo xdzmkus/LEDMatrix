@@ -17,7 +17,7 @@
 
 CRGB leds[NUM_LEDS];
 
-#include "ZigZagFromTopLeftToBottomAndRight.hpp"
+#include "MatrixLineConverters.h"
 #include "DynamicLEDMatrixEffects.h"
 
 BugsMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(10, random8(MATRIX_H, MATRIX_W));

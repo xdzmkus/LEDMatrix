@@ -10,7 +10,6 @@
 #define MATRIX_WIDTH 9
 
 #include <ILedEffect.hpp>
-#include "ILedMatrix.hpp"
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class FireMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEffect

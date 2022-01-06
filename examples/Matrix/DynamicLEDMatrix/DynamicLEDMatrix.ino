@@ -22,8 +22,7 @@ uint8_t brightness = 100;
 
 CRGB leds[(MATRIX_H * MATRIX_W)];
 
-#include "ZigZagFromTopLeftToBottomAndRight.hpp"
-
+#include "MatrixLineConverters.h"
 #include "DynamicLEDMatrix.hpp"
 DynamicLEDMatrix<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> ledMatrix;
 

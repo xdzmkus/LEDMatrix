@@ -17,7 +17,7 @@
 
 CRGB leds[NUM_LEDS];
 
-#include "ZigZagFromTopLeftToBottomAndRight.hpp"
+#include "MatrixLineConverters.h"
 #include "UniversalLEDMatrixEffects.h"
 
 SnowMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(3);

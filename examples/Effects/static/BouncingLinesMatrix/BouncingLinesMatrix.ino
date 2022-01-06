@@ -17,7 +17,7 @@
 
 CRGB leds[NUM_LEDS];
 
-#include "ZigZagFromTopLeftToBottomAndRight.hpp"
+#include "MatrixLineConverters.h"
 #include "StaticLEDMatrixEffects.h"
 
 BouncingLinesMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H, 2> effect(10);

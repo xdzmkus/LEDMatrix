@@ -7,7 +7,6 @@
 #define __BOUNSINGBALLSMATRIXLEDEFFECT_HPP__
 
 #include <ILedEffect.hpp>
-#include "ILedMatrix.hpp"
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class BouncingBallsMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEffect

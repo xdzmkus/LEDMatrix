@@ -16,7 +16,7 @@ class FireMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEf
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 	static const uint8_t valueMask[MATRIX_HEIGHT][MATRIX_WIDTH] PROGMEM;
 
@@ -36,7 +36,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 private:
 
@@ -45,7 +45,7 @@ private:
 };
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const char* const FireMatrixLedEffect<MATRIX, ledLine, width, height>::name = "FIRE";
+LedEffectName const FireMatrixLedEffect<MATRIX, ledLine, width, height>::name = "FIRE";
 
 // these values are subtracted from the generated values to give a shape to the animation
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>

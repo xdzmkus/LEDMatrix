@@ -15,8 +15,8 @@ class DynamicLEDMatrix : public LEDMatrix
 {
 private:
 
-	static const uint8_t NUM_EFFECTS;
-	static const char* const availableEffects[];
+	static const uint8_t NUM_EFFECTS = 9;
+	static LedEffectName const availableEffects[NUM_EFFECTS];
 
 public:
 
@@ -34,55 +34,55 @@ public:
 		return NUM_EFFECTS;
 	};
 
-	virtual const char* const* getAllEffectsNames() const override
+	virtual LedEffectName const* getAllEffectsNames() const override
 	{
 		return availableEffects;
 	};
 
-	virtual bool setEffectByName(const char* effectName) override
+	virtual bool setEffectByName(LedEffectName effectName) override
 	{
 		if (strcmp(BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>::name, effectName) == 0)
 		{
-			delete effect; effect = new BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 30), min(width, height)>>1);
+			delete  activeEffect;  activeEffect = new BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 30), min(width, height)>>1);
 		}
 		else if (strcmp(BugsMatrixLedEffect<MATRIX, ledLine, width, height>::name, effectName) == 0)
 		{
-			delete effect; effect = new BugsMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 30), random(1, max(width, height)));
+			delete  activeEffect;  activeEffect = new BugsMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 30), random(1, max(width, height)));
 		}
 		else if (strcmp(FireMatrixLedEffect<MATRIX, ledLine, width, height>::name, effectName) == 0)
 		{
-			delete effect; effect = new FireMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 30));
+			delete  activeEffect;  activeEffect = new FireMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 30));
 		}
 		else if (strcmp(GravityMatrixLedEffect<MATRIX, ledLine, width, height>::name, effectName) == 0)
 		{
-			delete effect; effect = new GravityMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 30));
+			delete  activeEffect;  activeEffect = new GravityMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 30));
 		}
 		else if (strcmp(NoiseMatrixLedEffect<MATRIX, ledLine, width, height>::name, effectName) == 0)
 		{
-			delete effect; effect = new NoiseMatrixLedEffect<MATRIX, ledLine, width, height>(random(8, 50), wrwPalette_p);
+			delete  activeEffect;  activeEffect = new NoiseMatrixLedEffect<MATRIX, ledLine, width, height>(random(8, 50), wrwPalette_p);
 		}
 		else if (strcmp(RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::name, effectName) == 0)
 		{
-			delete effect; effect = new RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>(random(5, 30), text);
+			delete  activeEffect;  activeEffect = new RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>(random(5, 30), text);
 		}
 		else if (strcmp(SinusMatrixLedEffect<MATRIX, ledLine, width, height>::name, effectName) == 0)
 		{
-			delete effect; effect = new SinusMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 50));
+			delete  activeEffect;  activeEffect = new SinusMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 50));
 		}
 		else if (strcmp(SnowMatrixLedEffect<MATRIX, ledLine, width, height>::name, effectName) == 0)
 		{
-			delete effect; effect = new SnowMatrixLedEffect<MATRIX, ledLine, width, height>(random(1, 5));
+			delete  activeEffect;  activeEffect = new SnowMatrixLedEffect<MATRIX, ledLine, width, height>(random(1, 5));
 		}
 		else if (strcmp(StarfallMatrixLedEffect<MATRIX, ledLine, width, height>::name, effectName) == 0)
 		{
-			delete effect; effect = new StarfallMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 30));
+			delete  activeEffect;  activeEffect = new StarfallMatrixLedEffect<MATRIX, ledLine, width, height>(random(10, 30));
 		}
 		else
 		{
 			return false;
 		}
 
-		if (effect != nullptr) effect->start();
+		if ( activeEffect != nullptr)  activeEffect->start();
 
 		return true;
 	};
@@ -90,10 +90,7 @@ public:
 
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const uint8_t DynamicLEDMatrix<MATRIX, ledLine, width, height>::NUM_EFFECTS = 9;
-
-template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const char* const DynamicLEDMatrix<MATRIX, ledLine, width, height>::availableEffects[] =
+LedEffectName const DynamicLEDMatrix<MATRIX, ledLine, width, height>::availableEffects[NUM_EFFECTS] =
 {
 	BouncingBallsMatrixLedEffect<MATRIX, ledLine, width, height>::name,
 	BugsMatrixLedEffect<MATRIX, ledLine, width, height>::name,

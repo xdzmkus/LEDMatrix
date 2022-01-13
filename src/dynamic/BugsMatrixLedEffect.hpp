@@ -13,7 +13,7 @@ class BugsMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEf
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 protected:
 
@@ -38,7 +38,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const {	return name; }
+	operator LedEffectName () const {	return name; }
 
 private:
 
@@ -48,7 +48,7 @@ private:
 };
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const char* const BugsMatrixLedEffect<MATRIX, ledLine, width, height>::name = "BUGS";
+LedEffectName const BugsMatrixLedEffect<MATRIX, ledLine, width, height>::name = "BUGS";
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 BugsMatrixLedEffect<MATRIX, ledLine, width, height>::BugsMatrixLedEffect(uint16_t Hz, uint8_t bugsCount)

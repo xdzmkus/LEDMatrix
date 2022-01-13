@@ -24,20 +24,10 @@ CRGB leds[(MATRIX_H * MATRIX_W)];
 
 #include "MatrixLineConverters.h"
 #include "StaticLEDMatrix.hpp"
-StaticLEDMatrix<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> ledMatrix;
-
-#include "EffectTimer.hpp"
+StaticLEDMatrix<ZigZagFromBottomRightToUpAndLeft, leds, MATRIX_W, MATRIX_H> ledMatrix;
 
 #define EFFECT_DURATION_SEC 60
 MillisTimer timerEffects(EFFECT_DURATION_SEC* MillisTimer::CLOCKS_IN_SEC);
-
-void changeEffect()
-{
-	ledMatrix.setNextEffect();
-
-	Serial.print(F("EFFECT: "));
-	Serial.println(ledMatrix.getEffectName());
-}
 
 void setupLED()
 {
@@ -78,4 +68,12 @@ void loop()
 	{
 		FastLED.show();
 	}
+}
+
+void changeEffect()
+{
+	ledMatrix.setNextEffect();
+
+	Serial.print(F("EFFECT: "));
+	Serial.println(ledMatrix.getEffectName());
 }

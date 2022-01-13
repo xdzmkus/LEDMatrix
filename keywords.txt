@@ -34,6 +34,7 @@ refresh                          KEYWORD2
 turnOn                           KEYWORD2
 turnOf                           KEYWORD2
 isOn                             KEYWORD2
+getState                         KEYWORD2
 
 #########################################
 # Constants (LITERAL1)

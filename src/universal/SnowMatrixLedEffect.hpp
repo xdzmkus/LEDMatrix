@@ -13,7 +13,7 @@ class SnowMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEf
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 private:
 
@@ -35,7 +35,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 private:
 
@@ -46,7 +46,7 @@ private:
 
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const char* const SnowMatrixLedEffect<MATRIX, ledLine, width, height>::name = "SNOW";
+LedEffectName const SnowMatrixLedEffect<MATRIX, ledLine, width, height>::name = "SNOW";
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 SnowMatrixLedEffect<MATRIX, ledLine, width, height>::SnowMatrixLedEffect(uint16_t Hz, unsigned long changeDirection, uint8_t fadeSpeed)

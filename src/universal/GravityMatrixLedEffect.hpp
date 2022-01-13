@@ -13,7 +13,7 @@ class GravityMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILe
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 private:
 
@@ -38,7 +38,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 private:
 
@@ -47,7 +47,7 @@ private:
 };
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const char* const GravityMatrixLedEffect<MATRIX, ledLine, width, height>::name = "GRAVITY";
+LedEffectName const GravityMatrixLedEffect<MATRIX, ledLine, width, height>::name = "GRAVITY";
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 GravityMatrixLedEffect<MATRIX, ledLine, width, height>::GravityMatrixLedEffect(uint16_t Hz)

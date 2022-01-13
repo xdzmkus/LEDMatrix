@@ -18,7 +18,7 @@ private:
 
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 protected:
 
@@ -38,7 +38,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 private:
 	BouncingLinesMatrixLedEffect(const BouncingLinesMatrixLedEffect&) = delete;
@@ -46,7 +46,7 @@ private:
 };
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height, const uint8_t linesCount>
-const char* const BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, linesCount>::name = "BOUNCINGLINES";
+LedEffectName const BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, linesCount>::name = "BOUNCINGLINES";
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height, const uint8_t linesCount>
 BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, linesCount>::BouncingLinesMatrixLedEffect(uint16_t Hz)

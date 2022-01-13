@@ -13,7 +13,7 @@ class NoiseMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedE
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 private:
 
@@ -50,7 +50,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const { return id.length() == 0 ? name : id.c_str(); }
+	operator LedEffectName () const { return id.length() == 0 ? name : id.c_str(); }
 
 private:
 
@@ -61,7 +61,7 @@ private:
 
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const char* const NoiseMatrixLedEffect<MATRIX, ledLine, width, height>::name = "NOISE";
+LedEffectName const NoiseMatrixLedEffect<MATRIX, ledLine, width, height>::name = "NOISE";
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 NoiseMatrixLedEffect<MATRIX, ledLine, width, height>::NoiseMatrixLedEffect(uint16_t Hz, const CRGBPalette16& palette, uint8_t zoom)

@@ -14,7 +14,7 @@ class RunningStringMatrixLedEffect : public MATRIX<ledLine, width, height>, publ
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 private:
 
@@ -32,7 +32,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 protected:
 
@@ -48,7 +48,7 @@ private:
 };
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const char* const RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::name = "RUNNINGSTRING";
+LedEffectName const RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::name = "RUNNINGSTRING";
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>::RunningStringMatrixLedEffect(uint16_t Hz, String text, uint8_t yOffset, CRGB color)

@@ -19,31 +19,42 @@ private:
 
 	static const uint8_t NUM_EFFECTS = 8;
 
-	FireMatrixLedEffect<MATRIX, ledLine, width, height>				eff1;
-	GravityMatrixLedEffect<MATRIX, ledLine, width, height>			eff2;
-	NoiseMatrixLedEffect<MATRIX, ledLine, width, height>			eff3;
-	RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>	eff4;
-	SinusMatrixLedEffect<MATRIX, ledLine, width, height>			eff5;
-	SnowMatrixLedEffect<MATRIX, ledLine, width, height>				eff6;
-	StarfallMatrixLedEffect<MATRIX, ledLine, width, height>			eff7;
+	static FireMatrixLedEffect<MATRIX, ledLine, width, height>	fireEffect;
+	static GravityMatrixLedEffect<MATRIX, ledLine, width, height> gravityEffect;
+	static NoiseMatrixLedEffect<MATRIX, ledLine, width, height> noiseEffect;
+	static RunningStringMatrixLedEffect<MATRIX, ledLine, width, height>	runningStrEffect;
+	static SinusMatrixLedEffect<MATRIX, ledLine, width, height>	sinusEffect;
+	static SnowMatrixLedEffect<MATRIX, ledLine, width, height> snowEffect;
+	static StarfallMatrixLedEffect<MATRIX, ledLine, width, height> starfallEffect;
+	static BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, NUM_LINES> bouncingLinesEffect;
 
-	BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, NUM_LINES> eff8;
+	ILedEffect* effects[NUM_EFFECTS] =
+	{
+		&fireEffect,
+		&gravityEffect,
+		&noiseEffect,
+		&runningStrEffect,
+		&sinusEffect,
+		&snowEffect,
+		&starfallEffect,
+		&bouncingLinesEffect
+	};
 
-	const char* const availableEffects[NUM_EFFECTS] = { eff1.name, eff2.name, eff3.name, eff4.name, eff5.name, eff6.name, eff7.name, eff8.name };
-
-	ILedEffect* const effects[NUM_EFFECTS] = { &eff1, &eff2, &eff3, &eff4, &eff5, &eff6, &eff7, &eff8 };
+	LedEffectName const availableEffects[NUM_EFFECTS] =
+	{
+		fireEffect.name,
+		gravityEffect.name,
+		noiseEffect.name,
+		runningStrEffect.name,
+		sinusEffect.name,
+		snowEffect.name,
+		starfallEffect.name,
+		bouncingLinesEffect.name
+	};
 
 public:
 
-	StaticLEDMatrix() :
-		eff1(random(10, 30)),
-		eff2(random(10, 30)),
-		eff3(random(8, 50), wrwPalette_p),
-		eff4(random(5, 30), "Static LED Matrix"),
-		eff5(random(10, 50)),
-		eff6(random(1, 5)),
-		eff7(random(10, 30)),
-		eff8(random(10, 30))
+	StaticLEDMatrix()
 	{
 	};
 
@@ -56,19 +67,19 @@ public:
 		return NUM_EFFECTS;
 	};
 
-	virtual const char* const* getAllEffectsNames() const override
+	virtual LedEffectName const* getAllEffectsNames() const override
 	{
 		return availableEffects;
 	};
 
-	virtual bool setEffectByName(const char* effectName) override
+	virtual bool setEffectByName(LedEffectName effectName) override
 	{
 		for (uint8_t idx = 0; idx < NUM_EFFECTS; ++idx)
 		{
 			if (strcmp(*(effects[idx]), effectName) == 0)
 			{
-				effect = effects[idx];
-				effect->start();
+				activeEffect = effects[idx];
+				activeEffect->start();
 				return true;
 			}
 		}
@@ -77,9 +88,29 @@ public:
 	};
 };
 
-/*
+
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const uint8_t StaticLEDMatrix<leds, numLeds>::NUM_EFFECTS = 8;
-*/
+FireMatrixLedEffect<MATRIX, ledLine, width, height>	StaticLEDMatrix<MATRIX, ledLine, width, height>::fireEffect(random(10, 30));
+
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
+GravityMatrixLedEffect<MATRIX, ledLine, width, height> StaticLEDMatrix<MATRIX, ledLine, width, height>::gravityEffect(random(10, 30));
+
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
+NoiseMatrixLedEffect<MATRIX, ledLine, width, height> StaticLEDMatrix<MATRIX, ledLine, width, height>::noiseEffect(random(8, 50), wrwPalette_p);
+
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
+RunningStringMatrixLedEffect<MATRIX, ledLine, width, height> StaticLEDMatrix<MATRIX, ledLine, width, height>::runningStrEffect(random(5, 30), "Static LED Matrix");
+
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
+SinusMatrixLedEffect<MATRIX, ledLine, width, height> StaticLEDMatrix<MATRIX, ledLine, width, height>::sinusEffect(random(10, 50));
+
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
+SnowMatrixLedEffect<MATRIX, ledLine, width, height> StaticLEDMatrix<MATRIX, ledLine, width, height>::snowEffect(random(1, 5));
+
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
+StarfallMatrixLedEffect<MATRIX, ledLine, width, height> StaticLEDMatrix<MATRIX, ledLine, width, height>::starfallEffect(random(10, 30));
+
+template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
+BouncingLinesMatrixLedEffect<MATRIX, ledLine, width, height, NUM_LINES> StaticLEDMatrix<MATRIX, ledLine, width, height>::bouncingLinesEffect(random(10, 30));
 
 #endif

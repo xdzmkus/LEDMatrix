@@ -13,7 +13,7 @@ class StarfallMatrixLedEffect : public MATRIX<ledLine, width, height>, public IL
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 private:
 
@@ -29,7 +29,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 private:
 
@@ -40,7 +40,7 @@ private:
 
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const char* const StarfallMatrixLedEffect<MATRIX, ledLine, width, height>::name = "STARFALL";
+LedEffectName const StarfallMatrixLedEffect<MATRIX, ledLine, width, height>::name = "STARFALL";
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 StarfallMatrixLedEffect<MATRIX, ledLine, width, height>::StarfallMatrixLedEffect(uint16_t Hz, CRGB color)

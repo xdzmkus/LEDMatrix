@@ -62,10 +62,10 @@ public:
 	
 	void operator<<(uint8_t startX)
 	{
-		uint8_t rightLimit = startX >= width ? width - 1 : startX;
+		uint8_t rightLimit = (startX >= width) ? width - 1 : startX;
 
 		// shift left columns
-		for (uint8_t x = 0; x < startX; x++)
+		for (uint8_t x = 0; x < rightLimit; x++)
 		{
 			for (uint8_t y = 0; y < height; y++)
 			{

@@ -22,7 +22,7 @@ CRGB leds[NUM_LEDS];
 
 NoiseMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H>* effect;
 
-#include <EffectTimer.hpp>
+#include <ClockTimer.hpp>
 #define EFFECT_DURATION_SEC 30
 MillisTimer tickerEffects(EFFECT_DURATION_SEC* MillisTimer::CLOCKS_IN_SEC);
 
